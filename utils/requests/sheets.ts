@@ -1,13 +1,14 @@
 import { google, sheets_v4 } from "googleapis";
 
 async function _getGoogleSheetClient() {
+  console.log();
   const auth = new google.auth.GoogleAuth({
     credentials: {
       token_url: process.env.TOKEN_URL,
       client_id: process.env.CLIENT_ID,
       client_email: process.env.CLIENT_EMAIL,
       type: "service_account",
-      private_key: process.env.PRIVATE_KEY,
+      private_key: process?.env?.PRIVATE_KEY?.split(String.raw`\n`).join("\n"),
     },
     scopes: ["https://www.googleapis.com/auth/spreadsheets"],
   });
