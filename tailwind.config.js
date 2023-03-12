@@ -17,6 +17,8 @@ module.exports = {
       pink: "#A40DAC",
       gradientStart: "#FF93D4",
       gradientEnd: "#9A00A8",
+      gradientGreenStart: "#259CA3",
+      gradientGreenEnd: "#78FF75",
     },
     extend: {},
   },
