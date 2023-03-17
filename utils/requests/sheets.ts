@@ -1,7 +1,6 @@
 import { google, sheets_v4 } from "googleapis";
 
 async function _getGoogleSheetClient() {
-  console.log();
   const auth = new google.auth.GoogleAuth({
     credentials: {
       token_url: process.env.TOKEN_URL,

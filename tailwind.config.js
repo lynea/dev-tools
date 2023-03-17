@@ -8,6 +8,7 @@ module.exports = {
   theme: {
     colors: {
       white: "#ffff",
+      gold: "#EECD58",
 
       purple: {
         100: "#31203F",

@@ -32,10 +32,46 @@ const getScoresForTeams = (data: string[][], filter: string[]) => {
   return res;
 };
 
+const getTotalScoresForTeams = (data: string[][], filter: string[]) => {
+  const teams = ["Snails", "Bees", "Ducks"];
+
+  const teamScores = [];
+
+  for (const team of teams) {
+    if (!filter.includes(team)) continue;
+
+    const teamData =
+      data?.filter((personScore) => personScore.includes(team)) ?? [];
+
+    const allScores = teamData.map((data) => Number(data.at(4)));
+
+    const teamScore = {
+      teamName: team,
+      scores: Math.round(
+        allScores.reduce((p, c) => p + c, 0) / allScores.length
+      ),
+    };
+    teamScores.push(teamScore);
+  }
+
+  return teamScores;
+};
+
+const getTeamNamesForTotal = (teamData: string[][]): (string | undefined)[] => {
+  const teams = [...new Set(teamData.map((scoreRow) => scoreRow.at(1)))];
+
+  return teams;
+};
+
 const getTeamNames = (teamData: string[][]): (string | undefined)[] => {
   const sliced = teamData.slice(1);
 
   return sliced?.map((team) => team.at(0));
 };
 
-export { getScoresForTeams, getTeamNames };
+export {
+  getScoresForTeams,
+  getTeamNames,
+  getTotalScoresForTeams,
+  getTeamNamesForTotal,
+};

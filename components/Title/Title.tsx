@@ -6,6 +6,14 @@ type TitleProps = {
 
 export const Title: FunctionComponent<TitleProps> = ({ children }) => {
   return (
-    <h3 className="font-bold text-5xl mt-4 mb-8 text-white">{children}</h3>
+    <h3
+      style={{
+        WebkitBackgroundClip: "text",
+        WebkitTextFillColor: "transparent",
+      }}
+      className="bg-gradient-to-r from-gradientStart to-gradientEnd block text-opacity-0 text-6xl  leading-relaxed font-bold bg-clip-text "
+    >
+      {children}
+    </h3>
   );
 };

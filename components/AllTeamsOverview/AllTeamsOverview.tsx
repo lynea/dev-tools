@@ -9,7 +9,7 @@ import {
 import { FunctionComponent, useState } from "react";
 import { Box } from "../Box/Box";
 import { useLottie } from "lottie-react";
-import groovyWalkAnimation from "../../public/confetti.json";
+import confettiAnimation from "../../public/confetti.json";
 
 type ScoreResult = {
   name: string;
@@ -37,7 +37,7 @@ const getScoreDifference = (currentScore: number, previousScore: number) => {
 
 const Animation = () => {
   const animationOptions = {
-    animationData: groovyWalkAnimation,
+    animationData: confettiAnimation,
     loop: false,
   };
 
@@ -81,8 +81,6 @@ export const AllTeamsOverview: FunctionComponent<AllTeamsOverviewProps> = ({
   };
 
   const isPartyTime = lastScores?.some((score) => score.score === 100);
-
-  console.log(isPartyTime);
 
   return (
     <div>
