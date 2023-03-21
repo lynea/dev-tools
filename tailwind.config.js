@@ -9,6 +9,7 @@ module.exports = {
     colors: {
       white: "#ffff",
       gold: "#EECD58",
+      red: "#DD5050",
 
       purple: {
         100: "#31203F",

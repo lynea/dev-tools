@@ -10,6 +10,7 @@ import { FunctionComponent, useState } from "react";
 import { Box } from "../Box/Box";
 import { useLottie } from "lottie-react";
 import confetti from "../../public/confetti.json";
+import { Graph } from "../Graph/Graph";
 
 type ScoreResult = {
   name: string;
@@ -81,7 +82,7 @@ export const TotalOverview: FunctionComponent<TotalOverviewProps> = ({
     }
   };
 
-  const isPartyTime = lastScores?.some((score) => score.scores === 100);
+  const isPartyTime = lastScores?.some((score) => score.value === 100);
 
   return (
     <div>
@@ -104,80 +105,12 @@ export const TotalOverview: FunctionComponent<TotalOverviewProps> = ({
         </>
       )}
 
-      <Box>
-        {isPartyTime ? (
-          <div className="absolute top-0 ">
-            <Animation />
-          </div>
-        ) : null}
-        {selectedTeams.length < 1 ? (
-          <div className="w-full h-80 flex justify-center items-center">
-            <h2> no teams where selected yet </h2>
-          </div>
-        ) : (
-          <div className=" w-full grid  grid-flow-dense gap-2 items-end h-80 grid-rows-6 ">
-            {lastScores?.map((score, index) => (
-              <>
-                <p
-                  className={`row-start-6 col-start-${
-                    index + 1
-                  } text-center font-bold`}
-                >
-                  {`${score.teamName} ${
-                    secondLastScores?.at(index)?.scores && shouldCompare
-                      ? getScoreDifference(
-                          score.scores,
-                          secondLastScores?.at(index)?.scores!!
-                        )
-                      : ""
-                  }`}
-                </p>
-                {score.scores ? (
-                  <>
-                    <div className=" row-start-1 row-span-5 h-full flex justify-center items-end">
-                      {shouldCompare ? (
-                        <div
-                          style={{
-                            height: `${secondLastScores?.at(index)?.scores}%`,
-                          }}
-                          className=" flex items-center flex-col transition-all ease-in-out duration-1000 mr-3 overflow-hidden"
-                        >
-                          <div
-                            className={` h-full bg-gradient-to-t   flex justify-center items-center font-bold w-fit p-4 rounded-sm from-gradientEnd to-gradientStart `}
-                          >
-                            <p className="text-5xl">
-                              {secondLastScores?.at(index)?.scores ?? 0}
-                            </p>
-                          </div>
-                        </div>
-                      ) : null}
-                      <div
-                        style={{
-                          height: score.scores ? `${score.scores}%` : "0",
-                        }}
-                        className=" flex items-center flex-col transition-height ease-in-out duration-1000"
-                      >
-                        <div
-                          className={` h-full bg-gradient-to-t from-gradientEnd to-gradientStart  flex justify-center items-center font-bold w-fit p-4 rounded-sm ${
-                            shouldCompare &&
-                            score.scores -
-                              secondLastScores?.at(index)?.scores!! >
-                              0
-                              ? "from-gradientGreenStart to-gradientGreenEnd"
-                              : "from-gradientEnd to-gradientStart"
-                          }`}
-                        >
-                          <p className="text-5xl">{score?.scores ?? 0}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                ) : null}
-              </>
-            ))}
-          </div>
-        )}
-      </Box>
+      {isPartyTime ? (
+        <div className="absolute top-0 ">
+          <Animation />
+        </div>
+      ) : null}
+      <Graph scoreRuns={[lastScores, secondLastScores]} />
       <div className="mt-6 flex flex-col items-center w-full ">
         <p className="text-white"> filter by team</p>
         <div className="flex justify-center mt-2 ">
