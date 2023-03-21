@@ -23,7 +23,7 @@ const getScoresForTeams = (data: string[][], filter: string[]) => {
 
     return {
       name: contextName,
-      score: Math.round(
+      value: Math.round(
         scoreResults.reduce((p, c) => p + c, 0) / scoreResults.length
       ),
     };
@@ -46,8 +46,8 @@ const getTotalScoresForTeams = (data: string[][], filter: string[]) => {
     const allScores = teamData.map((data) => Number(data.at(4)));
 
     const teamScore = {
-      teamName: team,
-      scores: Math.round(
+      name: team,
+      value: Math.round(
         allScores.reduce((p, c) => p + c, 0) / allScores.length
       ),
     };

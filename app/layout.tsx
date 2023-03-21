@@ -13,11 +13,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-purple-200 flex justify-center items-center w-full  flex-col min-h-screen">
-        <main className=" mt-8 flex justify-center items-center max-w-7xl  w-full h-full">
+        <main className=" mt-8 flex justify-center items-center max-w-7xl  w-full h-full  min-h-[calc(100vh_-_10rem)]">
           {children}
         </main>
-        <footer className="flex w-full justify-center items-center py-5 text-white fixed bottom-0">
-          Made with ♡ by by Rene van Dijk
+        <footer className="flex w-full justify-center items-center py-5 text-white mt-10  ">
+          Made with ♡ by Rene van Dijk
         </footer>
       </body>
     </html>
