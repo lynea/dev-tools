@@ -4,12 +4,6 @@ import { authOptions } from "../../../pages/api/auth/[...nextauth]";
 import { redirect } from "next/navigation";
 import { TeamSelect } from "@/components/TeamSelect/TeamSelect";
 
-export enum Team {
-  snails = "snails",
-  bees = "bees",
-  ducks = "ducks",
-}
-
 export default async function Page({
   searchParams,
 }: {

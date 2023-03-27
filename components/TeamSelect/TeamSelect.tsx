@@ -1,6 +1,6 @@
 "use client";
 
-import { Team } from "@/app/onboarding/team-select/page";
+import { Team } from "./types";
 import Link from "next/link";
 import { FunctionComponent, useState } from "react";
 import { clsx } from "clsx";
@@ -33,7 +33,7 @@ const SqaureButton: FunctionComponent<SquareButtonProps> = ({
   );
 };
 
-export const Page: FunctionComponent = () => {
+export const TeamSelect: FunctionComponent = () => {
   const [selectedTeam, setSelectedTeam] = useState<Team | undefined>(undefined);
 
   return (
