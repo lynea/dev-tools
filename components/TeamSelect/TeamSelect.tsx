@@ -33,7 +33,7 @@ const SqaureButton: FunctionComponent<SquareButtonProps> = ({
   );
 };
 
-export const TeamSelect: FunctionComponent = () => {
+export const Page: FunctionComponent = () => {
   const [selectedTeam, setSelectedTeam] = useState<Team | undefined>(undefined);
 
   return (
