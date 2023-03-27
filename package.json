@@ -8,10 +8,14 @@
     "start": "next start",
     "lint": "next lint"
   },
+  "prisma": {
+    "seed": "ts-node -P tsconfig-seed.json -r tsconfig-paths/register --transpileOnly prisma/seed.ts"
+  },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.3.0",
     "@fortawesome/free-solid-svg-icons": "^6.3.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@prisma/client": "^4.11.0",
     "@splinetool/react-spline": "^2.2.6",
     "@splinetool/runtime": "^0.9.269",
     "@types/node": "18.14.6",
@@ -34,6 +38,9 @@
     "autoprefixer": "^10.4.13",
     "husky": "^8.0.3",
     "postcss": "^8.4.21",
-    "tailwindcss": "^3.2.7"
+    "prisma": "^4.11.0",
+    "tailwindcss": "^3.2.7",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.1.1"
   }
 }
