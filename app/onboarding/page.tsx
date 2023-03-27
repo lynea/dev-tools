@@ -2,17 +2,28 @@ import { DonutScene } from "@/components/DonutScene/DonutScene";
 import { Alert } from "@/components/Notification/Notification";
 import { Title } from "@/components/Title/Title";
 import Link from "next/link";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../../pages/api/auth/[...nextauth]";
+import { redirect } from "next/navigation";
 
 export default async function Page({
   searchParams,
 }: {
-  searchParams: { name: string; team: string };
+  searchParams: { team: string };
 }) {
-  const { name, team } = searchParams;
+  const { team } = searchParams;
+
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user) {
+    redirect("/api/auth/signin");
+  }
+
+  const { user } = session;
 
   return (
     <section className="w-full flex flex-col justify-center items-center ">
-      <div className="absolute top-5">
+      <div className="absolute top-11">
         <Alert>
           This project is currently in alfa if you encounter any problems please
           report them to Rene van Dijk or your team lead
@@ -22,7 +33,7 @@ export default async function Page({
       <Title size="xl"> My onboarding </Title>
       <h2 className="text-white font-bold text-4xl mt-6 mb-2">
         {" "}
-        Welcome {name}!{" "}
+        Welcome {user.name}!{" "}
       </h2>
       <h2 className="text-white font-bold text-3xl">
         {" "}
@@ -30,7 +41,7 @@ export default async function Page({
       </h2>
 
       <div className="h-96 mb-12">
-        <DonutScene></DonutScene>
+        <DonutScene />
       </div>
       <p className="text-white  text-2xl mt-6">
         {" "}
