@@ -16,7 +16,7 @@ export const Title: FunctionComponent<TitleProps> = ({
         WebkitTextFillColor: "transparent",
       }}
       className={`bg-gradient-to-r from-gradientStart to-gradientEnd block text-opacity-0 text-${
-        size === "l" ? "6xl" : "8xl"
+        size === "l" ? "6xl" : "6xl"
       }  leading-relaxed font-bold bg-clip-text `}
     >
       {children}
