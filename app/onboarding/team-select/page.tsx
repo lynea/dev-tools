@@ -1,8 +1,10 @@
 import { Title } from "@/components/Title/Title";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "../../../pages/api/auth/[...nextauth]";
-import { redirect } from "next/navigation";
+
 import { TeamSelect } from "@/components/TeamSelect/TeamSelect";
+import { getClient } from "@/graphql/client";
+import { allTeamsInfoQuery } from "@/graphql/queries/teams";
+import { AllTeamsInfoQuery } from "@/generated/graphql";
+import { redirect } from "next/navigation";
 
 export default async function Page({
   searchParams,
@@ -10,11 +12,14 @@ export default async function Page({
   searchParams: { team: string };
 }) {
   const { team } = searchParams;
+  const client = getClient();
+  //TODO make id dynamic
+  const { data }: { data: AllTeamsInfoQuery } = await client.query({
+    query: allTeamsInfoQuery,
+  });
 
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user) {
-    redirect("/api/auth/signin");
+  if (!data.teamCollection?.items) {
+    return <div> oop something went wrong </div>;
   }
 
   return (
@@ -23,7 +28,7 @@ export default async function Page({
       <h2 className="text-white font-bold text-4xl mt-6 mb-8">
         {team ? `You are in team ${team}` : "Please select a team"}
       </h2>
-      <TeamSelect />
+      <TeamSelect teams={data.teamCollection?.items} />
     </section>
   );
 }

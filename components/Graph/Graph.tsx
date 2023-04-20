@@ -16,7 +16,7 @@ type GraphProps = {
 
 export const Graph: FunctionComponent<GraphProps> = ({ scoreRuns }) => {
   if (scoreRuns.length > 2) {
-    console.log("only 2 score runs can be shown at the same time ");
+    console.warn("only 2 score runs can be shown at the same time ");
   }
 
   const firstScores = scoreRuns.at(0);

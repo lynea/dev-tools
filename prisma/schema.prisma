@@ -17,25 +17,18 @@ model User {
   email     String   @unique
   firstName String
   password  String
-
-  Todo Todo[]
-}
-
-enum TODO_STATUS {
-  COMPLETED
-  ACTIVE
 }
 
 model Todo {
-  id        String      @id @default(uuid())
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  id        String   @id @default(uuid())
+  stepId    Int      @default(0)
+  todoId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   title     String
   body      String
-  status    TODO_STATUS @default(ACTIVE)
-  ownerId   String
-  owner     User        @relation(fields: [ownerId], references: [id])
+  owner     String   @default("")
+  completed Boolean  @default(false)
 
-  @@unique([id])
-  @@index([ownerId])
+  @@unique([id, owner])
 }

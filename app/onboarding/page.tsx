@@ -2,9 +2,8 @@ import { DonutScene } from "@/components/DonutScene/DonutScene";
 import { Alert } from "@/components/Notification/Notification";
 import { Title } from "@/components/Title/Title";
 import Link from "next/link";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "../../pages/api/auth/[...nextauth]";
-import { redirect } from "next/navigation";
+import { currentUser } from "@clerk/nextjs/app-beta";
+import type { User } from "@clerk/nextjs/api";
 
 export default async function Page({
   searchParams,
@@ -13,13 +12,7 @@ export default async function Page({
 }) {
   const { team } = searchParams;
 
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user) {
-    redirect("/api/auth/signin");
-  }
-
-  const { user } = session;
+  const user: User | null = await currentUser();
 
   return (
     <section className="w-full flex flex-col justify-center items-center ">
@@ -33,7 +26,7 @@ export default async function Page({
       <Title size="xl"> My onboarding </Title>
       <h2 className="text-white font-bold text-4xl mt-6 mb-2">
         {" "}
-        Welcome {user.name}!{" "}
+        Welcome {user?.firstName}!{" "}
       </h2>
       <h2 className="text-white font-bold text-3xl">
         {" "}
@@ -47,7 +40,7 @@ export default async function Page({
         {" "}
         We will get you ready to write some awesome code in no time{" "}
       </p>
-      <Link href={team ? `/onboarding/${team}/0/0` : "/onboarding/team-select"}>
+      <Link href={team ? `/onboarding/${team}/1/1` : "/onboarding/team-select"}>
         <button className="bg-pink text-white rounded-md px-6 py-3 font-bold mt-9 text-xl">
           {" "}
           Just click here
