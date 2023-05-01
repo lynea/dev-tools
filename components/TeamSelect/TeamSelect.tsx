@@ -34,11 +34,11 @@ const SqaureButton: FunctionComponent<SquareButtonProps> = ({
 };
 
 type TeamSelectProps = {
-  teams: {
-    __typename: "Team";
-    name: string;
-    alias: string;
-  }[];
+  teams: ({
+    __typename?: "Team" | undefined;
+    name?: string | null | undefined;
+    alias?: string | null | undefined;
+  } | null)[];
 };
 
 export const TeamSelect: FunctionComponent<TeamSelectProps> = ({ teams }) => {
@@ -51,13 +51,13 @@ export const TeamSelect: FunctionComponent<TeamSelectProps> = ({ teams }) => {
       <div className=" mb-12 flex justify-between ">
         {teams.map((team) => (
           <SqaureButton
-            key={team.alias}
-            active={selectedTeam === team.name}
-            onClick={() => setSelectedTeam(team.name)}
+            key={team?.alias}
+            active={selectedTeam === team?.name}
+            onClick={() => setSelectedTeam(team?.name ?? undefined)}
             className="w-40 h-40 text-white text-3xl font-bold border-pink border-2 rounded-md mr-8"
           >
-            <h3> {team.alias}</h3>
-            <p className="text-sm mt-4">({team.name})</p>
+            <h3> {team?.alias}</h3>
+            <p className="text-sm mt-4">({team?.name})</p>
           </SqaureButton>
         ))}
       </div>

@@ -28,7 +28,7 @@ export default async function Page({
       <h2 className="text-white font-bold text-4xl mt-6 mb-8">
         {team ? `You are in team ${team}` : "Please select a team"}
       </h2>
-      <TeamSelect teams={data.teamCollection?.items} />
+      <TeamSelect teams={data?.teamCollection?.items!} />
     </section>
   );
 }

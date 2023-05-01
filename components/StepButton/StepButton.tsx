@@ -50,9 +50,9 @@ export const StepButton: FunctionComponent<StepButtonProps> = ({
         return !dbTodos?.some((dbTodo) => dbTodo.id === todo.id);
       }) ?? [];
 
-    const forDB = notInDb.map((todo) => ({
+    const forDB: StepTodo[] = notInDb.map((todo) => ({
       title: todo.title,
-      body: todo.description,
+      description: todo.description,
       id: todo.id,
     }));
 
