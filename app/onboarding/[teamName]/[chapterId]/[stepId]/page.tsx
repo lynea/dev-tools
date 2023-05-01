@@ -4,79 +4,88 @@ import { Button } from "@/components/Button/Button";
 import { ProgressBar } from "@/components/Progres/Progres";
 import { Title } from "@/components/Title/Title";
 
-import {
-  _getGoogleSheetClient,
-  _readGoogleSheet,
-  _readGoogleSpreadsheet,
-} from "@/utils/requests/sheets";
 import Link from "next/link";
+import { getClient } from "../../../../../graphql/client";
+import { teamsQuery } from "../../../../../graphql/queries/teams";
+import {
+  TeamsQuery,
+  TodosForStepQuery,
+} from "../../../../../generated/graphql";
+import { todosForStepQuery } from "@/graphql/queries/todo";
+import { TodoOverView } from "@/components/TodoOverView/TodoOverview";
+import { StepButton } from "@/components/StepButton/StepButton";
+
+import { currentUser } from "@clerk/nextjs/app-beta";
+import type { User } from "@clerk/nextjs/api";
+import { TodoWrapper } from "@/components/TodoWrapper/TodoWrapper";
+import { StepTodoWrapper } from "@/components/StepTodoWrapper/StepTodoWrapper";
+import { Step } from "@/app/onboarding/types/step";
+
+//for now we fetch all at the same time
+// TOTO: see if we can fetch only the data we need
 
 export default async function Page({
   params,
 }: {
   params: { teamName: string; chapterId: string; stepId: string };
 }) {
-  const sheetId = process.env.SHEET_ID;
-  const range = "A1:D10";
+  const user: User | null = await currentUser();
 
-  //get the data from the sheet
+  if (!user) return <>no user was found</>;
 
-  const getInfoForTeam = async (teamName: string) => {
-    const googleSheetClient = await _getGoogleSheetClient();
+  const client = getClient();
+  //TODO make id dynamic
+  const { data }: { data: TeamsQuery } = await client.query({
+    query: teamsQuery,
+  });
 
-    const data = (await _readGoogleSheet(
-      googleSheetClient,
-      sheetId as string,
-      `onboarding-${teamName}`,
-      range
-    )) as string[][];
+  const teamInfo = data.team;
 
-    return data?.slice(1).map((stepInfo) => {
-      return {
-        body: stepInfo[0],
-        title: stepInfo[1],
-        todo: stepInfo[2],
-        chapterId: stepInfo[3],
-      };
-    });
-  };
+  const totalChapters = teamInfo?.linkedFrom?.chapterCollection?.total;
 
-  const getTotalChapters = async (teamName: string) => {
-    const googleSheetClient = await _getGoogleSheetClient();
-
-    const data = (await _readGoogleSheet(
-      googleSheetClient,
-      sheetId as string,
-      `onboarding-${teamName}`,
-      "D12"
-    )) as string[][];
-
-    return Number(data?.at(0)?.at(0));
-  };
-
-  const totalChapters = await getTotalChapters(params.teamName);
-
-  const result = await getInfoForTeam(params.teamName);
-
-  const stepsForChapter = result?.filter(
-    (step) => step.chapterId === params.chapterId
+  const chapterInfo = teamInfo?.linkedFrom?.chapterCollection?.items.find(
+    (chapter) => chapter?.id === Number(params.chapterId)
   );
+
+  const previousChapterInfo =
+    teamInfo?.linkedFrom?.chapterCollection?.items.find(
+      (chapter) => chapter?.id === Number(params.chapterId) - 1
+    );
+
+  const stepsForChapter = chapterInfo?.linkedFrom?.onboardStepCollection?.items;
 
   const currentChapter = Number(params.chapterId);
   const currentStep = Number(params.stepId);
-  const totalSteps = stepsForChapter?.length;
-  const totalStepsOfPreviousChapter = result?.filter(
-    (step) => Number(step.chapterId) === Number(params.chapterId) - 1
-  ).length;
+  const totalSteps = chapterInfo?.linkedFrom?.onboardStepCollection?.total ?? 0;
+  const totalStepsOfPreviousChapter =
+    previousChapterInfo?.linkedFrom?.onboardStepCollection?.total ?? 0;
 
-  const currentStepInfo = stepsForChapter?.at(currentStep);
+  const currentStepInfo = stepsForChapter?.find(
+    (step) => step?.step === currentStep
+  );
+
+  const { data: todoData }: { data: TodosForStepQuery } = await client.query({
+    query: todosForStepQuery,
+    variables: {
+      stepId: currentStepInfo?.sys.id,
+    },
+  });
+
+  const todosForStep: Step[] | undefined =
+    todoData?.onboardStep?.linkedFrom?.todoCollection?.items.map(
+      (todoForStep) => ({
+        title: todoForStep?.title ?? "",
+        description: todoForStep?.description ?? "",
+        id: todoForStep?.sys.id,
+      })
+    );
 
   const isLastChapter = currentChapter === totalChapters;
 
-  const canDecrementStep = currentStep !== 0 || currentChapter !== 0;
+  const canDecrementStep = currentStep !== 1 || currentChapter !== 1;
 
-  const isLastStepInChapter = currentStep === totalSteps - 1;
-  const isfirstStepInChapter = currentStep === 0;
+  const isLastStepInChapter = currentStep === totalSteps;
+  const isfirstStepInChapter = currentStep === 1;
 
   const basePath = `/onboarding/${params.teamName}`;
 
@@ -86,11 +95,11 @@ export default async function Page({
   const decrementStep = () =>
     `${basePath}/${currentChapter}/${currentStep - 1}`;
 
-  const incrementChapter = () => `${basePath}/${currentChapter + 1}/0`;
+  const incrementChapter = () => `${basePath}/${currentChapter + 1}/1`;
 
   //todo figure out a way to know how many steps there are in that chapter
   const decrementChapter = () =>
-    `${basePath}/${currentChapter - 1}/${totalStepsOfPreviousChapter - 1}`;
+    `${basePath}/${currentChapter - 1}/${totalStepsOfPreviousChapter}`;
 
   const generateNextLink = (): string => {
     if (isLastStepInChapter) {
@@ -112,16 +121,27 @@ export default async function Page({
     return decrementStep();
   };
 
+  //TODO: if there is an open todo store it in the database and then redirect to the next page
+
   if (!currentStepInfo)
     return <h2> oops it looks like that step does not exist </h2>;
 
   return (
-    <section className="w-full">
+    <section className="w-full flex">
       <div className="w-full">
         <Box>
           <Title>{currentStepInfo?.title}</Title>
 
           <p>{currentStepInfo.body}</p>
+          {currentStepInfo?.codeBlock && (
+            <code className="mt-6 block rounded-md bg-purple-200 p-4">
+              {currentStepInfo.codeBlock}
+            </code>
+          )}
+
+          <div className="mt-6">
+            <StepTodoWrapper todosForStep={todosForStep ?? []} />
+          </div>
         </Box>
 
         <div className="mt-8 flex justify-center items-center gap-10">
@@ -131,16 +151,17 @@ export default async function Page({
             </Link>
           ) : null}
 
-          <ProgressBar
-            max={Number(params.stepId)}
-            value={stepsForChapter.length}
-          />
+          <ProgressBar max={totalSteps} value={Number(params.stepId)} />
 
-          <Link href={generateNextLink()}>
-            <Button variant="primary">Next</Button>
-          </Link>
+          <StepButton
+            route={generateNextLink()}
+            todoInfo={todosForStep}
+          ></StepButton>
         </div>
       </div>
+      <TodoOverView>
+        <TodoWrapper />
+      </TodoOverView>
     </section>
   );
 }

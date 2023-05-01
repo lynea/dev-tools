@@ -24,12 +24,12 @@ async function main() {
     data: [
       {
         body: "23232",
-        ownerId: user.id,
+        owner: user.id,
         title: "test",
       },
       {
         body: "23232",
-        ownerId: user.id,
+        owner: user.id,
         title: "test",
       },
     ],

@@ -18,15 +18,22 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Database
 
-####seeding
+#### seeding
+
 To seed the database run:
 
 ```bash
 npx prisma db seed
 ```
 
-####viewing
+#### viewing
 
 ```bash
 npx prisma studio
+```
+
+#### migration
+
+```bash
+npx prisma migrate dev
 ```

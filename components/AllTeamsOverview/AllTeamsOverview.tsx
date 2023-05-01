@@ -7,7 +7,6 @@ import {
   _readGoogleSpreadsheet,
 } from "@/utils/requests/sheets";
 import { FunctionComponent, useState } from "react";
-import { useLottie } from "lottie-react";
 
 import { Graph } from "../Graph/Graph";
 import { ConfettiAnimation } from "../Confetti/Confetti";

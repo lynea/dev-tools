@@ -1,7 +1,7 @@
 import QueryProvider from "@/components/QueryClient/QueryClient";
+import { ClerkProvider } from "@clerk/nextjs/app-beta";
 import "./globals.css";
 
-import AuthContext from "@/components/AuthContext/AuthContext";
 import { Nav } from "@/components/Nav/Nav";
 
 export const metadata = {
@@ -18,10 +18,12 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-purple-200 flex justify-center items-center w-full  flex-col min-h-screen">
         <main className=" mt-8 flex justify-center items-center max-w-7xl  w-full h-full  min-h-[calc(100vh_-_10rem)]">
-          <AuthContext>
-            <Nav />
-            {children}
-          </AuthContext>
+          <QueryProvider>
+            <ClerkProvider>
+              <Nav />
+              {children}
+            </ClerkProvider>
+          </QueryProvider>
         </main>
         <footer className="flex w-full justify-center items-center py-5 text-white mt-10  ">
           Made with ♡ by Rene van Dijk
