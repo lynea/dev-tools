@@ -6,12 +6,10 @@ import { useRouter } from "next/navigation";
 import { useMutation, useQuery } from "react-query";
 import axios from "axios";
 import { Todo } from "@prisma/client";
-
-type Step = {
-  title: string;
-  description: string;
-  id: string | null | undefined;
-};
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { StepTodo } from "@/app/onboarding/types/todo";
+import { Step } from "@/app/onboarding/types/step";
 
 type StepButtonProps = {
   todoInfo: Step[] | undefined;
@@ -34,30 +32,31 @@ export const StepButton: FunctionComponent<StepButtonProps> = ({
     "todos",
     (): Promise<Todo[]> =>
       //TODO: change link
-      axios.get("http://localhost:3000/api/todo").then((res) => res.data)
+      axios.get("/api/todo").then((res) => res.data)
   );
 
-  const createTodos = useMutation((todos: any[]) => {
+  const createTodos = useMutation((todos: StepTodo[]) => {
     return axios
-      .put(`http://localhost:3000/api/todo`, todos)
+      .put(`/api/todo`, todos)
       .then(() => router.push(route))
       .catch((e) => console.error("could not update todo", error));
   });
 
   const handleClick = () => {
+    if (createTodos.isLoading || isLoading) return;
+
     const notInDb =
       todoInfo?.filter((todo) => {
-        return !dbTodos?.some((dbTodo) => dbTodo.todoId === todo.id);
+        return !dbTodos?.some((dbTodo) => dbTodo.id === todo.id);
       }) ?? [];
 
     const forDB = notInDb.map((todo) => ({
       title: todo.title,
       body: todo.description,
-      todoId: todo.id,
+      id: todo.id,
     }));
 
     if (notInDb.length > 0) {
-      // addTodos(forDB).then(() => router.push(route));
       createTodos.mutate(forDB);
     } else {
       router.push(route);
@@ -65,8 +64,12 @@ export const StepButton: FunctionComponent<StepButtonProps> = ({
   };
 
   return (
-    <Button variant="primary" onClick={handleClick}>
-      Next
+    <Button disabled variant="primary" onClick={handleClick}>
+      {createTodos.isLoading ? (
+        <FontAwesomeIcon icon={faSpinner} spinPulse />
+      ) : (
+        "Next"
+      )}
     </Button>
   );
 };

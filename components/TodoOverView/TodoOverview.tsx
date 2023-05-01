@@ -12,7 +12,7 @@ type TodoOverViewProps = {
 export const TodoOverView: FunctionComponent<TodoOverViewProps> = ({
   children,
 }) => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div>

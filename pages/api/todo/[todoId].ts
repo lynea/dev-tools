@@ -30,7 +30,7 @@ export default async function handler(
       data: {
         title: req.body.title,
         body: req.body.description,
-        todoId: req.body.todoId,
+        id: req.body.todoId,
         owner: userId,
       },
     });

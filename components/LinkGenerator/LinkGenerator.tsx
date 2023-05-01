@@ -32,9 +32,9 @@ export const LinkGenerator: FunctionComponent = () => {
         <>
           <p className="text-white mt-6">your link: </p>
           <a
-            href={`http://localhost:3000/onboarding?name=${name}&team=${team}`}
+            href={`/onboarding?name=${name}&team=${team}`}
             className="text-white"
-          >{`http://localhost:3000/onboarding?name=${name}&team=${team}`}</a>
+          >{`/onboarding?name=${name}&team=${team}`}</a>
         </>
       ) : null}
     </div>

@@ -19,6 +19,7 @@ import { currentUser } from "@clerk/nextjs/app-beta";
 import type { User } from "@clerk/nextjs/api";
 import { TodoWrapper } from "@/components/TodoWrapper/TodoWrapper";
 import { StepTodoWrapper } from "@/components/StepTodoWrapper/StepTodoWrapper";
+import { Step } from "@/app/onboarding/types/step";
 
 //for now we fetch all at the same time
 // TOTO: see if we can fetch only the data we need
@@ -70,15 +71,14 @@ export default async function Page({
     },
   });
 
-  const todosForStep:
-    | { title: string; description: string; id: string | null | undefined }[]
-    | undefined = todoData?.onboardStep?.linkedFrom?.todoCollection?.items.map(
-    (todoForStep) => ({
-      title: todoForStep?.title ?? "",
-      description: todoForStep?.description ?? "",
-      id: todoForStep?.sys.id,
-    })
-  );
+  const todosForStep: Step[] | undefined =
+    todoData?.onboardStep?.linkedFrom?.todoCollection?.items.map(
+      (todoForStep) => ({
+        title: todoForStep?.title ?? "",
+        description: todoForStep?.description ?? "",
+        id: todoForStep?.sys.id,
+      })
+    );
 
   const isLastChapter = currentChapter === totalChapters;
 

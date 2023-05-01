@@ -2,12 +2,14 @@ import { ReactNode, FunctionComponent } from "react";
 
 interface ButtonProps {
   variant: "primary" | "secondary";
+  disabled?: boolean;
   children: ReactNode;
   onClick?: () => void;
 }
 
 export const Button: FunctionComponent<ButtonProps> = ({
   children,
+  disabled,
   onClick,
 }) => {
   return (

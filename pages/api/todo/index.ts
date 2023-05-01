@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getAuth } from "@clerk/nextjs/server";
+import type { Todo } from "@prisma/client";
 
 //get the user
 
@@ -29,7 +30,7 @@ export default async function handler(
     return;
   } else if (req.method === "PUT") {
     //append owner to each todo
-    req.body.forEach((todo: any) => {
+    req.body.forEach((todo: Todo) => {
       todo.owner = userId;
     });
 

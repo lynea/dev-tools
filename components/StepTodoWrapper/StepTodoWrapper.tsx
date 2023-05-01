@@ -1,21 +1,16 @@
 "use client";
 
+import type { StepTodo } from "@/app/onboarding/types/todo";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Todo } from "@prisma/client";
 import axios from "axios";
 import { FunctionComponent } from "react";
 import { useMutation, useQuery } from "react-query";
 
-type StepTodo = {
-  title: string;
-  description: string;
-  id: string | null | undefined;
-};
-
 type TodoWrapperProps = {
   todosForStep: StepTodo[];
 };
-
-type PostTodo = { body: string; title: string; todoId: number | undefined };
 
 export const StepTodoWrapper: FunctionComponent<TodoWrapperProps> = ({
   todosForStep,
@@ -28,59 +23,73 @@ export const StepTodoWrapper: FunctionComponent<TodoWrapperProps> = ({
     refetch,
   } = useQuery("todos", () =>
     //TODO: change link
-    axios.get("http://localhost:3000/api/todo").then((res) => res.data)
+    axios.get("/api/todo").then((res) => res.data)
   );
 
   const updateTodo = useMutation((todo: Todo) => {
     return axios
-      .post(`http://localhost:3000/api/todo/${todo.id}`, {
+      .post(`/api/todo/${todo.id}`, {
         action: todo.completed ? "uncomplete" : "complete",
       })
       .then(() => refetch())
-      .catch((e) => console.error("could not update todo", error));
+      .catch((e) => console.error("could not update todo", e));
   });
 
-  const createTodo = useMutation((todo: StepTodo) => {
+  const createTodos = useMutation((todos: StepTodo[]) => {
     return axios
-      .put(`http://localhost:3000/api/todo`, todo)
+      .put(`/api/todo`, todos)
       .then(() => refetch())
-      .catch((e) => console.error("could not update todo", error));
+      .catch((e) => console.error("could not update todo", e));
   });
 
-  const stepTodoIsinDb = (stepTodo: StepTodo) =>
-    dbTodos?.some((dbTodo) => dbTodo.todoId === stepTodo.id);
+  const stepTodoIsinDb = (stepTodo: StepTodo): Boolean => {
+    console.log("dbTodos", dbTodos);
+    console.log("stepTodo", stepTodo);
+
+    return dbTodos?.some((dbTodo: Todo) => dbTodo.id === stepTodo.id);
+  };
 
   const todoIsCompleted = (stepTodo: StepTodo) =>
-    dbTodos?.find((dbTodo) => dbTodo.todoId === stepTodo.id)?.completed;
+    dbTodos?.find((dbTodo: Todo) => dbTodo.id === stepTodo.id)?.completed;
 
   const handleToggle = (stepTodo: StepTodo) => {
     // if the todo was already in the db add or remove it
     // if the todo was not in the db add it to the db
 
     if (stepTodoIsinDb(stepTodo)) {
-      const dbTodo = dbTodos.find((dbTodo) => dbTodo.todoId === stepTodo.id);
+      console.log("already in db");
+      const dbTodo = dbTodos.find((dbTodo: Todo) => dbTodo.id === stepTodo.id);
 
       if (!dbTodo) return;
 
       updateTodo.mutate(dbTodo);
     } else {
-      createTodo.mutate(stepTodo);
+      createTodos.mutate([stepTodo]);
     }
   };
 
   return (
     <>
       {todosForStep?.map((todo) => (
-        <label key={todo?.id} className="text-white">
-          <input
-            type="checkbox"
-            disabled={isLoading || updateTodo.isLoading || createTodo.isLoading}
-            className="mr-2 "
-            checked={todoIsCompleted(todo)}
-            onChange={() => handleToggle(todo)}
-          />
-          {todo?.description}
-        </label>
+        <>
+          {" "}
+          {updateTodo.isLoading ? (
+            <FontAwesomeIcon icon={faSpinner} spinPulse key={todo.id} />
+          ) : (
+            <label key={todo?.id} className="text-white">
+              <input
+                type="checkbox"
+                disabled={
+                  isLoading || updateTodo.isLoading || createTodos.isLoading
+                }
+                className="mr-2 "
+                checked={todoIsCompleted(todo)}
+                onChange={() => handleToggle(todo)}
+              />
+              {todo?.description}
+            </label>
+          )}
+        </>
       ))}
     </>
   );
