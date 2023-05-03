@@ -18,7 +18,7 @@ export default async function Page() {
 
   if (!user?.id) return <>no user was found</>;
 
-  const openTodos = await db.todo
+  const todos = await db.todo
     .findMany({
       where: {
         owner: user.id,
@@ -28,7 +28,7 @@ export default async function Page() {
       console.log(err);
     });
 
-  // const openTodos = todos?.filter((todo) => todo.completed === false);
+  const openTodos = todos?.filter((todo) => todo.completed === false);
 
   return (
     <section className="w-full">
