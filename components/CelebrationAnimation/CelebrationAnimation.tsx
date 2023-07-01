@@ -6,7 +6,7 @@ import celebrationAnimation from "../../public/celebrate.json";
 export const CelebrationAnimation: FunctionComponent = () => {
   const animationOptions = {
     animationData: celebrationAnimation,
-    loop: false,
+    loop: true,
   };
 
   const { View } = useLottie(animationOptions);

@@ -2,10 +2,31 @@ import { gql } from "@apollo/client";
 
 export const allTeamsInfoQuery = gql`
   query allTeamsInfo {
-    teamCollection {
+    teamCollection(limit: 3) {
       items {
         name
         alias
+
+        sys {
+          id
+        }
+        linkedFrom {
+          chapterCollection(limit: 50) {
+            items {
+              linkedFrom {
+                onboardStepCollection(limit: 10) {
+                  items {
+                    step
+                    sys {
+                      id
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        # add the fields you want to query
       }
     }
   }
@@ -13,8 +34,8 @@ export const allTeamsInfoQuery = gql`
 
 //TODO: id should be dynamic
 export const teamsQuery = gql`
-  query Teams {
-    team(id: "zlwVLa1bEFrULYbe1KUQ4") {
+  query Teams($id: String!) {
+    team(id: $id) {
       name
       linkedFrom {
         chapterCollection {
