@@ -13,6 +13,7 @@ export const allTeamsInfoQuery = gql`
         linkedFrom {
           chapterCollection(limit: 50) {
             items {
+              id
               linkedFrom {
                 onboardStepCollection(limit: 10) {
                   items {

@@ -46,6 +46,7 @@ type TeamSelectProps = {
       chapterCollection?: {
         __typename?: "ChapterCollection";
         items: Array<{
+          id?: number | null;
           __typename?: "Chapter";
           linkedFrom?: {
             __typename?: "ChapterLinkingCollections";
@@ -81,7 +82,11 @@ export const TeamSelect: FunctionComponent<TeamSelectProps> = ({ teams }) => {
 
     const team = teams?.find((team) => team?.sys.id === selectedTeam);
 
-    const firstChapter = team?.linkedFrom?.chapterCollection?.items.at(0);
+    console.log(team?.linkedFrom?.chapterCollection?.items);
+
+    const firstChapter = team?.linkedFrom?.chapterCollection?.items.find(
+      (chapter) => chapter?.id === 1
+    );
 
     //TODO: sorting is duplicated should move to util
     const sortedSteps = [
