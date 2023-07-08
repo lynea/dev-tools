@@ -3,73 +3,64 @@
 import { FunctionComponent } from "react";
 import { Button } from "../Button/Button";
 import { useRouter } from "next/navigation";
-import { useMutation, useQuery } from "react-query";
-import axios from "axios";
-import { Todo } from "@prisma/client";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { StepTodo } from "@/app/onboarding/types/todo";
-import { Step } from "@/app/onboarding/types/step";
+
+import {
+  createTodosForUser,
+  getTodosForUser,
+} from "@/utils/requests/_requests";
+import { TodoForDb } from "@/app/onboarding/types/todo";
 
 type StepButtonProps = {
-  todoInfo: Step[] | undefined;
+  todoInfo: TodoForDb[];
   route: string;
+  userId: string;
 };
+
+//TODO: when pressed add all todos that are not currently completed to the db
+// filter out all todos that are not completed
+// check if already in db
+// if not add to db
 
 export const StepButton: FunctionComponent<StepButtonProps> = ({
   route,
   todoInfo,
+  userId,
 }) => {
   const router = useRouter();
 
-  const {
-    isLoading,
-    isError,
-    data: dbTodos,
-    error,
-    refetch,
-  } = useQuery(
-    "todos",
-    (): Promise<Todo[]> =>
-      //TODO: change link
-      axios.get("/api/todo").then((res) => res.data)
-  );
+  const handleClick = async () => {
+    const dbTodos = await getTodosForUser(userId);
+    if (!userId) {
+      console.error("no user id was provided");
+      return;
+    }
 
-  const createTodos = useMutation((todos: StepTodo[]) => {
-    return axios
-      .put(`/api/todo`, todos)
-      .then(() => router.push(route))
-      .catch((e) => console.error("could not update todo", error));
-  });
+    const todosToBeAdded = todoInfo.filter(
+      (todo) => !dbTodos?.some((dbTodo) => dbTodo.cmsId === todo.cmsId)
+    );
 
-  const handleClick = () => {
-    if (createTodos.isLoading || isLoading) return;
-
-    const notInDb =
-      todoInfo?.filter((todo) => {
-        return !dbTodos?.some((dbTodo) => dbTodo.id === todo.id);
-      }) ?? [];
-
-    const forDB: StepTodo[] = notInDb.map((todo) => ({
-      title: todo.title,
-      description: todo.description,
-      id: todo.id,
-    }));
-
-    if (notInDb.length > 0) {
-      createTodos.mutate(forDB);
+    if (todosToBeAdded?.length) {
+      try {
+        await createTodosForUser(userId, todosToBeAdded);
+      } catch (error) {
+      } finally {
+        router.refresh();
+        router.push(route);
+      }
     } else {
+      router.refresh();
       router.push(route);
     }
   };
 
   return (
-    <Button disabled variant="primary" onClick={handleClick}>
-      {createTodos.isLoading ? (
-        <FontAwesomeIcon icon={faSpinner} spinPulse />
-      ) : (
-        "Next"
-      )}
+    <Button
+      disabled
+      variant="primary"
+      onClick={handleClick}
+      className="lg:order-3 order-2"
+    >
+      Next
     </Button>
   );
 };

@@ -3,6 +3,7 @@
 import { FunctionComponent, ReactNode, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { TodoList } from "./TodoList";
 //it gets a list of todos from the server and displays them in a list
 
 type TodoOverViewProps = {
@@ -27,6 +28,15 @@ export const TodoOverView: FunctionComponent<TodoOverViewProps> = ({
           <FontAwesomeIcon icon={faBars} />
         )}
       </button>
+
+      <div
+        onClick={() => setIsOpen(!isOpen)}
+        className={`h-full w-full backdrop-filter backdrop-blur-lg   absolute top-0 right-0 cursor-pointer ${
+          isOpen ? "block" : "hidden"
+        } `}
+      >
+        {" "}
+      </div>
 
       <div
         className={`w-72 h-full absolute top-0 right-0 p-6 bg-purple-100 flex flex-col ease-in-out duration-300 ${

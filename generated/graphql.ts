@@ -1112,12 +1112,19 @@ export type CfOnboardStepNestedFilter = {
   title_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 };
 
+export type ChapterCollectionQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ChapterCollectionQuery = { __typename?: 'Query', chapterCollection?: { __typename?: 'ChapterCollection', items: Array<{ __typename?: 'Chapter', linkedFrom?: { __typename?: 'ChapterLinkingCollections', onboardStepCollection?: { __typename?: 'OnboardStepCollection', items: Array<{ __typename?: 'OnboardStep', step?: number | null, sys: { __typename?: 'Sys', id: string } } | null> } | null } | null, sys: { __typename?: 'Sys', id: string } } | null> } | null };
+
 export type AllTeamsInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllTeamsInfoQuery = { __typename?: 'Query', teamCollection?: { __typename?: 'TeamCollection', items: Array<{ __typename?: 'Team', name?: string | null, alias?: string | null } | null> } | null };
+export type AllTeamsInfoQuery = { __typename?: 'Query', teamCollection?: { __typename?: 'TeamCollection', items: Array<{ __typename?: 'Team', name?: string | null, alias?: string | null, sys: { __typename?: 'Sys', id: string }, linkedFrom?: { __typename?: 'TeamLinkingCollections', chapterCollection?: { __typename?: 'ChapterCollection', items: Array<{ __typename?: 'Chapter', linkedFrom?: { __typename?: 'ChapterLinkingCollections', onboardStepCollection?: { __typename?: 'OnboardStepCollection', items: Array<{ __typename?: 'OnboardStep', step?: number | null, sys: { __typename?: 'Sys', id: string } } | null> } | null } | null } | null> } | null } | null } | null> } | null };
 
-export type TeamsQueryVariables = Exact<{ [key: string]: never; }>;
+export type TeamsQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
 
 
 export type TeamsQuery = { __typename?: 'Query', team?: { __typename?: 'Team', name?: string | null, linkedFrom?: { __typename?: 'TeamLinkingCollections', chapterCollection?: { __typename?: 'ChapterCollection', total: number, items: Array<{ __typename?: 'Chapter', name?: string | null, id?: number | null, linkedFrom?: { __typename?: 'ChapterLinkingCollections', onboardStepCollection?: { __typename?: 'OnboardStepCollection', total: number, items: Array<{ __typename?: 'OnboardStep', step?: number | null, title?: string | null, body?: string | null, codeBlock?: string | null, sys: { __typename?: 'Sys', id: string } } | null> } | null } | null } | null> } | null } | null } | null };
@@ -1127,15 +1134,82 @@ export type TodosForStepQueryVariables = Exact<{
 }>;
 
 
-export type TodosForStepQuery = { __typename?: 'Query', onboardStep?: { __typename?: 'OnboardStep', linkedFrom?: { __typename?: 'OnboardStepLinkingCollections', todoCollection?: { __typename?: 'TodoCollection', items: Array<{ __typename?: 'Todo', description?: string | null, title?: string | null, sys: { __typename?: 'Sys', id: string } } | null> } | null } | null } | null };
+export type TodosForStepQuery = { __typename?: 'Query', onboardStep?: { __typename?: 'OnboardStep', mainImage?: { __typename?: 'Asset', url?: string | null } | null, linkedFrom?: { __typename?: 'OnboardStepLinkingCollections', todoCollection?: { __typename?: 'TodoCollection', items: Array<{ __typename?: 'Todo', description?: string | null, title?: string | null, sys: { __typename?: 'Sys', id: string } } | null> } | null } | null } | null };
 
 
+export const ChapterCollectionDocument = gql`
+    query chapterCollection {
+  chapterCollection {
+    items {
+      linkedFrom {
+        onboardStepCollection {
+          items {
+            step
+            sys {
+              id
+            }
+          }
+        }
+      }
+      sys {
+        id
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useChapterCollectionQuery__
+ *
+ * To run a query within a React component, call `useChapterCollectionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChapterCollectionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChapterCollectionQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useChapterCollectionQuery(baseOptions?: Apollo.QueryHookOptions<ChapterCollectionQuery, ChapterCollectionQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ChapterCollectionQuery, ChapterCollectionQueryVariables>(ChapterCollectionDocument, options);
+      }
+export function useChapterCollectionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ChapterCollectionQuery, ChapterCollectionQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ChapterCollectionQuery, ChapterCollectionQueryVariables>(ChapterCollectionDocument, options);
+        }
+export type ChapterCollectionQueryHookResult = ReturnType<typeof useChapterCollectionQuery>;
+export type ChapterCollectionLazyQueryHookResult = ReturnType<typeof useChapterCollectionLazyQuery>;
+export type ChapterCollectionQueryResult = Apollo.QueryResult<ChapterCollectionQuery, ChapterCollectionQueryVariables>;
 export const AllTeamsInfoDocument = gql`
     query allTeamsInfo {
-  teamCollection {
+  teamCollection(limit: 3) {
     items {
       name
       alias
+      sys {
+        id
+      }
+      linkedFrom {
+        chapterCollection(limit: 50) {
+          items {
+            linkedFrom {
+              onboardStepCollection(limit: 10) {
+                items {
+                  step
+                  sys {
+                    id
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
@@ -1168,8 +1242,8 @@ export type AllTeamsInfoQueryHookResult = ReturnType<typeof useAllTeamsInfoQuery
 export type AllTeamsInfoLazyQueryHookResult = ReturnType<typeof useAllTeamsInfoLazyQuery>;
 export type AllTeamsInfoQueryResult = Apollo.QueryResult<AllTeamsInfoQuery, AllTeamsInfoQueryVariables>;
 export const TeamsDocument = gql`
-    query Teams {
-  team(id: "zlwVLa1bEFrULYbe1KUQ4") {
+    query Teams($id: String!) {
+  team(id: $id) {
     name
     linkedFrom {
       chapterCollection {
@@ -1210,10 +1284,11 @@ export const TeamsDocument = gql`
  * @example
  * const { data, loading, error } = useTeamsQuery({
  *   variables: {
+ *      id: // value for 'id'
  *   },
  * });
  */
-export function useTeamsQuery(baseOptions?: Apollo.QueryHookOptions<TeamsQuery, TeamsQueryVariables>) {
+export function useTeamsQuery(baseOptions: Apollo.QueryHookOptions<TeamsQuery, TeamsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<TeamsQuery, TeamsQueryVariables>(TeamsDocument, options);
       }
@@ -1227,6 +1302,9 @@ export type TeamsQueryResult = Apollo.QueryResult<TeamsQuery, TeamsQueryVariable
 export const TodosForStepDocument = gql`
     query todosForStep($stepId: String!) {
   onboardStep(id: $stepId) {
+    mainImage {
+      url
+    }
     linkedFrom {
       todoCollection {
         items {

@@ -37,3 +37,9 @@ npx prisma studio
 ```bash
 npx prisma migrate dev
 ```
+
+### for planetscale
+
+```bash
+npx prisma db push
+```

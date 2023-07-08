@@ -2,11 +2,15 @@
 const nextConfig = {
   experimental: {
     appDir: true,
+    serverActions: true,
   },
   images: {
     remotePatterns: [
       {
         hostname: "ca.slack-edge.com",
+      },
+      {
+        hostname: "images.ctfassets.net",
       },
     ],
   },

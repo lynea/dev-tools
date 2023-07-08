@@ -1,54 +1,49 @@
-import { Box } from "@/components/Box/Box";
-import { db } from "@/lib/db";
 import { currentUser } from "@clerk/nextjs/app-beta";
 import type { User } from "@clerk/nextjs/api";
+
+import Link from "next/link";
 import { CelebrationAnimation } from "@/components/CelebrationAnimation/CelebrationAnimation";
 import { Title } from "@/components/Title/Title";
-import { TodoWrapper } from "../../../components/TodoWrapper/TodoWrapper";
-import Link from "next/link";
+import { Box } from "@/components/Box/Box";
+import { getTodosForUser } from "@/utils/requests/_requests";
+import { TodoItem } from "@/components/TodoItemExperimental/TodoItem";
+import { TodoOverView } from "@/components/TodoOverView/TodoOverview";
+import { TodoList } from "@/components/TodoOverView/TodoList";
 
-// get the todos from the user
-// if the user has has not finished all todos show the open todos
-// otherwise show that he has completed the onboarding
-// send out a welcome message to slack
-// no round trip to the api needed can do directly to the db
+export const dynamic = "force-dynamic";
 
 export default async function Page() {
   const user: User | null = await currentUser();
 
   if (!user?.id) return <>no user was found</>;
 
-  const todos = await db.todo
-    .findMany({
-      where: {
-        owner: user.id,
-      },
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  const todos = await getTodosForUser(user.id);
 
   const openTodos = todos?.filter((todo) => todo.completed === false);
 
   return (
-    <section className="w-full">
+    <section className="w-full flex flex-col items-center">
       {openTodos?.length === 0 ? (
         <>
           <Title> Damn, you made it! welcome to the team </Title>
-          <CelebrationAnimation />
+          <div className="w-96 h-96 flex justify-center">
+            <CelebrationAnimation />
+          </div>
         </>
       ) : (
         <Box>
-          <Title>you have {openTodos?.length} todos left</Title>
-          <ul className="mt-6 text-xl">
+          <Title>You have {openTodos?.length} todos left</Title>
+          <div className="mt-4 flex flex-col">
             {openTodos?.map((todo) => (
-              <li key={todo.id}>
-                <Link href={`/onboarding/1/1`}>{todo.title}</Link>
-              </li>
+              <TodoItem todo={todo} userId={user.id} key={todo.cmsId} />
             ))}
-          </ul>
+          </div>
         </Box>
       )}
+      <TodoOverView>
+        {/* @ts-ignore */}
+        <TodoList />
+      </TodoOverView>
     </section>
   );
 }

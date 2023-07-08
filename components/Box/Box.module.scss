@@ -1,0 +1,39 @@
+.box {
+  h2,
+  h4 {
+    font-weight: bold;
+    font-size: 1.5rem;
+  }
+
+  h5 {
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+
+  p {
+    margin-bottom: 1rem;
+  }
+
+  li {
+    margin-top: 4rem;
+  }
+
+  a {
+    font-weight: bold;
+  }
+
+  img {
+    max-width: 100%;
+  }
+
+  code {
+    margin-top: 1rem;
+    width: fit-content;
+    padding: 1rem;
+    display: block;
+    background-color: #19071e;
+    border-radius: 4px;
+    width: 100%;
+    overflow-y: auto;
+  }
+}

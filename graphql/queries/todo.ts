@@ -3,6 +3,9 @@ import { gql } from "@apollo/client";
 export const todosForStepQuery = gql`
   query todosForStep($stepId: String!) {
     onboardStep(id: $stepId) {
+      mainImage {
+        url
+      }
       linkedFrom {
         todoCollection {
           items {
