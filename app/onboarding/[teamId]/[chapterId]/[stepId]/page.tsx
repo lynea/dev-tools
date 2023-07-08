@@ -114,9 +114,6 @@ export default async function Page({ params }: { params: StepPageParams }) {
   const isLastStepInChapter = indexOfCurrentStep + 1 === totalSteps;
   const isfirstStepInChapter = indexOfCurrentStep === 0;
 
-  console.log(sortedSteps.map((s) => ({ name: s?.title, step: s?.step })));
-  console.log("index", indexOfCurrentStep);
-
   const basePath = `/onboarding/${params.teamId}`;
 
   const generateNextLink = (): string => {

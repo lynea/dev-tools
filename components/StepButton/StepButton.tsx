@@ -40,10 +40,6 @@ export const StepButton: FunctionComponent<StepButtonProps> = ({
     );
 
     if (todosToBeAdded?.length) {
-      console.log(
-        "user has todos which are not in the db, adding them ....",
-        todosToBeAdded
-      );
       try {
         await createTodosForUser(userId, todosToBeAdded);
       } catch (error) {

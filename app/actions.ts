@@ -35,8 +35,6 @@ export async function createOrMutateTodo(userId: string, todo: TodoForDb) {
           completed: !todo.completed,
         },
       });
-
-      console.log(res);
     } else {
       console.log("creating");
       const res = await db.todo.create({
@@ -45,11 +43,8 @@ export async function createOrMutateTodo(userId: string, todo: TodoForDb) {
           owner: userId,
         },
       });
-      console.log(res);
     }
   }
 
-  // revalidate all steps pages so the data is updated
-  //   revalidatePath("/onboarding/Sales/5/1");
   revalidateTag("todos");
 }

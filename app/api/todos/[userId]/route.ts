@@ -57,7 +57,5 @@ export async function POST(
       console.log(err);
     });
 
-  console.log(todos);
-
   return NextResponse.json(todos || []);
 }
