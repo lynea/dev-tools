@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-purple-200 flex justify-center items-center w-full  flex-col min-h-screen">
-        <main className=" mt-8 flex justify-center items-center max-w-7xl  w-full h-full  min-h-[calc(100vh_-_10rem)]">
+        <main className=" mt-20 flex justify-center items-center   w-11/12 h-full  min-h-[calc(100vh_-_10rem)] lg:max-w-7xl lg:mt-8">
           <QueryProvider>
             <ClerkProvider>
               <Nav />
@@ -26,7 +26,7 @@ export default function RootLayout({
           </QueryProvider>
         </main>
         <footer className="flex w-full justify-center items-center py-5 text-white mt-10  ">
-          Made with ♡ by Rene van Dijk
+          Made with <span className="text-pink mx-1">♡</span> by Rene van Dijk
         </footer>
       </body>
     </html>

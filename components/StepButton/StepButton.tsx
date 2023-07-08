@@ -58,7 +58,12 @@ export const StepButton: FunctionComponent<StepButtonProps> = ({
   };
 
   return (
-    <Button disabled variant="primary" onClick={handleClick}>
+    <Button
+      disabled
+      variant="primary"
+      onClick={handleClick}
+      className="lg:order-3 order-2"
+    >
       Next
     </Button>
   );

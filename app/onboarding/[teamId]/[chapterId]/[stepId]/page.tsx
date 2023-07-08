@@ -213,14 +213,19 @@ export default async function Page({ params }: { params: StepPageParams }) {
           </Box>
         ) : null}
 
-        <div className="mt-8 flex justify-center items-center gap-10">
+        <div className="mt-8 flex flex-col justify-center items-center gap-10 lg:flex-row">
           {canDecrementStep ? (
-            <Link href={generatePreviousLink()}>
-              <Button variant="primary">Previous</Button>
+            <Link
+              href={generatePreviousLink()}
+              className="w-full order-3 lg:order-1 lg:w-auto"
+            >
+              <Button className="" variant="primary">
+                Previous
+              </Button>
             </Link>
           ) : null}
 
-          <ProgressBar max={totalSteps} value={Number(params.stepId)} />
+          <ProgressBar max={totalSteps} value={indexOfCurrentStep + 1} />
 
           <StepButton
             userId={user.id}

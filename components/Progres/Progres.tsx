@@ -12,7 +12,7 @@ export const ProgressBar: FunctionComponent<ProgressBarProps> = ({
   return (
     <>
       <div
-        className="bg-purple-100 w-full h-4 overflow-hidden"
+        className="bg-purple-100 w-full h-4 overflow-hidden order-1 lg:order-2"
         data-cy="progres"
       >
         <div
