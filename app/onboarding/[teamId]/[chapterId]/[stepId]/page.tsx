@@ -3,10 +3,13 @@ import { Button } from "@/components/Button/Button";
 import { ProgressBar } from "@/components/Progres/Progres";
 import { Title } from "@/components/Title/Title";
 import ReactMarkdown from "react-markdown";
-
 import Link from "next/link";
 import { getClient } from "../../../../../graphql/client";
 import { teamsQuery } from "../../../../../graphql/queries/teams";
+import { clsx } from "clsx";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft, faCircleCheck } from "@fortawesome/free-solid-svg-icons";
+
 import {
   TeamsQuery,
   TodosForStepQuery,
@@ -51,32 +54,33 @@ export default async function Page({ params }: { params: StepPageParams }) {
 
   const teamInfo = data.team;
 
+  const sortedChapters = [
+    ...(teamInfo?.linkedFrom?.chapterCollection?.items ?? []),
+  ]?.sort((a, b) => a?.id! - b?.id!);
+
   const totalChapters = teamInfo?.linkedFrom?.chapterCollection?.total;
 
-  const chapterInfo = teamInfo?.linkedFrom?.chapterCollection?.items.find(
-    (chapter) => chapter?.id === Number(params.chapterId)
+  const indexOfCurrentChapter = sortedChapters.findIndex(
+    (chapter) => chapter?.sys.id === params.chapterId
   );
 
-  const previousChapterInfo =
-    teamInfo?.linkedFrom?.chapterCollection?.items.find(
-      (chapter) => chapter?.id === Number(params.chapterId) - 1
-    );
+  if (indexOfCurrentChapter < 0)
+    return <>no chapter was found matching this id</>;
 
-  const nextChapterInfo = teamInfo?.linkedFrom?.chapterCollection?.items.find(
-    (chapter) => chapter?.id === Number(params.chapterId) + 1
-  );
+  const chapterInfo = sortedChapters.at(indexOfCurrentChapter);
+
+  //TODO: would be nicer to find the index of the current one and then slice the next and the prev ones out;
+  // and then do [prev, current, next] = sliced
+
+  const previousChapterInfo = sortedChapters.at(indexOfCurrentChapter - 1);
+
+  console.log("previous", previousChapterInfo);
+
+  const nextChapterInfo = sortedChapters.at(indexOfCurrentChapter + 1);
 
   const stepsForChapter = chapterInfo?.linkedFrom?.onboardStepCollection?.items;
 
-  const currentChapter = Number(params.chapterId);
   const totalSteps = chapterInfo?.linkedFrom?.onboardStepCollection?.total ?? 0;
-  // const totalStepsOfPreviousChapter =
-  //   previousChapterInfo?.linkedFrom?.onboardStepCollection?.total ?? 0;
-
-  //Todo: refactor so that we dont rely on the step to be present
-  // a better way would be to use the sys id of the step
-  // sort them when fetched
-  // and then use the index of the step to get the next step
 
   const sortedSteps = [...(stepsForChapter ?? [])]?.sort(
     (a, b) => a?.step! - b?.step!
@@ -107,9 +111,10 @@ export default async function Page({ params }: { params: StepPageParams }) {
     dbTodos
   );
 
-  const isLastChapter = currentChapter === totalChapters;
+  const isLastChapter = indexOfCurrentChapter + 1 === totalChapters;
 
-  const canDecrementStep = indexOfCurrentStep !== 0 || currentChapter !== 1;
+  const canDecrementStep =
+    indexOfCurrentStep !== 0 || indexOfCurrentChapter !== 0;
 
   const isLastStepInChapter = indexOfCurrentStep + 1 === totalSteps;
   const isfirstStepInChapter = indexOfCurrentStep === 0;
@@ -128,7 +133,7 @@ export default async function Page({ params }: { params: StepPageParams }) {
         ?.sort((a, b) => a?.step! - b?.step!)
         .at(0)?.sys.id;
 
-      const id = nextChapterInfo?.id;
+      const id = nextChapterInfo?.sys.id;
 
       if (!id || !firstStepId) throw new Error("could not generate next link");
 
@@ -140,7 +145,7 @@ export default async function Page({ params }: { params: StepPageParams }) {
 
     return incrementStep(
       basePath,
-      currentChapter,
+      params.chapterId,
       sortedSteps?.at(indexOfCurrentStep + 1)?.sys.id!
     );
   };
@@ -161,14 +166,14 @@ export default async function Page({ params }: { params: StepPageParams }) {
 
       return decrementChapter(
         basePath,
-        currentChapter,
+        previousChapterInfo?.sys.id!,
         lastStepOfPreviousChapter
       );
     }
 
     return decrementStep(
       basePath,
-      currentChapter,
+      params.chapterId,
       sortedSteps?.at(indexOfCurrentStep - 1)?.sys.id!
     );
   };
@@ -222,7 +227,13 @@ export default async function Page({ params }: { params: StepPageParams }) {
             </Link>
           ) : null}
 
-          <ProgressBar max={totalSteps} value={indexOfCurrentStep + 1} />
+          <div className="w-full flex flex-col order-2">
+            <p className="text-center text-white text-lg  justify-between mb-1 ">
+              Step <span className="font-bold">{indexOfCurrentStep + 1}</span>{" "}
+              of <span className="font-bold"> {totalSteps}</span>
+            </p>
+            <ProgressBar max={totalSteps} value={indexOfCurrentStep + 1} />
+          </div>
 
           <StepButton
             userId={user.id}
@@ -235,6 +246,48 @@ export default async function Page({ params }: { params: StepPageParams }) {
         {/* @ts-ignore */}
         <TodoList />
       </TodoOverView>
+
+      <div className="flex flex-col items-center  mt-4 ml-6 ">
+        <ol className="space-y-4 w-72 ">
+          {sortedChapters?.map((chapter, index) => (
+            <li key={chapter?.sys.id}>
+              <div
+                className={clsx(
+                  "w-full p-4  border border-white rounded-lg  ",
+                  {
+                    "bg-gray-100 text-main-200  ":
+                      index > indexOfCurrentChapter,
+                    "bg-pink-400  text-main-200 ":
+                      index < indexOfCurrentChapter,
+                    "text-purple-700 bg-purple-200 border-pink-500 font-bold ":
+                      index === indexOfCurrentChapter,
+                  }
+                )}
+                role="alert"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="sr-only">User info</span>
+                  <h3 className="">{`${index + 1}: ${chapter?.name}`}</h3>
+                  {index < indexOfCurrentChapter ? (
+                    <FontAwesomeIcon
+                      icon={faCircleCheck}
+                      className=" text-xs h-5  "
+                    />
+                  ) : null}
+                  {index === indexOfCurrentChapter ? (
+                    <FontAwesomeIcon
+                      icon={faArrowLeft}
+                      className=" text-xs h-5  "
+                    />
+                  ) : null}
+                </div>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      {/* <p className="text-white">{`chapter: ${chapterInfo?.name}, id: ${chapterInfo?.id} and  step Title: ${currentStepInfo.title}, step: ${currentStepInfo.step}`}</p> */}
     </section>
   );
 }

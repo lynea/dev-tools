@@ -39,7 +39,7 @@ export const TodoOverView: FunctionComponent<TodoOverViewProps> = ({
       </div>
 
       <div
-        className={`w-72 h-full absolute top-0 right-0 p-6 bg-purple-100 flex flex-col ease-in-out duration-300 ${
+        className={`w-72 h-full absolute top-0 right-0 p-6 bg-gray-800 flex flex-col ease-in-out duration-300 ${
           isOpen ? "translate-x-0 " : "translate-x-full"
         }`}
       >

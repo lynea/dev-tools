@@ -1120,14 +1120,14 @@ export type ChapterCollectionQuery = { __typename?: 'Query', chapterCollection?:
 export type AllTeamsInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllTeamsInfoQuery = { __typename?: 'Query', teamCollection?: { __typename?: 'TeamCollection', items: Array<{ __typename?: 'Team', name?: string | null, alias?: string | null, sys: { __typename?: 'Sys', id: string }, linkedFrom?: { __typename?: 'TeamLinkingCollections', chapterCollection?: { __typename?: 'ChapterCollection', items: Array<{ __typename?: 'Chapter', id?: number | null, linkedFrom?: { __typename?: 'ChapterLinkingCollections', onboardStepCollection?: { __typename?: 'OnboardStepCollection', items: Array<{ __typename?: 'OnboardStep', step?: number | null, sys: { __typename?: 'Sys', id: string } } | null> } | null } | null } | null> } | null } | null } | null> } | null };
+export type AllTeamsInfoQuery = { __typename?: 'Query', teamCollection?: { __typename?: 'TeamCollection', items: Array<{ __typename?: 'Team', name?: string | null, alias?: string | null, sys: { __typename?: 'Sys', id: string }, linkedFrom?: { __typename?: 'TeamLinkingCollections', chapterCollection?: { __typename?: 'ChapterCollection', items: Array<{ __typename?: 'Chapter', id?: number | null, sys: { __typename?: 'Sys', id: string }, linkedFrom?: { __typename?: 'ChapterLinkingCollections', onboardStepCollection?: { __typename?: 'OnboardStepCollection', items: Array<{ __typename?: 'OnboardStep', step?: number | null, sys: { __typename?: 'Sys', id: string } } | null> } | null } | null } | null> } | null } | null } | null> } | null };
 
 export type TeamsQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type TeamsQuery = { __typename?: 'Query', team?: { __typename?: 'Team', name?: string | null, linkedFrom?: { __typename?: 'TeamLinkingCollections', chapterCollection?: { __typename?: 'ChapterCollection', total: number, items: Array<{ __typename?: 'Chapter', name?: string | null, id?: number | null, linkedFrom?: { __typename?: 'ChapterLinkingCollections', onboardStepCollection?: { __typename?: 'OnboardStepCollection', total: number, items: Array<{ __typename?: 'OnboardStep', step?: number | null, title?: string | null, body?: string | null, codeBlock?: string | null, sys: { __typename?: 'Sys', id: string } } | null> } | null } | null } | null> } | null } | null } | null };
+export type TeamsQuery = { __typename?: 'Query', team?: { __typename?: 'Team', name?: string | null, linkedFrom?: { __typename?: 'TeamLinkingCollections', chapterCollection?: { __typename?: 'ChapterCollection', total: number, items: Array<{ __typename?: 'Chapter', name?: string | null, id?: number | null, sys: { __typename?: 'Sys', id: string }, linkedFrom?: { __typename?: 'ChapterLinkingCollections', onboardStepCollection?: { __typename?: 'OnboardStepCollection', total: number, items: Array<{ __typename?: 'OnboardStep', step?: number | null, title?: string | null, body?: string | null, codeBlock?: string | null, sys: { __typename?: 'Sys', id: string } } | null> } | null } | null } | null> } | null } | null } | null };
 
 export type TodosForStepQueryVariables = Exact<{
   stepId: Scalars['String'];
@@ -1197,6 +1197,9 @@ export const AllTeamsInfoDocument = gql`
       linkedFrom {
         chapterCollection(limit: 50) {
           items {
+            sys {
+              id
+            }
             id
             linkedFrom {
               onboardStepCollection(limit: 10) {
@@ -1250,6 +1253,9 @@ export const TeamsDocument = gql`
       chapterCollection {
         total
         items {
+          sys {
+            id
+          }
           name
           id
           linkedFrom {

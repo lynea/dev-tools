@@ -3,6 +3,7 @@ module.exports = {
   content: [
     "./app/**/*.{js,ts,jsx,tsx}", // Note the addition of the `app` directory.
     "./pages/**/*.{js,ts,jsx,tsx}",
+    "./node_modules/flowbite-react/**/*.js",
     "./components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
@@ -11,7 +12,7 @@ module.exports = {
       gold: "#EECD58",
       red: "#DD5050",
 
-      purple: {
+      main: {
         100: "#31203F",
         200: "#19071E",
       },
@@ -24,5 +25,5 @@ module.exports = {
     },
     extend: {},
   },
-  plugins: [],
+  plugins: [require("flowbite/plugin")],
 };

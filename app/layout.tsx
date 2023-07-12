@@ -16,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-purple-200 flex justify-center items-center w-full  flex-col min-h-screen">
+      <body className="bg-main-200 flex justify-center items-center w-full  flex-col min-h-screen">
         <main className=" mt-20 flex justify-center items-center   w-11/12 h-full  min-h-[calc(100vh_-_10rem)] lg:max-w-7xl lg:mt-8">
           <QueryProvider>
             <ClerkProvider>

@@ -29,15 +29,23 @@ export const TodoItem: FunctionComponent<TodoItemProps> = ({
     );
 
   return (
-    <label className="text-white">
+    <div className="flex items-center  ">
       <input
         type="checkbox"
-        className="mr-2 "
+        id={todo.cmsId}
+        className="w-4 h-4 text-pink-500 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 "
         checked={todo?.completed}
         // @ts-ignore
         onChange={() => startTransition(() => createOrMutateTodo(userId, todo))}
       />
-      {todo?.body}
-    </label>
+
+      <label
+        htmlFor={todo.cmsId}
+        className="w-full py-4 ml-2 text-sm  text-white font-bold"
+      >
+        {" "}
+        {todo?.body}
+      </label>
+    </div>
   );
 };
