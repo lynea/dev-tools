@@ -1,11 +1,10 @@
 "use client";
 
-import { Team } from "./types";
-import Link from "next/link";
 import { FunctionComponent, useState } from "react";
 import { clsx } from "clsx";
 import { useRouter } from "next/navigation";
-import { AllTeamsInfoQuery } from "@/generated/graphql";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 type SquareButtonProps = {
   children: React.ReactNode;
@@ -16,17 +15,22 @@ type SquareButtonProps = {
 export const SqaureButton: FunctionComponent<SquareButtonProps> = ({
   children,
   onClick,
+  disabled,
   active,
+  ...otherProps
 }) => {
   return (
     <button
+      {...otherProps}
       onClick={onClick}
+      disabled={disabled}
       className={clsx(
         "w-40 h-40  text-3xl font-bold  border-2 rounded-md mr-8 transition-all duration-200 ease-in",
         {
-          "bg-gradient-to-t from-gradientEnd to-gradientStart text-purple-200 ":
-            active,
-          "text-white border-pink": !active,
+          "bg-gradient-to-t from-gradientEnd to-gradientStart text-main-200 ":
+            active && !disabled,
+          "text-white border-pink": !active && !disabled,
+          "text-gray-500 cursor-not-allowed border-gray-500": disabled,
         }
       )}
     >
@@ -47,6 +51,8 @@ type TeamSelectProps = {
         __typename?: "ChapterCollection";
         items: Array<{
           __typename?: "Chapter";
+          id?: number | null;
+          sys: { __typename?: "Sys"; id: string };
           linkedFrom?: {
             __typename?: "ChapterLinkingCollections";
             onboardStepCollection?: {
@@ -71,17 +77,33 @@ export const TeamSelect: FunctionComponent<TeamSelectProps> = ({ teams }) => {
   const [selectedTeam, setSelectedTeam] = useState<string | undefined>(
     undefined
   );
+  const [loading, setLoading] = useState<boolean>(false);
 
   const router = useRouter();
 
+  const getChaptersForTeam = (id: string) => {
+    // get chapters for team
+    const team = teams?.find((team) => team?.sys.id === id);
+    const chapters = team?.linkedFrom?.chapterCollection?.items;
+    return chapters;
+  };
+
   const navigateToFirstStep = async () => {
     //get the first step of the first chapter of the selected team
+    setLoading(true);
+    if (!teams || !selectedTeam) return;
 
-    if (!teams) return;
+    const sortedChapters = [...(getChaptersForTeam(selectedTeam) ?? [])]?.sort(
+      (a, b) => a?.id! - b?.id!
+    );
 
-    const team = teams?.find((team) => team?.sys.id === selectedTeam);
+    if (sortedChapters.length < 1) {
+      return;
+    }
 
-    const firstChapter = team?.linkedFrom?.chapterCollection?.items.at(0);
+    const firstChapter = sortedChapters.at(0);
+
+    if (!firstChapter?.sys.id) return;
 
     //TODO: sorting is duplicated should move to util
     const sortedSteps = [
@@ -90,7 +112,9 @@ export const TeamSelect: FunctionComponent<TeamSelectProps> = ({ teams }) => {
 
     const firstStep = sortedSteps.at(0)?.sys?.id;
     //TODO: chapter should also be based on id
-    router.push(`/onboarding/${selectedTeam}/1/${firstStep}`);
+    router.push(
+      `/onboarding/${selectedTeam}/${firstChapter?.sys?.id}/${firstStep}`
+    );
   };
 
   return (
@@ -98,9 +122,14 @@ export const TeamSelect: FunctionComponent<TeamSelectProps> = ({ teams }) => {
       <div className=" mb-12 flex justify-between ">
         {teams.map((team) => (
           <SqaureButton
+            disabled={getChaptersForTeam(team?.sys?.id!)?.length === 0}
             key={team?.alias}
             active={selectedTeam === team?.sys?.id}
-            onClick={() => setSelectedTeam(team?.sys?.id ?? undefined)}
+            onClick={() => {
+              setLoading(false);
+
+              setSelectedTeam(team?.sys?.id ?? undefined);
+            }}
             className="w-40 h-40 text-white text-3xl font-bold border-pink border-2 rounded-md mr-8"
           >
             <h3> {team?.alias}</h3>
@@ -122,11 +151,20 @@ export const TeamSelect: FunctionComponent<TeamSelectProps> = ({ teams }) => {
         </p>
 
         <button
-          className="bg-pink text-white rounded-md px-6 py-3 font-bold mt-9 text-xl"
+          className={`bg-pink-600 text-white rounded-md px-6 py-3 font-bold mt-9 text-xl ${
+            loading ? "" : "animate-bounce"
+          }  `}
           onClick={navigateToFirstStep}
+          disabled={loading}
         >
-          {" "}
-          i am ready
+          {loading ? (
+            <FontAwesomeIcon
+              icon={faSpinner}
+              className="animate-spin mr-4"
+            ></FontAwesomeIcon>
+          ) : null}
+
+          {loading ? "loading..." : "i am ready"}
         </button>
       </div>
     </>

@@ -16,7 +16,7 @@ export const Button: FunctionComponent<ButtonProps> = ({
 }) => {
   return (
     <button
-      className={`bg-purple-100 px-10 py-2 rounded font-bold text-white hover:bg-pink ${className} w-full lg:w-auto`}
+      className={`bg-purple-800 px-10 py-3 rounded font-bold text-white hover:bg-pink ${className} w-full lg:w-auto`}
       onClick={onClick}
     >
       {children}

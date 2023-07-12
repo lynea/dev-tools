@@ -17,10 +17,15 @@ export default async function Page({
   return (
     <section className="w-full flex flex-col justify-center items-center ">
       <div className="absolute top-11">
-        <Alert>
-          This project is currently in alfa if you encounter any problems please
-          report them to Rene van Dijk or your team lead
-        </Alert>
+        <div
+          className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+          role="alert"
+        >
+          <span className="font-bold">
+            This project is currently in alfa if you encounter any problems
+            please report them to Rene van Dijk or your team lead{" "}
+          </span>
+        </div>
       </div>
 
       <Title size="xl"> My onboarding </Title>
@@ -41,7 +46,7 @@ export default async function Page({
         We will get you ready to write some awesome code in no time{" "}
       </p>
       <Link href={team ? `/onboarding/${team}/1/1` : "/onboarding/team-select"}>
-        <button className="bg-pink text-white rounded-md px-6 py-3 font-bold mt-9 text-xl">
+        <button className="bg-pink-600 text-white rounded-md px-6 py-3 font-bold mt-9 text-xl">
           {" "}
           Just click here
         </button>
