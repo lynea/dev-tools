@@ -5,53 +5,48 @@ import {
   decrementStep,
   incrementChapter,
   incrementStep,
-} from "../app/onboarding/[teamId]/[chapterId]/[stepId]/utils";
+} from "../utils/todo";
 import { describe, expect, test } from "vitest";
 
 describe("utils: step", () => {
-  test(" it should increment the step by one", () => {
-    const result = incrementStep("/onboarding", "1", "1");
-    expect(result).toBe("/onboarding/1/2");
-  });
-
-  test(" it should increment the step by one", () => {
-    const result = incrementStep("/onboarding", "1", " 1");
-    expect(result).toBe("/onboarding/1/2");
+  test(" increment step", () => {
+    const result = incrementStep("/onboarding", "abc", "123");
+    expect(result).toBe("/onboarding/abc/123");
   });
 
   test("decrementStep", ({ expect }) => {
     // Test if the step is correctly decremented
-    expect(decrementStep("/book", "1", "2")).toBe("/book/2/2");
-
-    // Test if it returns the path to the previous step in the same chapter
-    expect(decrementStep("/book", "1", "1")).toBe("/book/1/0");
-
-    // Test edge cases
-    expect(decrementStep("/book", "1", "0")).toBe("/book/2/0"); // does not allow to decrement below 0
+    expect(decrementStep("/book", "abc", "123")).toBe("/book/abc/123");
 
     // Test complex base path
-    expect(decrementStep("/book/subsection", "1", "3")).toBe(
-      "/book/subsection/2/2"
+    expect(decrementStep("/book/subsection", "123", "abc")).toBe(
+      "/book/subsection/123/abc"
     ); // Correctly handle a complex base path
   });
 
-  test("should increment the chapter number and return the next chapter path", () => {
+  test("should return the next chapter path", () => {
     const basePath = "/book";
-    const currentChapter = "2";
-    const expectedPath = "/book/3/1";
+    const expectedPath = "/book/abc/123";
 
-    const result = incrementChapter(basePath, { firstStepId: "1", id: "3" });
+    const result = incrementChapter(basePath, {
+      firstStepId: "123",
+      id: "abc",
+    });
 
     expect(result).toEqual(expectedPath);
   });
 
-  test("should decrement the chapter number and return the previous chapter path", () => {
+  test("should decrement the previous chapter path", () => {
     const basePath = "/book";
-    const currentChapter = 2;
-    const totalStepsOfPreviousChapter = "123";
-    const expectedPath = "/book/1/10";
+    const prevChapter = "123";
+    const lastStepOfPrevChapter = "abc";
+    const expectedPath = "/book/123/abc";
 
-    const result = decrementChapter(basePath, "1", totalStepsOfPreviousChapter);
+    const result = decrementChapter(
+      basePath,
+      prevChapter,
+      lastStepOfPrevChapter
+    );
 
     expect(result).toEqual(expectedPath);
   });
