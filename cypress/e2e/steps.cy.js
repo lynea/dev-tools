@@ -10,12 +10,13 @@ describe("navigate steps", () => {
   //it moves to the first step, ideally we seed the db with some steps but for now we hardcode the ids
   it("it can acces the onboarding dashboard when signed in", () => {
     // open dashboard page
-    cy.visit(
-      "http://localhost:3000/onboarding/zlwVLa1bEFrULYbe1KUQ4/1/6cNuonZRgfL9hEVlR2JHDR",
-      {
-        failOnStatusCode: false,
-      }
-    );
+    cy.visit("http://localhost:3000/onboarding", {
+      failOnStatusCode: false,
+    });
+
+    cy.wait(5000);
+
+    cy.get("button").contains("Just click here").click();
 
     cy.wait(5000);
 

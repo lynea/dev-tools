@@ -1,16 +1,51 @@
 import { DonutScene } from "@/components/DonutScene/DonutScene";
-import { Alert } from "@/components/Notification/Notification";
 import { Title } from "@/components/Title/Title";
 import Link from "next/link";
 import { currentUser } from "@clerk/nextjs/app-beta";
 import type { User } from "@clerk/nextjs/api";
+import { AllGobalChaptersInfoQuery } from "@/generated/graphql";
+import { allGobalChaptersInfoQuery } from "@/graphql/queries/globalChapter";
+import { getClient } from "@/lib/client";
 
 export default async function Page({
   searchParams,
 }: {
   searchParams: { team: string };
 }) {
-  const { team } = searchParams;
+  const client = getClient();
+
+  const { data }: { data: AllGobalChaptersInfoQuery } = await client.query({
+    query: allGobalChaptersInfoQuery,
+  });
+
+  console.log(data.chapterCollection?.items);
+
+  const getFirstStep = async () => {
+    //get the first step of the first chapter of the selected team
+    // setLoading(true);
+    if (!data.chapterCollection?.items) return;
+
+    const sortedChapters = [...(data?.chapterCollection?.items ?? [])]?.sort(
+      (a, b) => a?.id! - b?.id!
+    );
+
+    if (sortedChapters.length < 1) {
+      return;
+    }
+
+    const firstChapter = sortedChapters.at(0);
+
+    if (!firstChapter?.sys.id) return;
+
+    //TODO: sorting is duplicated should move to util
+    const sortedSteps = [
+      ...(firstChapter?.linkedFrom?.onboardStepCollection?.items ?? []),
+    ]?.sort((a, b) => a?.step! - b?.step!);
+
+    const firstStep = sortedSteps.at(0)?.sys?.id;
+
+    return `/onboarding/global/${firstChapter?.sys?.id}/${firstStep}`;
+  };
 
   const user: User | null = await currentUser();
 
@@ -45,7 +80,7 @@ export default async function Page({
         {" "}
         We will get you ready to write some awesome code in no time{" "}
       </p>
-      <Link href={team ? `/onboarding/${team}/1/1` : "/onboarding/team-select"}>
+      <Link href={(await getFirstStep()) || ""}>
         <button className="bg-pink-600 text-white rounded-md px-6 py-3 font-bold mt-9 text-xl">
           {" "}
           Just click here

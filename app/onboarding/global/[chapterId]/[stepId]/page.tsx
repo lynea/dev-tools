@@ -4,14 +4,15 @@ import { ProgressBar } from "@/components/Progres/Progres";
 import { Title } from "@/components/Title/Title";
 import ReactMarkdown from "react-markdown";
 import Link from "next/link";
-import { teamsQuery } from "../../../../../graphql/queries/teams";
+
+import { allGobalChaptersInfoQuery } from "../../../../../graphql/queries/globalChapter";
 import { clsx } from "clsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import { getClient } from "@/lib/client";
 
 import {
-  TeamsQuery,
+  AllGobalChaptersInfoQuery,
   TodosForStepQuery,
 } from "../../../../../generated/graphql";
 import { todosForStepQuery } from "@/graphql/queries/todo";
@@ -31,14 +32,21 @@ import {
   decrementStep,
   decrementChapter,
   convertCMSTodosForDB,
-} from "../../../../../utils/todo";
-import { StepPageParams } from "@/app/onboarding/types/pageProps";
+} from "@/utils/todo";
+import {
+  GlobalStepPageParams,
+  StepPageParams,
+} from "@/app/onboarding/types/pageProps";
 import { TodoForDb } from "@/app/onboarding/types/todo";
 import Image from "next/image";
 
 export const revalidate = 5;
 
-export default async function Page({ params }: { params: StepPageParams }) {
+export default async function Page({
+  params,
+}: {
+  params: GlobalStepPageParams;
+}) {
   const user: User | null = await currentUser();
 
   if (!user) return <>no user was found</>;
@@ -47,20 +55,15 @@ export default async function Page({ params }: { params: StepPageParams }) {
 
   const client = getClient();
 
-  const { data }: { data: TeamsQuery } = await client.query({
-    query: teamsQuery,
-    variables: {
-      id: params.teamId,
-    },
+  const { data }: { data: AllGobalChaptersInfoQuery } = await client.query({
+    query: allGobalChaptersInfoQuery,
   });
 
-  const teamInfo = data.team;
+  const sortedChapters = [...(data?.chapterCollection?.items ?? [])]?.sort(
+    (a, b) => a?.id! - b?.id!
+  );
 
-  const sortedChapters = [
-    ...(teamInfo?.linkedFrom?.chapterCollection?.items ?? []),
-  ]?.sort((a, b) => a?.id! - b?.id!);
-
-  const totalChapters = teamInfo?.linkedFrom?.chapterCollection?.total;
+  const totalChapters = data?.chapterCollection?.total ?? 0;
 
   const indexOfCurrentChapter = sortedChapters.findIndex(
     (chapter) => chapter?.sys.id === params.chapterId
@@ -75,8 +78,6 @@ export default async function Page({ params }: { params: StepPageParams }) {
   // and then do [prev, current, next] = sliced
 
   const previousChapterInfo = sortedChapters.at(indexOfCurrentChapter - 1);
-
-  console.log("previous", previousChapterInfo);
 
   const nextChapterInfo = sortedChapters.at(indexOfCurrentChapter + 1);
 
@@ -121,12 +122,15 @@ export default async function Page({ params }: { params: StepPageParams }) {
   const isLastStepInChapter = indexOfCurrentStep + 1 === totalSteps;
   const isfirstStepInChapter = indexOfCurrentStep === 0;
 
-  const basePath = `/onboarding/${params.teamId}`;
+  const basePath = `/onboarding/global`;
 
+  //should accept a item array
+  // and the path to route to when no more items are left
+  // and the index of the current step
   const generateNextLink = (): string => {
     if (isLastStepInChapter) {
       if (isLastChapter) {
-        return `/onboarding/completed`;
+        return `/onboarding/team-select`;
       }
 
       const firstStepId = [

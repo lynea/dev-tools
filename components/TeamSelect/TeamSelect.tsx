@@ -111,7 +111,6 @@ export const TeamSelect: FunctionComponent<TeamSelectProps> = ({ teams }) => {
     ]?.sort((a, b) => a?.step! - b?.step!);
 
     const firstStep = sortedSteps.at(0)?.sys?.id;
-    //TODO: chapter should also be based on id
     router.push(
       `/onboarding/${selectedTeam}/${firstChapter?.sys?.id}/${firstStep}`
     );
@@ -147,7 +146,7 @@ export const TeamSelect: FunctionComponent<TeamSelectProps> = ({ teams }) => {
       >
         <p className="text-white  text-2xl mt-6">
           {" "}
-          Great choise ! now lets learn more about the company
+          Great choise ! now lets learn more about your team
         </p>
 
         <button
@@ -158,10 +157,7 @@ export const TeamSelect: FunctionComponent<TeamSelectProps> = ({ teams }) => {
           disabled={loading}
         >
           {loading ? (
-            <FontAwesomeIcon
-              icon={faSpinner}
-              className="animate-spin mr-4"
-            ></FontAwesomeIcon>
+            <FontAwesomeIcon icon={faSpinner} className="animate-spin mr-4" />
           ) : null}
 
           {loading ? "loading..." : "i am ready"}

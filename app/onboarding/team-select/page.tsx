@@ -3,7 +3,7 @@ import { Title } from "@/components/Title/Title";
 import { TeamSelect } from "@/components/TeamSelect/TeamSelect";
 import { getClient } from "@/graphql/client";
 import { allTeamsInfoQuery } from "@/graphql/queries/teams";
-import { AllTeamsInfoQuery, ChapterCollectionQuery } from "@/generated/graphql";
+import { AllTeamsInfoQuery } from "@/generated/graphql";
 import { TeamPageParams } from "../types/pageProps";
 
 export default async function Page({
