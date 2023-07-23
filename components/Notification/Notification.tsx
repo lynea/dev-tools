@@ -1,9 +1,9 @@
-import { FunctionComponent, ReactNode } from "react";
+import { FunctionComponent, ReactNode } from 'react'
 
 type NotificationProps = {
-  children: ReactNode;
-};
+    children: ReactNode
+}
 
 export const Alert: FunctionComponent<NotificationProps> = ({ children }) => (
-  <div className="bg-red text-white rounded-md p-4 ">{children}</div>
-);
+    <div className="bg-red rounded-md p-4 text-white ">{children}</div>
+)

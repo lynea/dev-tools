@@ -1,10 +1,10 @@
 schema:
-  - "./graphql/schema.graphql"
+    - './graphql/schema.graphql'
 documents:
-  - "./graphql/queries/*.ts"
+    - './graphql/queries/*.ts'
 generates:
-  ./generated/graphql.ts:
-    plugins:
-      - typescript
-      - typescript-operations
-      - typescript-react-apollo
+    ./generated/graphql.ts:
+        plugins:
+            - typescript
+            - typescript-operations
+            - typescript-react-apollo

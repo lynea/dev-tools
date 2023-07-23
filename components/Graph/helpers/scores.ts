@@ -1,9 +1,9 @@
 const getScoreDifference = (currentScore: number, previousScore: number) => {
-  const difference = currentScore - previousScore;
+    const difference = currentScore - previousScore
 
-  if (difference <= 0) return difference.toString();
+    if (difference <= 0) return difference.toString()
 
-  return `+ ${difference}`;
-};
+    return `+ ${difference}`
+}
 
-export { getScoreDifference };
+export { getScoreDifference }

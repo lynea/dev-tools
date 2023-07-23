@@ -1,12 +1,12 @@
-import { LinkGenerator } from "@/components/LinkGenerator/LinkGenerator";
+import { LinkGenerator } from '@/components/LinkGenerator/LinkGenerator'
 
 export default async function Page() {
-  return (
-    <section className="w-full flex flex-col justify-center items-center ">
-      <h1 className="text-white font-bold text-6xl mb-6">
-        generate onboarding link
-      </h1>
-      <LinkGenerator />
-    </section>
-  );
+    return (
+        <section className="flex w-full flex-col items-center justify-center ">
+            <h1 className="mb-6 text-6xl font-bold text-white">
+                generate onboarding link
+            </h1>
+            <LinkGenerator />
+        </section>
+    )
 }

@@ -1,30 +1,30 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client'
 
 export const allGobalChaptersInfoQuery = gql`
-  query allGobalChaptersInfo {
-    chapterCollection(where: { team_exists: false }) {
-      total
-      items {
-        name
-        sys {
-          id
-        }
-        id
-        linkedFrom {
-          onboardStepCollection {
+    query allGobalChaptersInfo {
+        chapterCollection(where: { team_exists: false }) {
             total
             items {
-              title
-              body
-              codeBlock
-              step
-              sys {
+                name
+                sys {
+                    id
+                }
                 id
-              }
+                linkedFrom {
+                    onboardStepCollection {
+                        total
+                        items {
+                            title
+                            body
+                            codeBlock
+                            step
+                            sys {
+                                id
+                            }
+                        }
+                    }
+                }
             }
-          }
         }
-      }
     }
-  }
-`;
+`

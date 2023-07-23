@@ -1,11 +1,11 @@
 export type Score = {
-  name: string;
-  value: number;
-};
+    name: string
+    value: number
+}
 
 export type ScoreRun = {
-  name: string;
-  scores: Score[];
-};
+    name: string
+    scores: Score[]
+}
 
-export type GraphFilterProps = { scoreRuns: ScoreRun[] };
+export type GraphFilterProps = { scoreRuns: ScoreRun[] }
