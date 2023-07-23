@@ -11,6 +11,7 @@ type StepButtonProps = {
     todoInfo: TodoForDb[]
     route: string
     userId: string
+    host: string
 }
 
 //TODO: when pressed add all todos that are not currently completed to the db
@@ -22,11 +23,12 @@ export const StepButton: FunctionComponent<StepButtonProps> = ({
     route,
     todoInfo,
     userId,
+    host,
 }) => {
     const router = useRouter()
 
     const handleClick = async () => {
-        const dbTodos = await getTodosForUser(userId)
+        const dbTodos = await getTodosForUser(userId, host)
         if (!userId) {
             console.error('no user id was provided')
             return
