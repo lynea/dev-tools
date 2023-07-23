@@ -106,7 +106,7 @@ export default async function Page({
             },
         })
         .catch((err) => {
-            console.log(err)
+            console.log('failed to get todos for step from the cms', err)
             return { data: { onboardStep: null } }
         })
 
