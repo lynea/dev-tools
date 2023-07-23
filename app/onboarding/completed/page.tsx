@@ -9,15 +9,17 @@ import { getTodosForUser } from '@/utils/requests/_requests'
 import { TodoItem } from '@/components/TodoItemExperimental/TodoItem'
 import { TodoOverView } from '@/components/TodoOverView/TodoOverview'
 import { TodoList } from '@/components/TodoOverView/TodoList'
+import { headers } from 'next/headers'
 
 export const dynamic = 'force-dynamic'
 
 export default async function Page() {
     const user: User | null = await currentUser()
+    const host = headers().get('host')
 
     if (!user?.id) return <>no user was found</>
 
-    const todos = await getTodosForUser(user.id)
+    const todos = await getTodosForUser(user.id, host!)
 
     const openTodos = todos?.filter((todo) => todo.completed === false)
 
