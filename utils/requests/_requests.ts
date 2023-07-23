@@ -11,6 +11,7 @@ export const getTodosForUser = async (userId: string): Promise<Todo[]> => {
     })
 
     if (!res.ok) {
+        console.error('Failed to fetch todos for user')
         throw new Error('Failed to fetch todos for user')
     }
 
