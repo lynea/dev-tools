@@ -39,6 +39,7 @@ import {
 } from '@/app/onboarding/types/pageProps'
 import { TodoForDb } from '@/app/onboarding/types/todo'
 import Image from 'next/image'
+import { headers } from 'next/headers'
 
 export const revalidate = 5
 
@@ -48,10 +49,11 @@ export default async function Page({
     params: GlobalStepPageParams
 }) {
     const user: User | null = await currentUser()
-
+    const host = headers().get('host')
+    console.log('host', host)
     if (!user) return <>no user was found</>
 
-    const dbTodos = await getTodosForUser(user.id)
+    const dbTodos = await getTodosForUser(user.id, host!)
 
     const client = getClient()
 
@@ -260,6 +262,7 @@ export default async function Page({
                     </div>
 
                     <StepButton
+                        host={host!}
                         userId={user.id}
                         route={generateNextLink()}
                         todoInfo={todosToRender}

@@ -1,21 +1,21 @@
 import { TodoForDb } from '@/app/onboarding/types/todo'
 import { Todo } from '@prisma/client'
 
-export const getTodosForUser = async (userId: string): Promise<Todo[]> => {
-    const res = await fetch(`/api/todos/${userId}`, {
+export const getTodosForUser = async (
+    userId: string,
+    host: string
+): Promise<Todo[]> => {
+    const res = await fetch(`http://${host}/api/todos/${userId}`, {
         headers: {},
         cache: 'no-cache',
         next: {
             tags: ['todos'],
         },
+    }).catch((err) => {
+        console.log('api route: could not get todos for users from db', err)
     })
 
-    if (!res.ok) {
-        console.error('Failed to fetch todos for user')
-        throw new Error('Failed to fetch todos for user')
-    }
-
-    return res.json()
+    return res?.json()
 }
 
 export const createTodosForUser = async (

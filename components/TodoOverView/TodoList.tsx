@@ -2,14 +2,16 @@ import { getTodosForUser } from '@/utils/requests/_requests'
 import { currentUser } from '@clerk/nextjs'
 import { User } from '@clerk/nextjs/dist/types/server'
 import { TodoItem } from '../TodoItemExperimental/TodoItem'
+import { headers } from 'next/headers'
 
 export const TodoList = async () => {
     //get the curent user
     const user: User | null = await currentUser()
+    const host = headers().get('host')
 
     if (!user) return <>no user was found</>
 
-    const todos = await getTodosForUser(user.id)
+    const todos = await getTodosForUser(user.id, host!)
 
     return (
         <div className="flex flex-col">
