@@ -24,7 +24,7 @@ export async function GET(
             },
         })
         .catch((err) => {
-            console.log(err)
+            console.log('api route: could not get todos for users from db', err)
         })
 
     return NextResponse.json(todos ?? [])
