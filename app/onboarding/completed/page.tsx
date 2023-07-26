@@ -1,7 +1,6 @@
 import { currentUser } from '@clerk/nextjs/app-beta'
 import type { User } from '@clerk/nextjs/api'
 
-import Link from 'next/link'
 import { CelebrationAnimation } from '@/components/CelebrationAnimation/CelebrationAnimation'
 import { Title } from '@/components/Title/Title'
 import { Box } from '@/components/Box/Box'
@@ -38,6 +37,7 @@ export default async function Page() {
                     <div className="mt-4 flex flex-col">
                         {openTodos?.map((todo) => (
                             <TodoItem
+                                withLink
                                 todo={todo}
                                 userId={user.id}
                                 key={todo.cmsId}

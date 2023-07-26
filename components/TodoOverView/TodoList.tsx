@@ -16,7 +16,12 @@ export const TodoList = async () => {
     return (
         <div className="flex flex-col">
             {todos?.map((todo) => (
-                <TodoItem todo={todo} userId={user.id} key={todo.id} />
+                <TodoItem
+                    todo={todo}
+                    userId={user.id}
+                    key={todo.id}
+                    withLink={true}
+                />
             ))}
         </div>
     )

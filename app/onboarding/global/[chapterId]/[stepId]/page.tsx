@@ -13,6 +13,7 @@ import { getClient } from '@/lib/client'
 
 import {
     AllGobalChaptersInfoQuery,
+    Chapter,
     TodosForStepQuery,
 } from '../../../../../generated/graphql'
 import { todosForStepQuery } from '@/graphql/queries/todo'
@@ -33,15 +34,20 @@ import {
     decrementChapter,
     convertCMSTodosForDB,
 } from '@/utils/todo'
-import {
-    GlobalStepPageParams,
-    StepPageParams,
-} from '@/app/onboarding/types/pageProps'
+import { GlobalStepPageParams } from '@/app/onboarding/types/pageProps'
 import { TodoForDb } from '@/app/onboarding/types/todo'
-import Image from 'next/image'
 import { headers } from 'next/headers'
+import { ImageViewer } from '@/components/ImageViewer/ImageViewer'
 
 export const revalidate = 5
+
+const getFirstStepId = (chapter: Chapter) => {
+    const sortedSteps = [
+        ...(chapter?.linkedFrom?.onboardStepCollection?.items ?? []),
+    ]?.sort((a, b) => a?.step! - b?.step!)
+
+    return sortedSteps.at(0)?.sys?.id
+}
 
 export default async function Page({
     params,
@@ -115,6 +121,8 @@ export default async function Page({
     const todosToRender: TodoForDb[] = convertCMSTodosForDB(
         todoData,
         user.id,
+        params.chapterId ?? '',
+        params.stepId,
         dbTodos
     )
 
@@ -197,15 +205,7 @@ export default async function Page({
         <section className="flex w-full">
             <div className="w-full [&>_div]:mt-4">
                 {todoData.onboardStep?.mainImage?.url ? (
-                    <div className="relative h-80 w-full overflow-hidden rounded-lg">
-                        <Image
-                            src={todoData.onboardStep?.mainImage?.url}
-                            fill={true}
-                            objectFit="cover"
-                            objectPosition="top"
-                            alt="Picture of the author"
-                        />
-                    </div>
+                    <ImageViewer url={todoData.onboardStep?.mainImage?.url} />
                 ) : null}
 
                 <Box>
@@ -277,40 +277,54 @@ export default async function Page({
             <div className="mt-4 ml-6 flex  flex-col items-center ">
                 <ol className="w-72 space-y-4 ">
                     {sortedChapters?.map((chapter, index) => (
-                        <li key={chapter?.sys.id}>
-                            <div
-                                className={clsx(
-                                    'w-full rounded-lg  border border-white p-4  ',
-                                    {
-                                        'bg-gray-100 text-main-200  ':
-                                            index > indexOfCurrentChapter,
-                                        'bg-pink-400  text-main-200 ':
-                                            index < indexOfCurrentChapter,
-                                        'border-pink-500 bg-purple-200 font-bold text-purple-700 ':
-                                            index === indexOfCurrentChapter,
-                                    }
-                                )}
-                                role="alert"
+                        <li key={chapter?.sys.id} className="cursor-pointer">
+                            <Link
+                                className={
+                                    index < indexOfCurrentChapter
+                                        ? ''
+                                        : 'pointer-events-none'
+                                }
+                                href={`/onboarding/global/${chapter?.sys.id}/${
+                                    //@ts-ignore
+                                    chapter ? getFirstStepId(chapter) : ''
+                                }`}
                             >
-                                <div className="flex items-center justify-between">
-                                    <span className="sr-only">User info</span>
-                                    <h3 className="">{`${
-                                        index + 1
-                                    }: ${chapter?.name}`}</h3>
-                                    {index < indexOfCurrentChapter ? (
-                                        <FontAwesomeIcon
-                                            icon={faCircleCheck}
-                                            className=" h-5 text-xs  "
-                                        />
-                                    ) : null}
-                                    {index === indexOfCurrentChapter ? (
-                                        <FontAwesomeIcon
-                                            icon={faArrowLeft}
-                                            className=" h-5 text-xs  "
-                                        />
-                                    ) : null}
+                                <div
+                                    className={clsx(
+                                        'w-full rounded-lg  border border-white p-4  ',
+                                        {
+                                            'bg-gray-100 text-main-200  ':
+                                                index > indexOfCurrentChapter,
+                                            'bg-pink-400  text-main-200 ':
+                                                index < indexOfCurrentChapter,
+                                            'border-pink-500 bg-purple-200 font-bold text-purple-700 ':
+                                                index === indexOfCurrentChapter,
+                                        }
+                                    )}
+                                    role="alert"
+                                >
+                                    <div className="flex items-center justify-between">
+                                        <span className="sr-only">
+                                            User info
+                                        </span>
+                                        <h3 className="">{`${
+                                            index + 1
+                                        }: ${chapter?.name}`}</h3>
+                                        {index < indexOfCurrentChapter ? (
+                                            <FontAwesomeIcon
+                                                icon={faCircleCheck}
+                                                className=" h-5 text-xs  "
+                                            />
+                                        ) : null}
+                                        {index === indexOfCurrentChapter ? (
+                                            <FontAwesomeIcon
+                                                icon={faArrowLeft}
+                                                className=" h-5 text-xs  "
+                                            />
+                                        ) : null}
+                                    </div>
                                 </div>
-                            </div>
+                            </Link>
                         </li>
                     ))}
                 </ol>

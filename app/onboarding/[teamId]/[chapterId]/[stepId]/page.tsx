@@ -111,6 +111,8 @@ export default async function Page({ params }: { params: StepPageParams }) {
     const todosToRender: TodoForDb[] = convertCMSTodosForDB(
         todoData,
         user.id,
+        params.chapterId ?? '',
+        params.stepId,
         dbTodos
     )
 

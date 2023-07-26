@@ -27,6 +27,8 @@ model Todo {
   updatedAt DateTime @updatedAt
   title     String
   body      String
+  chapterId String
+  stepId    String 
   owner     String   @default("")
   completed Boolean  @default(false)
 
