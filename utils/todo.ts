@@ -31,6 +31,8 @@ const decrementChapter = (
 const convertCMSTodosForDB = (
     cmsTodos: TodosForStepQuery,
     owner: string,
+    currentChapter: string,
+    currentStep: string,
     dbTodos: Todo[]
 ): TodoForDb[] => {
     return (
@@ -39,7 +41,8 @@ const convertCMSTodosForDB = (
                 title: todoForStep?.title ?? '',
                 body: todoForStep?.description ?? '',
                 cmsId: todoForStep?.sys?.id ?? '',
-
+                chapterId: currentChapter,
+                stepId: currentStep,
                 owner,
                 completed:
                     dbTodos.find((todo) => todo.cmsId === todoForStep?.sys?.id)
