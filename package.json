@@ -9,7 +9,8 @@
         "build": "next build",
         "start": "next start",
         "lint": "next lint",
-        "codegen": "gql-gen --config codegen.yml"
+        "codegen": "gql-gen --config codegen.yml",
+        "postinstall": "prisma generate"
     },
     "prisma": {
         "seed": "ts-node -P tsconfig-seed.json -r tsconfig-paths/register --transpileOnly prisma/seed.ts"
