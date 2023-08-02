@@ -11,3 +11,7 @@ export interface GlobalStepPageParams {
 export interface TeamPageParams {
     team: string
 }
+
+export interface CompletedPageParams {
+    teamId: string
+}

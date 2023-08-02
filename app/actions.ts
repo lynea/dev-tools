@@ -3,6 +3,7 @@
 import { db } from '@/lib/db'
 import { revalidateTag } from 'next/cache'
 import { TodoForDb } from './onboarding/types/todo'
+import { User, UserSchema } from '@/lib/schema/user.schema'
 
 //we can create them when page loads e.g. filter out the ones that are not in the db yet
 
@@ -17,7 +18,7 @@ export async function createOrMutateTodo(userId: string, todo: TodoForDb) {
             console.log(err)
         })
 
-    //check if its already in the db
+    //check if its already in the db for this user
 
     if (dbTodos) {
         const alreadyExtistingTodo = dbTodos.find(
@@ -40,6 +41,7 @@ export async function createOrMutateTodo(userId: string, todo: TodoForDb) {
             const res = await db.todo.create({
                 data: {
                     ...todo,
+                    completed: true,
                     owner: userId,
                 },
             })
@@ -47,4 +49,23 @@ export async function createOrMutateTodo(userId: string, todo: TodoForDb) {
     }
 
     revalidateTag('todos')
+}
+
+export async function createOrUpdateUser(
+    user: User,
+    hasCompleted: boolean | undefined
+) {
+    const validationResult = UserSchema.safeParse(user)
+
+    if (!validationResult.success) {
+        throw new Error(validationResult.error.message)
+    }
+
+    const res = await db.user.upsert({
+        where: { id: user.id },
+        update: { ...user, hasCompleted },
+        create: { ...user, hasCompleted },
+    })
+
+    return res
 }

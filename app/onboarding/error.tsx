@@ -18,7 +18,6 @@ export default function Error({
         <div>
             <h2 className="text-2xl text-white">Something went wrong!</h2>
             <Button
-                variant="primary"
                 onClick={
                     // Attempt to recover by trying to re-render the segment
                     () => reset()

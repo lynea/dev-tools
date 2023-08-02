@@ -1,10 +1,12 @@
 'use client'
 
-import { FunctionComponent, useState } from 'react'
+import { FunctionComponent, startTransition, useState } from 'react'
 import { clsx } from 'clsx'
 import { useRouter } from 'next/navigation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
+import { createOrUpdateUser } from '../../app/actions'
+import { useUser } from '@clerk/clerk-react'
 
 type SquareButtonProps = {
     children: React.ReactNode
@@ -78,6 +80,8 @@ export const TeamSelect: FunctionComponent<TeamSelectProps> = ({ teams }) => {
     const [selectedTeam, setSelectedTeam] = useState<string | undefined>(
         undefined
     )
+    const { user } = useUser()
+
     const [loading, setLoading] = useState<boolean>(false)
 
     const router = useRouter()
@@ -90,31 +94,42 @@ export const TeamSelect: FunctionComponent<TeamSelectProps> = ({ teams }) => {
     }
 
     const navigateToFirstStep = async () => {
+        //first save the user to the db
         //get the first step of the first chapter of the selected team
+        if (!teams || !selectedTeam || !user) return
         setLoading(true)
-        if (!teams || !selectedTeam) return
 
-        const sortedChapters = [
-            ...(getChaptersForTeam(selectedTeam) ?? []),
-        ]?.sort((a, b) => a?.id! - b?.id!)
+        try {
+            startTransition(() =>
+                //@ts-ignore
+                createOrUpdateUser({ team: selectedTeam, id: user.id })
+            )
+        } catch (error) {
+            console.log(error)
+        } finally {
+            const sortedChapters = [
+                ...(getChaptersForTeam(selectedTeam) ?? []),
+            ]?.sort((a, b) => a?.id! - b?.id!)
 
-        if (sortedChapters.length < 1) {
-            return
+            if (sortedChapters.length < 1) {
+                return
+            }
+
+            const firstChapter = sortedChapters.at(0)
+
+            if (!firstChapter?.sys.id) return
+
+            //TODO: sorting is duplicated should move to util
+            const sortedSteps = [
+                ...(firstChapter?.linkedFrom?.onboardStepCollection?.items ??
+                    []),
+            ]?.sort((a, b) => a?.step! - b?.step!)
+
+            const firstStep = sortedSteps.at(0)?.sys?.id
+            router.push(
+                `/onboarding/${selectedTeam}/${firstChapter?.sys?.id}/${firstStep}`
+            )
         }
-
-        const firstChapter = sortedChapters.at(0)
-
-        if (!firstChapter?.sys.id) return
-
-        //TODO: sorting is duplicated should move to util
-        const sortedSteps = [
-            ...(firstChapter?.linkedFrom?.onboardStepCollection?.items ?? []),
-        ]?.sort((a, b) => a?.step! - b?.step!)
-
-        const firstStep = sortedSteps.at(0)?.sys?.id
-        router.push(
-            `/onboarding/${selectedTeam}/${firstChapter?.sys?.id}/${firstStep}`
-        )
     }
 
     return (

@@ -1,6 +1,8 @@
 import QueryProvider from '@/components/QueryClient/QueryClient'
 import { ClerkProvider } from '@clerk/nextjs/app-beta'
 import './globals.css'
+import { TodoOverView } from '@/components/TodoOverView/TodoOverview'
+import { TodoList } from '@/components/TodoOverView/TodoList'
 
 import { Nav } from '@/components/Nav/Nav'
 
@@ -16,11 +18,16 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en">
-            <body className="flex min-h-screen w-full flex-col items-center  justify-center bg-main-200">
+            <body className="flex h-full min-h-screen w-full flex-col items-center  justify-center bg-main-200">
+                <TodoOverView>
+                    {/* @ts-ignore */}
+                    <TodoList />
+                </TodoOverView>
                 <main className=" mt-20 flex h-full min-h-[calc(100vh_-_10rem)]   w-11/12 items-center  justify-center lg:mt-8 lg:max-w-7xl">
                     <QueryProvider>
                         <ClerkProvider>
                             <Nav />
+
                             {children}
                         </ClerkProvider>
                     </QueryProvider>

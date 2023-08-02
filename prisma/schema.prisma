@@ -13,11 +13,10 @@ datasource db {
 
 model User {
   id        String   @id @default(uuid())
+  team String 
+  hasCompleted Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  email     String   @unique
-  firstName String
-  password  String
 }
 
 model Todo {
