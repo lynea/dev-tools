@@ -20,6 +20,7 @@ export const CompleteButton = ({
 
         try {
             startTransition(() =>
+                //@ts-ignore
                 createOrUpdateUser({ id: user.id, team: user.team }, true)
             )
         } catch (error) {
