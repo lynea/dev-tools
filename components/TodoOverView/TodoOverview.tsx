@@ -16,7 +16,7 @@ export const TodoOverView: FunctionComponent<TodoOverViewProps> = ({
     const [isOpen, setIsOpen] = useState(false)
 
     return (
-        <div>
+        <>
             <button
                 className="font-sm absolute top-3 right-3 z-10 w-fit text-white"
                 onClick={() => setIsOpen(!isOpen)}
@@ -39,13 +39,13 @@ export const TodoOverView: FunctionComponent<TodoOverViewProps> = ({
             </div>
 
             <div
-                className={`absolute top-0 right-0 flex h-full w-96 flex-col bg-gray-800 p-6 duration-300 ease-in-out ${
+                className={`absolute top-0 right-0 flex h-full min-h-screen w-96 flex-col overflow-y-scroll bg-gray-800 p-6 duration-300 ease-in-out ${
                     isOpen ? 'translate-x-0 ' : 'translate-x-full'
                 }`}
             >
                 <h3 className="mb-4 text-3xl font-bold text-white">Todos</h3>
                 {children}
             </div>
-        </div>
+        </>
     )
 }

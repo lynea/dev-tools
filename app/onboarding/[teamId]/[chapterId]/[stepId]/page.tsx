@@ -10,18 +10,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faCircleCheck } from '@fortawesome/free-solid-svg-icons'
 import { getClient } from '@/lib/client'
 
-import { TeamsQuery, TodosForStepQuery } from '../../../../../generated/graphql'
+import {
+    Chapter,
+    TeamsQuery,
+    TodosForStepQuery,
+} from '../../../../../generated/graphql'
 import { todosForStepQuery } from '@/graphql/queries/todo'
-import { TodoOverView } from '@/components/TodoOverView/TodoOverview'
 import { StepButton } from '@/components/StepButton/StepButton'
 
 import { currentUser } from '@clerk/nextjs/app-beta'
 import type { User } from '@clerk/nextjs/api'
 
-import { TodoItem } from '@/components/TodoItemExperimental/TodoItem'
-
 import { getTodosForUser } from '@/utils/requests/_requests'
-import { TodoList } from '@/components/TodoOverView/TodoList'
 import {
     incrementChapter,
     incrementStep,
@@ -33,6 +33,9 @@ import { StepPageParams } from '@/app/onboarding/types/pageProps'
 import { TodoForDb } from '@/app/onboarding/types/todo'
 import Image from 'next/image'
 import { headers } from 'next/headers'
+import { TodoWrapper } from '@/components/TodoWrapper/TodoWrapper'
+import { ImageViewer } from '@/components/ImageViewer/ImageViewer'
+import { db } from '@/lib/db'
 
 export const revalidate = 5
 
@@ -40,9 +43,26 @@ export default async function Page({ params }: { params: StepPageParams }) {
     const user: User | null = await currentUser()
     const host = headers().get('host')
 
+    const getFirstStepId = (chapter: Chapter) => {
+        const sortedSteps = [
+            ...(chapter?.linkedFrom?.onboardStepCollection?.items ?? []),
+        ]?.sort((a, b) => a?.step! - b?.step!)
+
+        return sortedSteps.at(0)?.sys?.id
+    }
+
     if (!user) return <>no user was found</>
 
+    const dbUser = await db.user.findFirst({
+        where: {
+            id: user.id,
+        },
+    })
+
+    console.log('debuser', dbUser)
+
     const dbTodos = await getTodosForUser(user.id, host!)
+    const hasCompletedAll = dbTodos.every((todo) => todo.completed)
 
     const client = getClient()
 
@@ -129,7 +149,7 @@ export default async function Page({ params }: { params: StepPageParams }) {
     const generateNextLink = (): string => {
         if (isLastStepInChapter) {
             if (isLastChapter) {
-                return `/onboarding/completed`
+                return `/onboarding/${params.teamId}/completed`
             }
 
             const firstStepId = [
@@ -192,15 +212,7 @@ export default async function Page({ params }: { params: StepPageParams }) {
         <section className="flex w-full">
             <div className="w-full [&>_div]:mt-4">
                 {todoData.onboardStep?.mainImage?.url ? (
-                    <div className="relative h-80 w-full overflow-hidden rounded-lg">
-                        <Image
-                            src={todoData.onboardStep?.mainImage?.url}
-                            fill={true}
-                            objectFit="cover"
-                            objectPosition="top"
-                            alt="Picture of the author"
-                        />
-                    </div>
+                    <ImageViewer url={todoData.onboardStep?.mainImage?.url} />
                 ) : null}
 
                 <Box>
@@ -219,13 +231,10 @@ export default async function Page({ params }: { params: StepPageParams }) {
                     <Box>
                         <h3 className="mb-4 text-2xl font-bold">Todo:</h3>
                         <div className="flex flex-col" data-testid="body-todos">
-                            {todosToRender?.map((todo) => (
-                                <TodoItem
-                                    todo={todo}
-                                    userId={user.id}
-                                    key={todo.cmsId}
-                                />
-                            ))}
+                            <TodoWrapper
+                                userId={user.id}
+                                todos={todosToRender}
+                            />
                         </div>
                     </Box>
                 ) : null}
@@ -236,9 +245,7 @@ export default async function Page({ params }: { params: StepPageParams }) {
                             href={generatePreviousLink()}
                             className="order-3 w-full lg:order-1 lg:w-auto"
                         >
-                            <Button className="" variant="primary">
-                                Previous
-                            </Button>
+                            <Button className="">Previous</Button>
                         </Link>
                     ) : null}
 
@@ -264,48 +271,64 @@ export default async function Page({ params }: { params: StepPageParams }) {
                     />
                 </div>
             </div>
-            <TodoOverView>
-                {/* @ts-ignore */}
-                <TodoList />
-            </TodoOverView>
 
             <div className="mt-4 ml-6 flex  flex-col items-center ">
                 <ol className="w-72 space-y-4 ">
                     {sortedChapters?.map((chapter, index) => (
-                        <li key={chapter?.sys.id}>
-                            <div
-                                className={clsx(
-                                    'w-full rounded-lg  border border-white p-4  ',
-                                    {
-                                        'bg-gray-100 text-main-200  ':
-                                            index > indexOfCurrentChapter,
-                                        'bg-pink-400  text-main-200 ':
-                                            index < indexOfCurrentChapter,
-                                        'border-pink-500 bg-purple-200 font-bold text-purple-700 ':
-                                            index === indexOfCurrentChapter,
-                                    }
-                                )}
-                                role="alert"
+                        <li key={chapter?.sys.id} className="cursor-pointer">
+                            <Link
+                                className={
+                                    index < indexOfCurrentChapter ||
+                                    hasCompletedAll
+                                        ? ''
+                                        : 'pointer-events-none '
+                                }
+                                href={`/onboarding/${params.teamId}/${chapter
+                                    ?.sys.id}/${
+                                    //@ts-ignore
+                                    chapter ? getFirstStepId(chapter) : ''
+                                }`}
                             >
-                                <div className="flex items-center justify-between">
-                                    <span className="sr-only">User info</span>
-                                    <h3 className="">{`${
-                                        index + 1
-                                    }: ${chapter?.name}`}</h3>
-                                    {index < indexOfCurrentChapter ? (
-                                        <FontAwesomeIcon
-                                            icon={faCircleCheck}
-                                            className=" h-5 text-xs  "
-                                        />
-                                    ) : null}
-                                    {index === indexOfCurrentChapter ? (
-                                        <FontAwesomeIcon
-                                            icon={faArrowLeft}
-                                            className=" h-5 text-xs  "
-                                        />
-                                    ) : null}
+                                <div
+                                    className={clsx(
+                                        'w-full rounded-lg  border border-white p-4  ',
+                                        {
+                                            'bg-gray-100 text-main-200  ':
+                                                index > indexOfCurrentChapter &&
+                                                !hasCompletedAll,
+                                            'bg-pink-400  text-main-200 ':
+                                                index < indexOfCurrentChapter ||
+                                                hasCompletedAll,
+                                            'border-pink-500 bg-purple-200 font-bold text-purple-700 ':
+                                                index === indexOfCurrentChapter,
+                                        }
+                                    )}
+                                    role="alert"
+                                >
+                                    <div className="flex items-center justify-between">
+                                        <span className="sr-only">
+                                            User info
+                                        </span>
+                                        <h3 className="">{`${
+                                            index + 1
+                                        }: ${chapter?.name}`}</h3>
+                                        {index < indexOfCurrentChapter ||
+                                        hasCompletedAll ? (
+                                            <FontAwesomeIcon
+                                                icon={faCircleCheck}
+                                                className=" h-5 text-xs  "
+                                            />
+                                        ) : null}
+                                        {index === indexOfCurrentChapter &&
+                                        !hasCompletedAll ? (
+                                            <FontAwesomeIcon
+                                                icon={faArrowLeft}
+                                                className=" h-5 text-xs  "
+                                            />
+                                        ) : null}
+                                    </div>
                                 </div>
-                            </div>
+                            </Link>
                         </li>
                     ))}
                 </ol>
