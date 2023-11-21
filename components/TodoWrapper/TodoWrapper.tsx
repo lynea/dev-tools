@@ -1,7 +1,7 @@
 'use client'
 
 import { TodoForDb } from '@/app/onboarding/types/todo'
-import { FunctionComponent, useState } from 'react'
+import { FunctionComponent, useEffect, useState } from 'react'
 import { TodoItem } from '../TodoItemExperimental/TodoItem'
 
 // a todoWrapper fetches a list of todos from an api enpoint
@@ -22,8 +22,14 @@ export const TodoWrapper: FunctionComponent<TodoWrapperProps> = ({
     withLink = false,
 }) => {
     const [filter, setFilter] = useState(withFilter)
+    const [todosToShow, setTodosToShow] = useState<TodoForDb[]>()
+    useEffect(() => {
+        const filtered = filter
+            ? todos.filter((todo) => !todo.completed)
+            : todos
 
-    const todosToShow = filter ? todos.filter((todo) => !todo.completed) : todos
+        setTodosToShow(filtered)
+    }, [todos, filter])
 
     return (
         <>
@@ -44,11 +50,11 @@ export const TodoWrapper: FunctionComponent<TodoWrapperProps> = ({
                     </label>
                 </div>
             ) : null}
-            {todosToShow?.map((todo) => (
+            {todosToShow?.map((todo, index) => (
                 <TodoItem
                     userId={userId}
                     todo={todo}
-                    key={todo.cmsId}
+                    key={todo.cmsId + index}
                     withLink={withLink}
                 />
             ))}
