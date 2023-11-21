@@ -6,6 +6,8 @@ import { allTeamsInfoQuery } from '@/graphql/queries/teams'
 import { AllTeamsInfoQuery } from '@/generated/graphql'
 import { TeamPageParams } from '../types/pageProps'
 
+export const revalidate = 3600 // revalidate at most every hour
+
 export default async function Page({
     searchParams,
 }: {
