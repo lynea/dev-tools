@@ -50,6 +50,17 @@ export async function createOrMutateTodo(userId: string, todo: TodoForDb) {
 
     revalidateTag('todos')
 }
+export async function createTodos(userId: string, todos: TodoForDb[]) {
+    const todosTocreate = await db.todo
+        .createMany({
+            data: [...todos],
+        })
+        .catch((err) => {
+            console.log(err)
+        })
+
+    revalidateTag('todos')
+}
 
 export async function createOrUpdateUser(
     user: User,

@@ -1,7 +1,7 @@
 import { GlobalStepPageParams } from '@/app/onboarding/types/pageProps'
 import { Chapter } from '@/components/Chapter/Chapter'
-import { AllGobalChaptersInfoQuery } from '@/generated/graphql'
-import { allGobalChaptersInfoQuery } from '@/graphql/queries/globalChapter'
+import { CompaniesQuery } from '@/generated/graphql'
+import { companiesQuery } from '@/graphql/queries/companies'
 import { getClient } from '@/lib/client'
 
 export default async function Page({
@@ -11,12 +11,12 @@ export default async function Page({
 }) {
     const client = getClient()
 
-    const { data }: { data: AllGobalChaptersInfoQuery } = await client.query({
-        query: allGobalChaptersInfoQuery,
+    const { data }: { data: CompaniesQuery } = await client.query({
+        query: companiesQuery,
     })
 
     //TODO: see if we can make it so that it queries for a entity programmaticly
-    const chaptersForDepartment = data.chapterCollection
+    const chaptersForDepartment = data.company?.linkedFrom?.chapterCollection
 
     console.log(
         chaptersForDepartment?.items[0]?.linkedFrom?.onboardStepCollection

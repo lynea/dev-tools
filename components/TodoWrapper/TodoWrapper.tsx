@@ -28,7 +28,13 @@ export const TodoWrapper: FunctionComponent<TodoWrapperProps> = ({
             ? todos.filter((todo) => !todo.completed)
             : todos
 
-        setTodosToShow(filtered)
+        setTodosToShow(
+            filtered.sort((a, b) => {
+                if (a.completed && !b.completed) return 1
+                if (!a.completed && b.completed) return -1
+                return 0
+            })
+        )
     }, [todos, filter])
 
     return (

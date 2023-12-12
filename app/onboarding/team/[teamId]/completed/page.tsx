@@ -7,8 +7,8 @@ import { Box } from '@/components/Box/Box'
 import { getTodosForUser } from '@/utils/requests/_requests'
 import { TodoItem } from '@/components/TodoItemExperimental/TodoItem'
 import { headers } from 'next/headers'
-import { CompletedPageParams } from '../../types/pageProps'
 import { CompleteButton } from '@/components/CompleteButton/CompleteButton'
+import { CompletedPageParams } from '@/app/onboarding/types/pageProps'
 
 export const dynamic = 'force-dynamic'
 

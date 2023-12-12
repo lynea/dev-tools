@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client'
 
-export const allTeamsInfoQuery = gql`
-    query allTeamsInfo {
-        teamCollection(limit: 3) {
+export const allCompaniesQuery = gql`
+    query allCompanies {
+        companyCollection(limit: 3) {
             items {
                 name
                 alias
@@ -36,17 +36,9 @@ export const allTeamsInfoQuery = gql`
     }
 `
 
-// get all chapters for a company
-
-// get alll chapters for a team
-
-// get all chapters for a department
-
-//chapter can be tied to a company or a team or a department. global means that its a organisation wide one
-
-export const teamsQuery = gql`
-    query Teams($id: String!) {
-        team(id: $id) {
+export const companiesQuery = gql`
+    query Companies($id: String!) {
+        company(id: $id) {
             name
             linkedFrom {
                 chapterCollection {

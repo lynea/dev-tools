@@ -1,3 +1,4 @@
+import { DonutScene } from '@/components/DonutScene/DonutScene'
 import { Title } from '@/components/Title/Title'
 import Link from 'next/link'
 import { currentUser } from '@clerk/nextjs/app-beta'
@@ -5,7 +6,6 @@ import type { User } from '@clerk/nextjs/api'
 import { AllGobalChaptersInfoQuery } from '@/generated/graphql'
 import { allGobalChaptersInfoQuery } from '@/graphql/queries/globalChapter'
 import { getClient } from '@/lib/client'
-import { TSGScene } from '@/components/TsgScene/TsgScene'
 
 export default async function Page({
     searchParams,
@@ -18,11 +18,9 @@ export default async function Page({
         query: allGobalChaptersInfoQuery,
     })
 
-    console.log(data.chapterCollection?.items)
-
     const getFirstStep = async () => {
         //get the first step of the first chapter of the selected team
-
+        // setLoading(true);
         if (!data.chapterCollection?.items) return
 
         const sortedChapters = [
@@ -52,8 +50,6 @@ export default async function Page({
 
     const user: User | null = await currentUser()
 
-    console.log(`user is : ${user?.id}`)
-
     return (
         <section className="flex w-full flex-col items-center justify-center ">
             <div className="absolute top-11">
@@ -76,15 +72,15 @@ export default async function Page({
             </h2>
             <h2 className="text-3xl font-bold text-white">
                 {' '}
-                And congrats on your first day at the sharing group
+                And congrats on your first day at Mijndomein{' '}
             </h2>
 
             <div className="mb-12 h-96">
-                <TSGScene />
+                <DonutScene />
             </div>
-            <p className="mt-20  text-2xl text-white">
+            <p className="mt-6  text-2xl text-white">
                 {' '}
-                We will get you up to speed in no time{' '}
+                We will get you ready to write some awesome code in no time{' '}
             </p>
             <Link href={(await getFirstStep()) || ''}>
                 <button className="mt-9 rounded-md bg-pink-600 px-6 py-3 text-xl font-bold text-white">

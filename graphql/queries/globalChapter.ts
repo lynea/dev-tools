@@ -9,7 +9,7 @@ export const allGobalChaptersInfoQuery = gql`
                 sys {
                     id
                 }
-                id
+
                 linkedFrom {
                     onboardStepCollection {
                         total

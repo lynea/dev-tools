@@ -23,6 +23,10 @@ export const TodoList = async () => {
 
     const todos = await getTodosForUser(user.id, host!)
 
+    if (!todos?.length) {
+        return <p className="text-center text-white">You have no todos yet</p>
+    }
+
     return (
         <div className="flex flex-col">
             <TodoWrapper userId={user.id} todos={todos} withFilter withLink />

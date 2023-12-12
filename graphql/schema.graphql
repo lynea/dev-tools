@@ -1,90 +1,108 @@
 type Query {
-    asset(id: String!, preview: Boolean, locale: String): Asset
-    assetCollection(
-        skip: Int = 0
-        limit: Int = 100
-        preview: Boolean
-        locale: String
-        where: AssetFilter
-        order: [AssetOrder]
-    ): AssetCollection
-    todo(id: String!, preview: Boolean, locale: String): Todo
-    todoCollection(
-        skip: Int = 0
-        limit: Int = 100
-        preview: Boolean
-        locale: String
-        where: TodoFilter
-        order: [TodoOrder]
-    ): TodoCollection
-    onboardStep(id: String!, preview: Boolean, locale: String): OnboardStep
-    onboardStepCollection(
-        skip: Int = 0
-        limit: Int = 100
-        preview: Boolean
-        locale: String
-        where: OnboardStepFilter
-        order: [OnboardStepOrder]
-    ): OnboardStepCollection
-    chapter(id: String!, preview: Boolean, locale: String): Chapter
-    chapterCollection(
-        skip: Int = 0
-        limit: Int = 100
-        preview: Boolean
-        locale: String
-        where: ChapterFilter
-        order: [ChapterOrder]
-    ): ChapterCollection
-    team(id: String!, preview: Boolean, locale: String): Team
-    teamCollection(
-        skip: Int = 0
-        limit: Int = 100
-        preview: Boolean
-        locale: String
-        where: TeamFilter
-        order: [TeamOrder]
-    ): TeamCollection
-    menu(id: String!, preview: Boolean, locale: String): Menu
-    menuCollection(
-        skip: Int = 0
-        limit: Int = 100
-        preview: Boolean
-        locale: String
-        where: MenuFilter
-        order: [MenuOrder]
-    ): MenuCollection
-    entryCollection(
-        skip: Int = 0
-        limit: Int = 100
-        preview: Boolean
-        locale: String
-        where: EntryFilter
-        order: [EntryOrder]
-    ): EntryCollection
+  asset(id: String!, preview: Boolean, locale: String): Asset
+  assetCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+    where: AssetFilter
+    order: [AssetOrder]
+  ): AssetCollection
+  chapter(id: String!, preview: Boolean, locale: String): Chapter
+  chapterCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+    where: ChapterFilter
+    order: [ChapterOrder]
+  ): ChapterCollection
+  team(id: String!, preview: Boolean, locale: String): Team
+  teamCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+    where: TeamFilter
+    order: [TeamOrder]
+  ): TeamCollection
+  department(id: String!, preview: Boolean, locale: String): Department
+  departmentCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+    where: DepartmentFilter
+    order: [DepartmentOrder]
+  ): DepartmentCollection
+  company(id: String!, preview: Boolean, locale: String): Company
+  companyCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+    where: CompanyFilter
+    order: [CompanyOrder]
+  ): CompanyCollection
+  onboardStep(id: String!, preview: Boolean, locale: String): OnboardStep
+  onboardStepCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+    where: OnboardStepFilter
+    order: [OnboardStepOrder]
+  ): OnboardStepCollection
+  todo(id: String!, preview: Boolean, locale: String): Todo
+  todoCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+    where: TodoFilter
+    order: [TodoOrder]
+  ): TodoCollection
+  menu(id: String!, preview: Boolean, locale: String): Menu
+  menuCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+    where: MenuFilter
+    order: [MenuOrder]
+  ): MenuCollection
+  entryCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+    where: EntryFilter
+    order: [EntryOrder]
+  ): EntryCollection
 }
 
 # Represents a binary file in a space. An asset can be any file type.
 type Asset {
-    sys: Sys!
-    contentfulMetadata: ContentfulMetadata!
-    title(locale: String): String
-    description(locale: String): String
-    contentType(locale: String): String
-    fileName(locale: String): String
-    size(locale: String): Int
-    url(transform: ImageTransformOptions, locale: String): String
-    width(locale: String): Int
-    height(locale: String): Int
-    linkedFrom(allowedLocales: [String]): AssetLinkingCollections
+  sys: Sys!
+  contentfulMetadata: ContentfulMetadata!
+  title(locale: String): String
+  description(locale: String): String
+  contentType(locale: String): String
+  fileName(locale: String): String
+  size(locale: String): Int
+  url(transform: ImageTransformOptions, locale: String): String
+  width(locale: String): Int
+  height(locale: String): Int
+  linkedFrom(allowedLocales: [String]): AssetLinkingCollections
 }
 
 type Sys {
-    id: String!
-    spaceId: String!
-    environmentId: String!
-    publishedAt: DateTime
-    firstPublishedAt: DateTime
-    publishedVersion: Int
+  id: String!
+  spaceId: String!
+  environmentId: String!
+  publishedAt: DateTime
+  firstPublishedAt: DateTime
+  publishedVersion: Int
 }
 
 # A date-time string at UTC, such as 2007-12-03T10:15:30Z,
@@ -94,45 +112,45 @@ type Sys {
 scalar DateTime
 
 type ContentfulMetadata {
-    tags: [ContentfulTag]!
+  tags: [ContentfulTag]!
 }
 
 # Represents a tag entity for finding and organizing content easily.
 #     Find out more here: https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/content-tags
 type ContentfulTag {
-    id: String
-    name: String
+  id: String
+  name: String
 }
 
 input ImageTransformOptions {
-    # Desired width in pixels. Defaults to the original image width.
-    width: Dimension
+  # Desired width in pixels. Defaults to the original image width.
+  width: Dimension
 
-    # Desired height in pixels. Defaults to the original image height.
-    height: Dimension
+  # Desired height in pixels. Defaults to the original image height.
+  height: Dimension
 
-    # Desired quality of the image in percents.
-    #         Used for `PNG8`, `JPG`, `JPG_PROGRESSIVE` and `WEBP` formats.
-    quality: Quality
+  # Desired quality of the image in percents.
+  #         Used for `PNG8`, `JPG`, `JPG_PROGRESSIVE` and `WEBP` formats.
+  quality: Quality
 
-    # Desired corner radius in pixels.
-    #         Results in an image with rounded corners (pass `-1` for a full circle/ellipse).
-    #         Defaults to `0`. Uses desired background color as padding color,
-    #         unless the format is `JPG` or `JPG_PROGRESSIVE` and resize strategy is `PAD`, then defaults to white.
-    cornerRadius: Int
+  # Desired corner radius in pixels.
+  #         Results in an image with rounded corners (pass `-1` for a full circle/ellipse).
+  #         Defaults to `0`. Uses desired background color as padding color,
+  #         unless the format is `JPG` or `JPG_PROGRESSIVE` and resize strategy is `PAD`, then defaults to white.
+  cornerRadius: Int
 
-    # Desired resize strategy. Defaults to `FIT`.
-    resizeStrategy: ImageResizeStrategy
+  # Desired resize strategy. Defaults to `FIT`.
+  resizeStrategy: ImageResizeStrategy
 
-    # Desired resize focus area. Defaults to `CENTER`.
-    resizeFocus: ImageResizeFocus
+  # Desired resize focus area. Defaults to `CENTER`.
+  resizeFocus: ImageResizeFocus
 
-    # Desired background color, used with corner radius or `PAD` resize strategy.
-    #         Defaults to transparent (for `PNG`, `PNG8` and `WEBP`) or white (for `JPG` and `JPG_PROGRESSIVE`).
-    backgroundColor: HexColor
+  # Desired background color, used with corner radius or `PAD` resize strategy.
+  #         Defaults to transparent (for `PNG`, `PNG8` and `WEBP`) or white (for `JPG` and `JPG_PROGRESSIVE`).
+  backgroundColor: HexColor
 
-    # Desired image format. Defaults to the original image format.
-    format: ImageFormat
+  # Desired image format. Defaults to the original image format.
+  format: ImageFormat
 }
 
 # The 'Dimension' type represents dimensions as whole numeric values between `1` and `4000`.
@@ -142,756 +160,1096 @@ scalar Dimension
 scalar Quality
 
 enum ImageResizeStrategy {
-    # Resizes the image to fit into the specified dimensions.
-    FIT
+  # Resizes the image to fit into the specified dimensions.
+  FIT
 
-    # Resizes the image to the specified dimensions, padding the image if needed.
-    #         Uses desired background color as padding color.
-    PAD
+  # Resizes the image to the specified dimensions, padding the image if needed.
+  #         Uses desired background color as padding color.
+  PAD
 
-    # Resizes the image to the specified dimensions, cropping the image if needed.
-    FILL
+  # Resizes the image to the specified dimensions, cropping the image if needed.
+  FILL
 
-    # Resizes the image to the specified dimensions, changing the original aspect ratio if needed.
-    SCALE
+  # Resizes the image to the specified dimensions, changing the original aspect ratio if needed.
+  SCALE
 
-    # Crops a part of the original image to fit into the specified dimensions.
-    CROP
+  # Crops a part of the original image to fit into the specified dimensions.
+  CROP
 
-    # Creates a thumbnail from the image.
-    THUMB
+  # Creates a thumbnail from the image.
+  THUMB
 }
 
 enum ImageResizeFocus {
-    # Focus the resizing on the center.
-    CENTER
+  # Focus the resizing on the center.
+  CENTER
 
-    # Focus the resizing on the top.
-    TOP
+  # Focus the resizing on the top.
+  TOP
 
-    # Focus the resizing on the top right.
-    TOP_RIGHT
+  # Focus the resizing on the top right.
+  TOP_RIGHT
 
-    # Focus the resizing on the right.
-    RIGHT
+  # Focus the resizing on the right.
+  RIGHT
 
-    # Focus the resizing on the bottom right.
-    BOTTOM_RIGHT
+  # Focus the resizing on the bottom right.
+  BOTTOM_RIGHT
 
-    # Focus the resizing on the bottom.
-    BOTTOM
+  # Focus the resizing on the bottom.
+  BOTTOM
 
-    # Focus the resizing on the bottom left.
-    BOTTOM_LEFT
+  # Focus the resizing on the bottom left.
+  BOTTOM_LEFT
 
-    # Focus the resizing on the left.
-    LEFT
+  # Focus the resizing on the left.
+  LEFT
 
-    # Focus the resizing on the top left.
-    TOP_LEFT
+  # Focus the resizing on the top left.
+  TOP_LEFT
 
-    # Focus the resizing on the largest face.
-    FACE
+  # Focus the resizing on the largest face.
+  FACE
 
-    # Focus the resizing on the area containing all the faces.
-    FACES
+  # Focus the resizing on the area containing all the faces.
+  FACES
 }
 
 # The 'HexColor' type represents color in `rgb:ffffff` string format.
 scalar HexColor
 
 enum ImageFormat {
-    # JPG image format.
-    JPG
+  # JPG image format.
+  JPG
 
-    # Progressive JPG format stores multiple passes of an image in progressively higher detail.
-    #         When a progressive image is loading, the viewer will first see a lower quality pixelated version which
-    #         will gradually improve in detail, until the image is fully downloaded. This is to display an image as
-    #         early as possible to make the layout look as designed.
-    JPG_PROGRESSIVE
+  # Progressive JPG format stores multiple passes of an image in progressively higher detail.
+  #         When a progressive image is loading, the viewer will first see a lower quality pixelated version which
+  #         will gradually improve in detail, until the image is fully downloaded. This is to display an image as
+  #         early as possible to make the layout look as designed.
+  JPG_PROGRESSIVE
 
-    # PNG image format
-    PNG
+  # PNG image format
+  PNG
 
-    # 8-bit PNG images support up to 256 colors and weigh less than the standard 24-bit PNG equivalent.
-    #         The 8-bit PNG format is mostly used for simple images, such as icons or logos.
-    PNG8
+  # 8-bit PNG images support up to 256 colors and weigh less than the standard 24-bit PNG equivalent.
+  #         The 8-bit PNG format is mostly used for simple images, such as icons or logos.
+  PNG8
 
-    # WebP image format.
-    WEBP
-    AVIF
+  # WebP image format.
+  WEBP
+  AVIF
 }
 
 type AssetLinkingCollections {
-    entryCollection(
-        skip: Int = 0
-        limit: Int = 100
-        preview: Boolean
-        locale: String
-    ): EntryCollection
-    onboardStepCollection(
-        skip: Int = 0
-        limit: Int = 100
-        preview: Boolean
-        locale: String
-    ): OnboardStepCollection
+  entryCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+  ): EntryCollection
+  onboardStepCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+  ): OnboardStepCollection
 }
 
 type EntryCollection {
-    total: Int!
-    skip: Int!
-    limit: Int!
-    items: [Entry]!
+  total: Int!
+  skip: Int!
+  limit: Int!
+  items: [Entry]!
 }
 
 interface Entry {
-    sys: Sys!
-    contentfulMetadata: ContentfulMetadata!
+  sys: Sys!
+  contentfulMetadata: ContentfulMetadata!
 }
 
 type OnboardStepCollection {
-    total: Int!
-    skip: Int!
-    limit: Int!
-    items: [OnboardStep]!
+  total: Int!
+  skip: Int!
+  limit: Int!
+  items: [OnboardStep]!
 }
 
 # a step for the onboarding [See type definition](https://app.contentful.com/spaces/fyjyr27t2loo/content_types/onboardStep)
 type OnboardStep implements Entry {
-    sys: Sys!
-    contentfulMetadata: ContentfulMetadata!
-    linkedFrom(allowedLocales: [String]): OnboardStepLinkingCollections
-    title(locale: String): String
-    body(locale: String): String
-    codeBlock(locale: String): String
-    step(locale: String): Int
-    mainImage(preview: Boolean, locale: String): Asset
-    chapter(preview: Boolean, locale: String): Chapter
+  sys: Sys!
+  contentfulMetadata: ContentfulMetadata!
+  linkedFrom(allowedLocales: [String]): OnboardStepLinkingCollections
+  title(locale: String): String
+  body(locale: String): String
+  codeBlock(locale: String): String
+  step(locale: String): Int
+  mainImage(preview: Boolean, locale: String): Asset
+  chapter(preview: Boolean, locale: String, where: ChapterFilter): Chapter
 }
 
 type OnboardStepLinkingCollections {
-    entryCollection(
-        skip: Int = 0
-        limit: Int = 100
-        preview: Boolean
-        locale: String
-    ): EntryCollection
-    todoCollection(
-        skip: Int = 0
-        limit: Int = 100
-        preview: Boolean
-        locale: String
-    ): TodoCollection
+  entryCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+  ): EntryCollection
+  todoCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+    order: [OnboardStepLinkingCollectionsTodoCollectionOrder]
+  ): TodoCollection
 }
 
 type TodoCollection {
-    total: Int!
-    skip: Int!
-    limit: Int!
-    items: [Todo]!
+  total: Int!
+  skip: Int!
+  limit: Int!
+  items: [Todo]!
 }
 
 # [See type definition](https://app.contentful.com/spaces/fyjyr27t2loo/content_types/todo)
 type Todo implements Entry {
-    sys: Sys!
-    contentfulMetadata: ContentfulMetadata!
-    linkedFrom(allowedLocales: [String]): TodoLinkingCollections
-    description(locale: String): String
-    step(preview: Boolean, locale: String): OnboardStep
-    id(locale: String): Int
-    title(locale: String): String
+  sys: Sys!
+  contentfulMetadata: ContentfulMetadata!
+  linkedFrom(allowedLocales: [String]): TodoLinkingCollections
+  description(locale: String): String
+  step(preview: Boolean, locale: String, where: OnboardStepFilter): OnboardStep
+  id(locale: String): Int
+  title(locale: String): String
 }
 
 type TodoLinkingCollections {
-    entryCollection(
-        skip: Int = 0
-        limit: Int = 100
-        preview: Boolean
-        locale: String
-    ): EntryCollection
+  entryCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+  ): EntryCollection
+}
+
+input OnboardStepFilter {
+  chapter: cfChapterNestedFilter
+  sys: SysFilter
+  contentfulMetadata: ContentfulMetadataFilter
+  title_exists: Boolean
+  title: String
+  title_not: String
+  title_in: [String]
+  title_not_in: [String]
+  title_contains: String
+  title_not_contains: String
+  body_exists: Boolean
+  body: String
+  body_not: String
+  body_in: [String]
+  body_not_in: [String]
+  body_contains: String
+  body_not_contains: String
+  codeBlock_exists: Boolean
+  codeBlock: String
+  codeBlock_not: String
+  codeBlock_in: [String]
+  codeBlock_not_in: [String]
+  codeBlock_contains: String
+  codeBlock_not_contains: String
+  step_exists: Boolean
+  step: Int
+  step_not: Int
+  step_in: [Int]
+  step_not_in: [Int]
+  step_gt: Int
+  step_gte: Int
+  step_lt: Int
+  step_lte: Int
+  mainImage_exists: Boolean
+  chapter_exists: Boolean
+  OR: [OnboardStepFilter]
+  AND: [OnboardStepFilter]
+}
+
+input cfChapterNestedFilter {
+  sys: SysFilter
+  contentfulMetadata: ContentfulMetadataFilter
+  name_exists: Boolean
+  name: String
+  name_not: String
+  name_in: [String]
+  name_not_in: [String]
+  name_contains: String
+  name_not_contains: String
+  team_exists: Boolean
+  global_exists: Boolean
+  global: Boolean
+  global_not: Boolean
+  OR: [cfChapterNestedFilter]
+  AND: [cfChapterNestedFilter]
+}
+
+input SysFilter {
+  id_exists: Boolean
+  id: String
+  id_not: String
+  id_in: [String]
+  id_not_in: [String]
+  id_contains: String
+  id_not_contains: String
+  publishedAt_exists: Boolean
+  publishedAt: DateTime
+  publishedAt_not: DateTime
+  publishedAt_in: [DateTime]
+  publishedAt_not_in: [DateTime]
+  publishedAt_gt: DateTime
+  publishedAt_gte: DateTime
+  publishedAt_lt: DateTime
+  publishedAt_lte: DateTime
+  firstPublishedAt_exists: Boolean
+  firstPublishedAt: DateTime
+  firstPublishedAt_not: DateTime
+  firstPublishedAt_in: [DateTime]
+  firstPublishedAt_not_in: [DateTime]
+  firstPublishedAt_gt: DateTime
+  firstPublishedAt_gte: DateTime
+  firstPublishedAt_lt: DateTime
+  firstPublishedAt_lte: DateTime
+  publishedVersion_exists: Boolean
+  publishedVersion: Float
+  publishedVersion_not: Float
+  publishedVersion_in: [Float]
+  publishedVersion_not_in: [Float]
+  publishedVersion_gt: Float
+  publishedVersion_gte: Float
+  publishedVersion_lt: Float
+  publishedVersion_lte: Float
+}
+
+input ContentfulMetadataFilter {
+  tags_exists: Boolean
+  tags: ContentfulMetadataTagsFilter
+}
+
+input ContentfulMetadataTagsFilter {
+  id_contains_all: [String]
+  id_contains_some: [String]
+  id_contains_none: [String]
+}
+
+enum OnboardStepLinkingCollectionsTodoCollectionOrder {
+  description_ASC
+  description_DESC
+  id_ASC
+  id_DESC
+  title_ASC
+  title_DESC
+  sys_id_ASC
+  sys_id_DESC
+  sys_publishedAt_ASC
+  sys_publishedAt_DESC
+  sys_firstPublishedAt_ASC
+  sys_firstPublishedAt_DESC
+  sys_publishedVersion_ASC
+  sys_publishedVersion_DESC
 }
 
 # [See type definition](https://app.contentful.com/spaces/fyjyr27t2loo/content_types/chapter)
 type Chapter implements Entry {
-    sys: Sys!
-    contentfulMetadata: ContentfulMetadata!
-    linkedFrom(allowedLocales: [String]): ChapterLinkingCollections
-    name(locale: String): String
-    id(locale: String): Int
-    team(preview: Boolean, locale: String): Team
-    global(locale: String): Boolean
+  sys: Sys!
+  contentfulMetadata: ContentfulMetadata!
+  linkedFrom(allowedLocales: [String]): ChapterLinkingCollections
+  name(locale: String): String
+  team(preview: Boolean, locale: String): ChapterTeam
+  global(locale: String): Boolean
 }
 
 type ChapterLinkingCollections {
-    entryCollection(
-        skip: Int = 0
-        limit: Int = 100
-        preview: Boolean
-        locale: String
-    ): EntryCollection
-    onboardStepCollection(
-        skip: Int = 0
-        limit: Int = 100
-        preview: Boolean
-        locale: String
-    ): OnboardStepCollection
+  entryCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+  ): EntryCollection
+  onboardStepCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+    order: [ChapterLinkingCollectionsOnboardStepCollectionOrder]
+  ): OnboardStepCollection
+}
+
+enum ChapterLinkingCollectionsOnboardStepCollectionOrder {
+  title_ASC
+  title_DESC
+  step_ASC
+  step_DESC
+  sys_id_ASC
+  sys_id_DESC
+  sys_publishedAt_ASC
+  sys_publishedAt_DESC
+  sys_firstPublishedAt_ASC
+  sys_firstPublishedAt_DESC
+  sys_publishedVersion_ASC
+  sys_publishedVersion_DESC
+}
+
+union ChapterTeam = Company | Department | Team
+
+# a company within the group [See type definition](https://app.contentful.com/spaces/fyjyr27t2loo/content_types/company)
+type Company implements Entry {
+  sys: Sys!
+  contentfulMetadata: ContentfulMetadata!
+  linkedFrom(allowedLocales: [String]): CompanyLinkingCollections
+  name(locale: String): String
+  id(locale: String): Int
+  description(locale: String): String
+  alias(locale: String): String
+}
+
+type CompanyLinkingCollections {
+  entryCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+  ): EntryCollection
+  chapterCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+    order: [CompanyLinkingCollectionsChapterCollectionOrder]
+  ): ChapterCollection
+  departmentCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+    order: [CompanyLinkingCollectionsDepartmentCollectionOrder]
+  ): DepartmentCollection
+}
+
+type ChapterCollection {
+  total: Int!
+  skip: Int!
+  limit: Int!
+  items: [Chapter]!
+}
+
+enum CompanyLinkingCollectionsChapterCollectionOrder {
+  name_ASC
+  name_DESC
+  global_ASC
+  global_DESC
+  sys_id_ASC
+  sys_id_DESC
+  sys_publishedAt_ASC
+  sys_publishedAt_DESC
+  sys_firstPublishedAt_ASC
+  sys_firstPublishedAt_DESC
+  sys_publishedVersion_ASC
+  sys_publishedVersion_DESC
+}
+
+type DepartmentCollection {
+  total: Int!
+  skip: Int!
+  limit: Int!
+  items: [Department]!
+}
+
+# a department [See type definition](https://app.contentful.com/spaces/fyjyr27t2loo/content_types/department)
+type Department implements Entry {
+  sys: Sys!
+  contentfulMetadata: ContentfulMetadata!
+  linkedFrom(allowedLocales: [String]): DepartmentLinkingCollections
+  name(locale: String): String
+  id(locale: String): Int
+  description(locale: String): String
+  alias(locale: String): String
+  company(preview: Boolean, locale: String, where: CompanyFilter): Company
+}
+
+type DepartmentLinkingCollections {
+  entryCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+  ): EntryCollection
+  chapterCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+    order: [DepartmentLinkingCollectionsChapterCollectionOrder]
+  ): ChapterCollection
+  teamCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+    order: [DepartmentLinkingCollectionsTeamCollectionOrder]
+  ): TeamCollection
+}
+
+enum DepartmentLinkingCollectionsChapterCollectionOrder {
+  name_ASC
+  name_DESC
+  global_ASC
+  global_DESC
+  sys_id_ASC
+  sys_id_DESC
+  sys_publishedAt_ASC
+  sys_publishedAt_DESC
+  sys_firstPublishedAt_ASC
+  sys_firstPublishedAt_DESC
+  sys_publishedVersion_ASC
+  sys_publishedVersion_DESC
+}
+
+type TeamCollection {
+  total: Int!
+  skip: Int!
+  limit: Int!
+  items: [Team]!
 }
 
 # a development team [See type definition](https://app.contentful.com/spaces/fyjyr27t2loo/content_types/team)
 type Team implements Entry {
-    sys: Sys!
-    contentfulMetadata: ContentfulMetadata!
-    linkedFrom(allowedLocales: [String]): TeamLinkingCollections
-    name(locale: String): String
-    id(locale: String): Int
-    description(locale: String): String
-    alias(locale: String): String
+  sys: Sys!
+  contentfulMetadata: ContentfulMetadata!
+  linkedFrom(allowedLocales: [String]): TeamLinkingCollections
+  name(locale: String): String
+  id(locale: String): Int
+  description(locale: String): String
+  alias(locale: String): String
+  department(
+    preview: Boolean
+    locale: String
+    where: DepartmentFilter
+  ): Department
 }
 
 type TeamLinkingCollections {
-    entryCollection(
-        skip: Int = 0
-        limit: Int = 100
-        preview: Boolean
-        locale: String
-    ): EntryCollection
-    chapterCollection(
-        skip: Int = 0
-        limit: Int = 100
-        preview: Boolean
-        locale: String
-    ): ChapterCollection
+  entryCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+  ): EntryCollection
+  chapterCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+    order: [TeamLinkingCollectionsChapterCollectionOrder]
+  ): ChapterCollection
 }
 
-type ChapterCollection {
-    total: Int!
-    skip: Int!
-    limit: Int!
-    items: [Chapter]!
+enum TeamLinkingCollectionsChapterCollectionOrder {
+  name_ASC
+  name_DESC
+  global_ASC
+  global_DESC
+  sys_id_ASC
+  sys_id_DESC
+  sys_publishedAt_ASC
+  sys_publishedAt_DESC
+  sys_firstPublishedAt_ASC
+  sys_firstPublishedAt_DESC
+  sys_publishedVersion_ASC
+  sys_publishedVersion_DESC
 }
 
-type AssetCollection {
-    total: Int!
-    skip: Int!
-    limit: Int!
-    items: [Asset]!
+input DepartmentFilter {
+  company: cfCompanyNestedFilter
+  sys: SysFilter
+  contentfulMetadata: ContentfulMetadataFilter
+  name_exists: Boolean
+  name: String
+  name_not: String
+  name_in: [String]
+  name_not_in: [String]
+  name_contains: String
+  name_not_contains: String
+  id_exists: Boolean
+  id: Int
+  id_not: Int
+  id_in: [Int]
+  id_not_in: [Int]
+  id_gt: Int
+  id_gte: Int
+  id_lt: Int
+  id_lte: Int
+  description_exists: Boolean
+  description: String
+  description_not: String
+  description_in: [String]
+  description_not_in: [String]
+  description_contains: String
+  description_not_contains: String
+  alias_exists: Boolean
+  alias: String
+  alias_not: String
+  alias_in: [String]
+  alias_not_in: [String]
+  alias_contains: String
+  alias_not_contains: String
+  company_exists: Boolean
+  OR: [DepartmentFilter]
+  AND: [DepartmentFilter]
 }
 
-input AssetFilter {
-    sys: SysFilter
-    contentfulMetadata: ContentfulMetadataFilter
-    title_exists: Boolean
-    title: String
-    title_not: String
-    title_in: [String]
-    title_not_in: [String]
-    title_contains: String
-    title_not_contains: String
-    description_exists: Boolean
-    description: String
-    description_not: String
-    description_in: [String]
-    description_not_in: [String]
-    description_contains: String
-    description_not_contains: String
-    url_exists: Boolean
-    url: String
-    url_not: String
-    url_in: [String]
-    url_not_in: [String]
-    url_contains: String
-    url_not_contains: String
-    size_exists: Boolean
-    size: Int
-    size_not: Int
-    size_in: [Int]
-    size_not_in: [Int]
-    size_gt: Int
-    size_gte: Int
-    size_lt: Int
-    size_lte: Int
-    contentType_exists: Boolean
-    contentType: String
-    contentType_not: String
-    contentType_in: [String]
-    contentType_not_in: [String]
-    contentType_contains: String
-    contentType_not_contains: String
-    fileName_exists: Boolean
-    fileName: String
-    fileName_not: String
-    fileName_in: [String]
-    fileName_not_in: [String]
-    fileName_contains: String
-    fileName_not_contains: String
-    width_exists: Boolean
-    width: Int
-    width_not: Int
-    width_in: [Int]
-    width_not_in: [Int]
-    width_gt: Int
-    width_gte: Int
-    width_lt: Int
-    width_lte: Int
-    height_exists: Boolean
-    height: Int
-    height_not: Int
-    height_in: [Int]
-    height_not_in: [Int]
-    height_gt: Int
-    height_gte: Int
-    height_lt: Int
-    height_lte: Int
-    OR: [AssetFilter]
-    AND: [AssetFilter]
+input cfCompanyNestedFilter {
+  sys: SysFilter
+  contentfulMetadata: ContentfulMetadataFilter
+  name_exists: Boolean
+  name: String
+  name_not: String
+  name_in: [String]
+  name_not_in: [String]
+  name_contains: String
+  name_not_contains: String
+  id_exists: Boolean
+  id: Int
+  id_not: Int
+  id_in: [Int]
+  id_not_in: [Int]
+  id_gt: Int
+  id_gte: Int
+  id_lt: Int
+  id_lte: Int
+  description_exists: Boolean
+  description: String
+  description_not: String
+  description_in: [String]
+  description_not_in: [String]
+  description_contains: String
+  description_not_contains: String
+  alias_exists: Boolean
+  alias: String
+  alias_not: String
+  alias_in: [String]
+  alias_not_in: [String]
+  alias_contains: String
+  alias_not_contains: String
+  OR: [cfCompanyNestedFilter]
+  AND: [cfCompanyNestedFilter]
 }
 
-input SysFilter {
-    id_exists: Boolean
-    id: String
-    id_not: String
-    id_in: [String]
-    id_not_in: [String]
-    id_contains: String
-    id_not_contains: String
-    publishedAt_exists: Boolean
-    publishedAt: DateTime
-    publishedAt_not: DateTime
-    publishedAt_in: [DateTime]
-    publishedAt_not_in: [DateTime]
-    publishedAt_gt: DateTime
-    publishedAt_gte: DateTime
-    publishedAt_lt: DateTime
-    publishedAt_lte: DateTime
-    firstPublishedAt_exists: Boolean
-    firstPublishedAt: DateTime
-    firstPublishedAt_not: DateTime
-    firstPublishedAt_in: [DateTime]
-    firstPublishedAt_not_in: [DateTime]
-    firstPublishedAt_gt: DateTime
-    firstPublishedAt_gte: DateTime
-    firstPublishedAt_lt: DateTime
-    firstPublishedAt_lte: DateTime
-    publishedVersion_exists: Boolean
-    publishedVersion: Float
-    publishedVersion_not: Float
-    publishedVersion_in: [Float]
-    publishedVersion_not_in: [Float]
-    publishedVersion_gt: Float
-    publishedVersion_gte: Float
-    publishedVersion_lt: Float
-    publishedVersion_lte: Float
+enum DepartmentLinkingCollectionsTeamCollectionOrder {
+  name_ASC
+  name_DESC
+  id_ASC
+  id_DESC
+  description_ASC
+  description_DESC
+  alias_ASC
+  alias_DESC
+  sys_id_ASC
+  sys_id_DESC
+  sys_publishedAt_ASC
+  sys_publishedAt_DESC
+  sys_firstPublishedAt_ASC
+  sys_firstPublishedAt_DESC
+  sys_publishedVersion_ASC
+  sys_publishedVersion_DESC
 }
 
-input ContentfulMetadataFilter {
-    tags_exists: Boolean
-    tags: ContentfulMetadataTagsFilter
+input CompanyFilter {
+  sys: SysFilter
+  contentfulMetadata: ContentfulMetadataFilter
+  name_exists: Boolean
+  name: String
+  name_not: String
+  name_in: [String]
+  name_not_in: [String]
+  name_contains: String
+  name_not_contains: String
+  id_exists: Boolean
+  id: Int
+  id_not: Int
+  id_in: [Int]
+  id_not_in: [Int]
+  id_gt: Int
+  id_gte: Int
+  id_lt: Int
+  id_lte: Int
+  description_exists: Boolean
+  description: String
+  description_not: String
+  description_in: [String]
+  description_not_in: [String]
+  description_contains: String
+  description_not_contains: String
+  alias_exists: Boolean
+  alias: String
+  alias_not: String
+  alias_in: [String]
+  alias_not_in: [String]
+  alias_contains: String
+  alias_not_contains: String
+  OR: [CompanyFilter]
+  AND: [CompanyFilter]
 }
 
-input ContentfulMetadataTagsFilter {
-    id_contains_all: [String]
-    id_contains_some: [String]
-    id_contains_none: [String]
-}
-
-enum AssetOrder {
-    url_ASC
-    url_DESC
-    size_ASC
-    size_DESC
-    contentType_ASC
-    contentType_DESC
-    fileName_ASC
-    fileName_DESC
-    width_ASC
-    width_DESC
-    height_ASC
-    height_DESC
-    sys_id_ASC
-    sys_id_DESC
-    sys_publishedAt_ASC
-    sys_publishedAt_DESC
-    sys_firstPublishedAt_ASC
-    sys_firstPublishedAt_DESC
-    sys_publishedVersion_ASC
-    sys_publishedVersion_DESC
-}
-
-input TodoFilter {
-    step: cfOnboardStepNestedFilter
-    sys: SysFilter
-    contentfulMetadata: ContentfulMetadataFilter
-    description_exists: Boolean
-    description: String
-    description_not: String
-    description_in: [String]
-    description_not_in: [String]
-    description_contains: String
-    description_not_contains: String
-    step_exists: Boolean
-    id_exists: Boolean
-    id: Int
-    id_not: Int
-    id_in: [Int]
-    id_not_in: [Int]
-    id_gt: Int
-    id_gte: Int
-    id_lt: Int
-    id_lte: Int
-    title_exists: Boolean
-    title: String
-    title_not: String
-    title_in: [String]
-    title_not_in: [String]
-    title_contains: String
-    title_not_contains: String
-    OR: [TodoFilter]
-    AND: [TodoFilter]
-}
-
-input cfOnboardStepNestedFilter {
-    sys: SysFilter
-    contentfulMetadata: ContentfulMetadataFilter
-    title_exists: Boolean
-    title: String
-    title_not: String
-    title_in: [String]
-    title_not_in: [String]
-    title_contains: String
-    title_not_contains: String
-    body_exists: Boolean
-    body: String
-    body_not: String
-    body_in: [String]
-    body_not_in: [String]
-    body_contains: String
-    body_not_contains: String
-    codeBlock_exists: Boolean
-    codeBlock: String
-    codeBlock_not: String
-    codeBlock_in: [String]
-    codeBlock_not_in: [String]
-    codeBlock_contains: String
-    codeBlock_not_contains: String
-    step_exists: Boolean
-    step: Int
-    step_not: Int
-    step_in: [Int]
-    step_not_in: [Int]
-    step_gt: Int
-    step_gte: Int
-    step_lt: Int
-    step_lte: Int
-    mainImage_exists: Boolean
-    chapter_exists: Boolean
-    OR: [cfOnboardStepNestedFilter]
-    AND: [cfOnboardStepNestedFilter]
-}
-
-enum TodoOrder {
-    description_ASC
-    description_DESC
-    id_ASC
-    id_DESC
-    title_ASC
-    title_DESC
-    sys_id_ASC
-    sys_id_DESC
-    sys_publishedAt_ASC
-    sys_publishedAt_DESC
-    sys_firstPublishedAt_ASC
-    sys_firstPublishedAt_DESC
-    sys_publishedVersion_ASC
-    sys_publishedVersion_DESC
-}
-
-input OnboardStepFilter {
-    chapter: cfChapterNestedFilter
-    sys: SysFilter
-    contentfulMetadata: ContentfulMetadataFilter
-    title_exists: Boolean
-    title: String
-    title_not: String
-    title_in: [String]
-    title_not_in: [String]
-    title_contains: String
-    title_not_contains: String
-    body_exists: Boolean
-    body: String
-    body_not: String
-    body_in: [String]
-    body_not_in: [String]
-    body_contains: String
-    body_not_contains: String
-    codeBlock_exists: Boolean
-    codeBlock: String
-    codeBlock_not: String
-    codeBlock_in: [String]
-    codeBlock_not_in: [String]
-    codeBlock_contains: String
-    codeBlock_not_contains: String
-    step_exists: Boolean
-    step: Int
-    step_not: Int
-    step_in: [Int]
-    step_not_in: [Int]
-    step_gt: Int
-    step_gte: Int
-    step_lt: Int
-    step_lte: Int
-    mainImage_exists: Boolean
-    chapter_exists: Boolean
-    OR: [OnboardStepFilter]
-    AND: [OnboardStepFilter]
-}
-
-input cfChapterNestedFilter {
-    sys: SysFilter
-    contentfulMetadata: ContentfulMetadataFilter
-    name_exists: Boolean
-    name: String
-    name_not: String
-    name_in: [String]
-    name_not_in: [String]
-    name_contains: String
-    name_not_contains: String
-    id_exists: Boolean
-    id: Int
-    id_not: Int
-    id_in: [Int]
-    id_not_in: [Int]
-    id_gt: Int
-    id_gte: Int
-    id_lt: Int
-    id_lte: Int
-    team_exists: Boolean
-    global_exists: Boolean
-    global: Boolean
-    global_not: Boolean
-    OR: [cfChapterNestedFilter]
-    AND: [cfChapterNestedFilter]
-}
-
-enum OnboardStepOrder {
-    title_ASC
-    title_DESC
-    step_ASC
-    step_DESC
-    sys_id_ASC
-    sys_id_DESC
-    sys_publishedAt_ASC
-    sys_publishedAt_DESC
-    sys_firstPublishedAt_ASC
-    sys_firstPublishedAt_DESC
-    sys_publishedVersion_ASC
-    sys_publishedVersion_DESC
+enum CompanyLinkingCollectionsDepartmentCollectionOrder {
+  name_ASC
+  name_DESC
+  id_ASC
+  id_DESC
+  description_ASC
+  description_DESC
+  alias_ASC
+  alias_DESC
+  sys_id_ASC
+  sys_id_DESC
+  sys_publishedAt_ASC
+  sys_publishedAt_DESC
+  sys_firstPublishedAt_ASC
+  sys_firstPublishedAt_DESC
+  sys_publishedVersion_ASC
+  sys_publishedVersion_DESC
 }
 
 input ChapterFilter {
-    team: cfTeamNestedFilter
-    sys: SysFilter
-    contentfulMetadata: ContentfulMetadataFilter
-    name_exists: Boolean
-    name: String
-    name_not: String
-    name_in: [String]
-    name_not_in: [String]
-    name_contains: String
-    name_not_contains: String
-    id_exists: Boolean
-    id: Int
-    id_not: Int
-    id_in: [Int]
-    id_not_in: [Int]
-    id_gt: Int
-    id_gte: Int
-    id_lt: Int
-    id_lte: Int
-    team_exists: Boolean
-    global_exists: Boolean
-    global: Boolean
-    global_not: Boolean
-    OR: [ChapterFilter]
-    AND: [ChapterFilter]
+  sys: SysFilter
+  contentfulMetadata: ContentfulMetadataFilter
+  name_exists: Boolean
+  name: String
+  name_not: String
+  name_in: [String]
+  name_not_in: [String]
+  name_contains: String
+  name_not_contains: String
+  team_exists: Boolean
+  global_exists: Boolean
+  global: Boolean
+  global_not: Boolean
+  OR: [ChapterFilter]
+  AND: [ChapterFilter]
 }
 
-input cfTeamNestedFilter {
-    sys: SysFilter
-    contentfulMetadata: ContentfulMetadataFilter
-    name_exists: Boolean
-    name: String
-    name_not: String
-    name_in: [String]
-    name_not_in: [String]
-    name_contains: String
-    name_not_contains: String
-    id_exists: Boolean
-    id: Int
-    id_not: Int
-    id_in: [Int]
-    id_not_in: [Int]
-    id_gt: Int
-    id_gte: Int
-    id_lt: Int
-    id_lte: Int
-    description_exists: Boolean
-    description: String
-    description_not: String
-    description_in: [String]
-    description_not_in: [String]
-    description_contains: String
-    description_not_contains: String
-    alias_exists: Boolean
-    alias: String
-    alias_not: String
-    alias_in: [String]
-    alias_not_in: [String]
-    alias_contains: String
-    alias_not_contains: String
-    OR: [cfTeamNestedFilter]
-    AND: [cfTeamNestedFilter]
+type AssetCollection {
+  total: Int!
+  skip: Int!
+  limit: Int!
+  items: [Asset]!
+}
+
+input AssetFilter {
+  sys: SysFilter
+  contentfulMetadata: ContentfulMetadataFilter
+  title_exists: Boolean
+  title: String
+  title_not: String
+  title_in: [String]
+  title_not_in: [String]
+  title_contains: String
+  title_not_contains: String
+  description_exists: Boolean
+  description: String
+  description_not: String
+  description_in: [String]
+  description_not_in: [String]
+  description_contains: String
+  description_not_contains: String
+  url_exists: Boolean
+  url: String
+  url_not: String
+  url_in: [String]
+  url_not_in: [String]
+  url_contains: String
+  url_not_contains: String
+  size_exists: Boolean
+  size: Int
+  size_not: Int
+  size_in: [Int]
+  size_not_in: [Int]
+  size_gt: Int
+  size_gte: Int
+  size_lt: Int
+  size_lte: Int
+  contentType_exists: Boolean
+  contentType: String
+  contentType_not: String
+  contentType_in: [String]
+  contentType_not_in: [String]
+  contentType_contains: String
+  contentType_not_contains: String
+  fileName_exists: Boolean
+  fileName: String
+  fileName_not: String
+  fileName_in: [String]
+  fileName_not_in: [String]
+  fileName_contains: String
+  fileName_not_contains: String
+  width_exists: Boolean
+  width: Int
+  width_not: Int
+  width_in: [Int]
+  width_not_in: [Int]
+  width_gt: Int
+  width_gte: Int
+  width_lt: Int
+  width_lte: Int
+  height_exists: Boolean
+  height: Int
+  height_not: Int
+  height_in: [Int]
+  height_not_in: [Int]
+  height_gt: Int
+  height_gte: Int
+  height_lt: Int
+  height_lte: Int
+  OR: [AssetFilter]
+  AND: [AssetFilter]
+}
+
+enum AssetOrder {
+  url_ASC
+  url_DESC
+  size_ASC
+  size_DESC
+  contentType_ASC
+  contentType_DESC
+  fileName_ASC
+  fileName_DESC
+  width_ASC
+  width_DESC
+  height_ASC
+  height_DESC
+  sys_id_ASC
+  sys_id_DESC
+  sys_publishedAt_ASC
+  sys_publishedAt_DESC
+  sys_firstPublishedAt_ASC
+  sys_firstPublishedAt_DESC
+  sys_publishedVersion_ASC
+  sys_publishedVersion_DESC
 }
 
 enum ChapterOrder {
-    name_ASC
-    name_DESC
-    id_ASC
-    id_DESC
-    global_ASC
-    global_DESC
-    sys_id_ASC
-    sys_id_DESC
-    sys_publishedAt_ASC
-    sys_publishedAt_DESC
-    sys_firstPublishedAt_ASC
-    sys_firstPublishedAt_DESC
-    sys_publishedVersion_ASC
-    sys_publishedVersion_DESC
-}
-
-type TeamCollection {
-    total: Int!
-    skip: Int!
-    limit: Int!
-    items: [Team]!
+  name_ASC
+  name_DESC
+  global_ASC
+  global_DESC
+  sys_id_ASC
+  sys_id_DESC
+  sys_publishedAt_ASC
+  sys_publishedAt_DESC
+  sys_firstPublishedAt_ASC
+  sys_firstPublishedAt_DESC
+  sys_publishedVersion_ASC
+  sys_publishedVersion_DESC
 }
 
 input TeamFilter {
-    sys: SysFilter
-    contentfulMetadata: ContentfulMetadataFilter
-    name_exists: Boolean
-    name: String
-    name_not: String
-    name_in: [String]
-    name_not_in: [String]
-    name_contains: String
-    name_not_contains: String
-    id_exists: Boolean
-    id: Int
-    id_not: Int
-    id_in: [Int]
-    id_not_in: [Int]
-    id_gt: Int
-    id_gte: Int
-    id_lt: Int
-    id_lte: Int
-    description_exists: Boolean
-    description: String
-    description_not: String
-    description_in: [String]
-    description_not_in: [String]
-    description_contains: String
-    description_not_contains: String
-    alias_exists: Boolean
-    alias: String
-    alias_not: String
-    alias_in: [String]
-    alias_not_in: [String]
-    alias_contains: String
-    alias_not_contains: String
-    OR: [TeamFilter]
-    AND: [TeamFilter]
+  department: cfDepartmentNestedFilter
+  sys: SysFilter
+  contentfulMetadata: ContentfulMetadataFilter
+  name_exists: Boolean
+  name: String
+  name_not: String
+  name_in: [String]
+  name_not_in: [String]
+  name_contains: String
+  name_not_contains: String
+  id_exists: Boolean
+  id: Int
+  id_not: Int
+  id_in: [Int]
+  id_not_in: [Int]
+  id_gt: Int
+  id_gte: Int
+  id_lt: Int
+  id_lte: Int
+  description_exists: Boolean
+  description: String
+  description_not: String
+  description_in: [String]
+  description_not_in: [String]
+  description_contains: String
+  description_not_contains: String
+  alias_exists: Boolean
+  alias: String
+  alias_not: String
+  alias_in: [String]
+  alias_not_in: [String]
+  alias_contains: String
+  alias_not_contains: String
+  department_exists: Boolean
+  OR: [TeamFilter]
+  AND: [TeamFilter]
+}
+
+input cfDepartmentNestedFilter {
+  sys: SysFilter
+  contentfulMetadata: ContentfulMetadataFilter
+  name_exists: Boolean
+  name: String
+  name_not: String
+  name_in: [String]
+  name_not_in: [String]
+  name_contains: String
+  name_not_contains: String
+  id_exists: Boolean
+  id: Int
+  id_not: Int
+  id_in: [Int]
+  id_not_in: [Int]
+  id_gt: Int
+  id_gte: Int
+  id_lt: Int
+  id_lte: Int
+  description_exists: Boolean
+  description: String
+  description_not: String
+  description_in: [String]
+  description_not_in: [String]
+  description_contains: String
+  description_not_contains: String
+  alias_exists: Boolean
+  alias: String
+  alias_not: String
+  alias_in: [String]
+  alias_not_in: [String]
+  alias_contains: String
+  alias_not_contains: String
+  company_exists: Boolean
+  OR: [cfDepartmentNestedFilter]
+  AND: [cfDepartmentNestedFilter]
 }
 
 enum TeamOrder {
-    name_ASC
-    name_DESC
-    id_ASC
-    id_DESC
-    description_ASC
-    description_DESC
-    alias_ASC
-    alias_DESC
-    sys_id_ASC
-    sys_id_DESC
-    sys_publishedAt_ASC
-    sys_publishedAt_DESC
-    sys_firstPublishedAt_ASC
-    sys_firstPublishedAt_DESC
-    sys_publishedVersion_ASC
-    sys_publishedVersion_DESC
+  name_ASC
+  name_DESC
+  id_ASC
+  id_DESC
+  description_ASC
+  description_DESC
+  alias_ASC
+  alias_DESC
+  sys_id_ASC
+  sys_id_DESC
+  sys_publishedAt_ASC
+  sys_publishedAt_DESC
+  sys_firstPublishedAt_ASC
+  sys_firstPublishedAt_DESC
+  sys_publishedVersion_ASC
+  sys_publishedVersion_DESC
+}
+
+enum DepartmentOrder {
+  name_ASC
+  name_DESC
+  id_ASC
+  id_DESC
+  description_ASC
+  description_DESC
+  alias_ASC
+  alias_DESC
+  sys_id_ASC
+  sys_id_DESC
+  sys_publishedAt_ASC
+  sys_publishedAt_DESC
+  sys_firstPublishedAt_ASC
+  sys_firstPublishedAt_DESC
+  sys_publishedVersion_ASC
+  sys_publishedVersion_DESC
+}
+
+type CompanyCollection {
+  total: Int!
+  skip: Int!
+  limit: Int!
+  items: [Company]!
+}
+
+enum CompanyOrder {
+  name_ASC
+  name_DESC
+  id_ASC
+  id_DESC
+  description_ASC
+  description_DESC
+  alias_ASC
+  alias_DESC
+  sys_id_ASC
+  sys_id_DESC
+  sys_publishedAt_ASC
+  sys_publishedAt_DESC
+  sys_firstPublishedAt_ASC
+  sys_firstPublishedAt_DESC
+  sys_publishedVersion_ASC
+  sys_publishedVersion_DESC
+}
+
+enum OnboardStepOrder {
+  title_ASC
+  title_DESC
+  step_ASC
+  step_DESC
+  sys_id_ASC
+  sys_id_DESC
+  sys_publishedAt_ASC
+  sys_publishedAt_DESC
+  sys_firstPublishedAt_ASC
+  sys_firstPublishedAt_DESC
+  sys_publishedVersion_ASC
+  sys_publishedVersion_DESC
+}
+
+input TodoFilter {
+  step: cfOnboardStepNestedFilter
+  sys: SysFilter
+  contentfulMetadata: ContentfulMetadataFilter
+  description_exists: Boolean
+  description: String
+  description_not: String
+  description_in: [String]
+  description_not_in: [String]
+  description_contains: String
+  description_not_contains: String
+  step_exists: Boolean
+  id_exists: Boolean
+  id: Int
+  id_not: Int
+  id_in: [Int]
+  id_not_in: [Int]
+  id_gt: Int
+  id_gte: Int
+  id_lt: Int
+  id_lte: Int
+  title_exists: Boolean
+  title: String
+  title_not: String
+  title_in: [String]
+  title_not_in: [String]
+  title_contains: String
+  title_not_contains: String
+  OR: [TodoFilter]
+  AND: [TodoFilter]
+}
+
+input cfOnboardStepNestedFilter {
+  sys: SysFilter
+  contentfulMetadata: ContentfulMetadataFilter
+  title_exists: Boolean
+  title: String
+  title_not: String
+  title_in: [String]
+  title_not_in: [String]
+  title_contains: String
+  title_not_contains: String
+  body_exists: Boolean
+  body: String
+  body_not: String
+  body_in: [String]
+  body_not_in: [String]
+  body_contains: String
+  body_not_contains: String
+  codeBlock_exists: Boolean
+  codeBlock: String
+  codeBlock_not: String
+  codeBlock_in: [String]
+  codeBlock_not_in: [String]
+  codeBlock_contains: String
+  codeBlock_not_contains: String
+  step_exists: Boolean
+  step: Int
+  step_not: Int
+  step_in: [Int]
+  step_not_in: [Int]
+  step_gt: Int
+  step_gte: Int
+  step_lt: Int
+  step_lte: Int
+  mainImage_exists: Boolean
+  chapter_exists: Boolean
+  OR: [cfOnboardStepNestedFilter]
+  AND: [cfOnboardStepNestedFilter]
+}
+
+enum TodoOrder {
+  description_ASC
+  description_DESC
+  id_ASC
+  id_DESC
+  title_ASC
+  title_DESC
+  sys_id_ASC
+  sys_id_DESC
+  sys_publishedAt_ASC
+  sys_publishedAt_DESC
+  sys_firstPublishedAt_ASC
+  sys_firstPublishedAt_DESC
+  sys_publishedVersion_ASC
+  sys_publishedVersion_DESC
 }
 
 # menu items [See type definition](https://app.contentful.com/spaces/fyjyr27t2loo/content_types/menu)
 type Menu implements Entry {
-    sys: Sys!
-    contentfulMetadata: ContentfulMetadata!
-    linkedFrom(allowedLocales: [String]): MenuLinkingCollections
-    menuITems(locale: String): JSON
+  sys: Sys!
+  contentfulMetadata: ContentfulMetadata!
+  linkedFrom(allowedLocales: [String]): MenuLinkingCollections
+  menuITems(locale: String): JSON
 }
 
 type MenuLinkingCollections {
-    entryCollection(
-        skip: Int = 0
-        limit: Int = 100
-        preview: Boolean
-        locale: String
-    ): EntryCollection
+  entryCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+  ): EntryCollection
 }
 
 # The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 scalar JSON
 
 type MenuCollection {
-    total: Int!
-    skip: Int!
-    limit: Int!
-    items: [Menu]!
+  total: Int!
+  skip: Int!
+  limit: Int!
+  items: [Menu]!
 }
 
 input MenuFilter {
-    sys: SysFilter
-    contentfulMetadata: ContentfulMetadataFilter
-    menuITems_exists: Boolean
-    OR: [MenuFilter]
-    AND: [MenuFilter]
+  sys: SysFilter
+  contentfulMetadata: ContentfulMetadataFilter
+  menuITems_exists: Boolean
+  OR: [MenuFilter]
+  AND: [MenuFilter]
 }
 
 enum MenuOrder {
-    sys_id_ASC
-    sys_id_DESC
-    sys_publishedAt_ASC
-    sys_publishedAt_DESC
-    sys_firstPublishedAt_ASC
-    sys_firstPublishedAt_DESC
-    sys_publishedVersion_ASC
-    sys_publishedVersion_DESC
+  sys_id_ASC
+  sys_id_DESC
+  sys_publishedAt_ASC
+  sys_publishedAt_DESC
+  sys_firstPublishedAt_ASC
+  sys_firstPublishedAt_DESC
+  sys_publishedVersion_ASC
+  sys_publishedVersion_DESC
 }
 
 input EntryFilter {
-    sys: SysFilter
-    contentfulMetadata: ContentfulMetadataFilter
-    OR: [EntryFilter]
-    AND: [EntryFilter]
+  sys: SysFilter
+  contentfulMetadata: ContentfulMetadataFilter
+  OR: [EntryFilter]
+  AND: [EntryFilter]
 }
 
 enum EntryOrder {
-    sys_id_ASC
-    sys_id_DESC
-    sys_publishedAt_ASC
-    sys_publishedAt_DESC
-    sys_firstPublishedAt_ASC
-    sys_firstPublishedAt_DESC
-    sys_publishedVersion_ASC
-    sys_publishedVersion_DESC
+  sys_id_ASC
+  sys_id_DESC
+  sys_publishedAt_ASC
+  sys_publishedAt_DESC
+  sys_firstPublishedAt_ASC
+  sys_firstPublishedAt_DESC
+  sys_publishedVersion_ASC
+  sys_publishedVersion_DESC
 }

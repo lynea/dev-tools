@@ -4,10 +4,7 @@ import type { User } from '@clerk/nextjs/api'
 import { Title } from '@/components/Title/Title'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-    faCircleCheck,
-    faSquareArrowUpRight,
-} from '@fortawesome/free-solid-svg-icons'
+import { faSquareArrowUpRight } from '@fortawesome/free-solid-svg-icons'
 import {
     AllGobalChaptersInfoQuery,
     Chapter,
@@ -15,9 +12,79 @@ import {
 } from '@/generated/graphql'
 import { allGobalChaptersInfoQuery } from '@/graphql/queries/globalChapter'
 import { getClient } from '@/lib/client'
-import { CompletedPageParams } from '../../types/pageProps'
+
 import { teamsQuery } from '@/graphql/queries/teams'
 import { db } from '@/lib/db'
+import { CompletedPageParams } from '@/app/onboarding/types/pageProps'
+import { createQueryForEntity } from '@/graphql/queries/chapter'
+
+const getFirstStepId = (chapter: Chapter) => {
+    const sortedSteps = [
+        ...(chapter?.linkedFrom?.onboardStepCollection?.items ?? []),
+    ]?.sort((a, b) => a?.step! - b?.step!)
+
+    return sortedSteps.at(0)?.sys?.id
+}
+
+const ChapterBlock = async () => {
+    const client = getClient()
+
+    const { data: globalChapterData }: { data: AllGobalChaptersInfoQuery } =
+        await client.query({
+            query: createQueryForEntity('company'),
+        })
+
+    const { data }: { data: TeamsQuery } = await client.query({
+        query: teamsQuery,
+        variables: {},
+    })
+
+    const chapters: Chapter[] = []
+
+    const sortedChapters = [...chapters].sort((a, b) => a?.id! - b?.id!)
+
+    return (
+        <>
+            <Title>The sharing group</Title>
+
+            <div className="mt-4  flex  flex-col items-center  ">
+                <ol className="w-full space-y-4  ">
+                    {sortedChapters?.map((chapter, index) => (
+                        <li
+                            key={chapter?.sys.id}
+                            className="cursor-pointer  font-bold"
+                        >
+                            <Link
+                                href={`/onboarding/global/${chapter?.sys.id}/${
+                                    //@ts-ignore
+                                    chapter ? getFirstStepId(chapter) : ''
+                                }`}
+                            >
+                                <div
+                                    className="rounded-sm  bg-pink-400 py-4 px-2 text-main-200"
+                                    role="alert"
+                                >
+                                    <div className="flex items-center justify-between">
+                                        <span className="sr-only">
+                                            User info
+                                        </span>
+                                        <h3 className="">{`${
+                                            index + 1
+                                        }: ${chapter?.name}`}</h3>
+                                        <FontAwesomeIcon
+                                            icon={faSquareArrowUpRight}
+                                            className=" h-5 text-xs  "
+                                        />
+                                    </div>
+                                </div>
+                            </Link>
+                        </li>
+                    ))}
+                </ol>
+            </div>
+        </>
+    )
+}
 
 export default async function Page({
     params,
@@ -40,14 +107,6 @@ export default async function Page({
     //
 
     const client = getClient()
-
-    const getFirstStepId = (chapter: Chapter) => {
-        const sortedSteps = [
-            ...(chapter?.linkedFrom?.onboardStepCollection?.items ?? []),
-        ]?.sort((a, b) => a?.step! - b?.step!)
-
-        return sortedSteps.at(0)?.sys?.id
-    }
 
     const { data: globalChapterData }: { data: AllGobalChaptersInfoQuery } =
         await client.query({
@@ -77,7 +136,7 @@ export default async function Page({
 
     return (
         <section className="flex w-full flex-col ">
-            <Title>Global chapters</Title>
+            <Title>The sharing group</Title>
 
             <div className="mt-4  flex  flex-col items-center  ">
                 <ol className="w-full space-y-4  ">

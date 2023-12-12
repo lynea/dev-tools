@@ -22,3 +22,40 @@ export const allChaptersInfoQuery = gql`
         }
     }
 `
+
+export const createQueryForEntity = (entity: string) => {
+    return gql`
+        query chaptersFor${entity}($id: String!) {
+            ${entity}(id: $id) {
+                name
+                linkedFrom {
+                    chapterCollection {
+                        total
+                        items {
+                            sys {
+                                id
+                            }
+                            name
+
+                            linkedFrom {
+                                onboardStepCollection {
+                                    total
+                                    items {
+                                        sys {
+                                            id
+                                        }
+                                        step
+                                        title
+                                        body
+                                        codeBlock
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                # add the fields you want to query
+            }
+        }
+    `
+}

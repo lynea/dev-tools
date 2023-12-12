@@ -45,7 +45,7 @@ const convertCMSTodosForDB = (
                 stepId: currentStep,
                 owner,
                 completed:
-                    dbTodos.find((todo) => todo.cmsId === todoForStep?.sys?.id)
+                    dbTodos?.find((todo) => todo.cmsId === todoForStep?.sys?.id)
                         ?.completed ?? false,
             })
         ) || []

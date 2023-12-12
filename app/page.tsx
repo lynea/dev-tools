@@ -1,6 +1,6 @@
+import { SqaureButton } from '@/components/SqaureButton/SquareButton'
 import { Title } from '@/components/Title/Title'
 
-import { SqaureButton } from '@/components/TeamSelect/TeamSelect'
 import Link from 'next/link'
 
 export default function Home() {
