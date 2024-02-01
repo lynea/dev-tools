@@ -1,5 +1,5 @@
 import QueryProvider from '@/components/QueryClient/QueryClient'
-import { ClerkProvider } from '@clerk/nextjs/app-beta'
+import { ClerkProvider } from '@clerk/nextjs'
 import './globals.css'
 import { TodoOverView } from '@/components/TodoOverView/TodoOverview'
 import { TodoList } from '@/components/TodoOverView/TodoList'

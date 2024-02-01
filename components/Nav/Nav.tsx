@@ -17,7 +17,7 @@ export const Nav: FunctionComponent = () => {
                     The sharing group
                 </h2>
             </Link>
-            <UserButton />
+            <UserButton afterSignOutUrl="/" />
             {/* <div className="ml-4">logo</div> */}
         </nav>
     )
