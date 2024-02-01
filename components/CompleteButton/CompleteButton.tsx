@@ -31,12 +31,11 @@ export const CompleteButton = ({
     }
 
     return (
-        <Link
+        <button
             className="mt-28 flex animate-bounce justify-center rounded-md bg-pink-600 px-6 py-3 text-xl font-bold text-white "
-            href={`/onboarding/${user.team}/overview`}
             onClick={handeClick}
         >
             {children}
-        </Link>
+        </button>
     )
 }

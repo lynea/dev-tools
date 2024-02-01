@@ -7,7 +7,7 @@ export const getTodosForUser = async (
 ): Promise<Todo[]> => {
     const res = await fetch(`http://${host}/api/todos/${userId}`, {
         headers: {},
-        cache: 'no-cache',
+        cache: 'no-store',
         next: {
             tags: ['todos'],
         },

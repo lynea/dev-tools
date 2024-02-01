@@ -17,7 +17,10 @@ model User {
   hasCompleted Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  entities  UserEntity[]
 }
+
+// a user has many entities 
 
 model Todo {
   id        String   @id @default(uuid())
@@ -26,10 +29,31 @@ model Todo {
   updatedAt DateTime @updatedAt
   title     String
   body      String
+  
   chapterId String
   stepId    String 
   owner     String   @default("")
   completed Boolean  @default(false)
 
+
   @@unique([id, owner])
+}
+
+model Entity {
+  id        String   @id @default(uuid())
+  cmsId     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  users   UserEntity[]
+}
+
+model UserEntity {
+  userId    String
+  entityId  String
+  user      User @relation(fields: [userId], references: [id])
+  entity    Entity @relation(fields: [entityId], references: [id])
+
+  @@id([userId, entityId])
+  @@index([userId]) // Add an index for userId
+  @@index([entityId]) // Add an index for entityId
 }

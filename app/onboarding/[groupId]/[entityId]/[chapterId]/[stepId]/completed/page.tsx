@@ -7,8 +7,8 @@ import { Box } from '@/components/Box/Box'
 import { getTodosForUser } from '@/utils/requests/_requests'
 import { TodoItem } from '@/components/TodoItemExperimental/TodoItem'
 import { headers } from 'next/headers'
-import { CompletedPageParams } from '../../types/pageProps'
 import { CompleteButton } from '@/components/CompleteButton/CompleteButton'
+import { CompletedPageParams } from '@/app/onboarding/types/pageProps'
 
 export const dynamic = 'force-dynamic'
 
@@ -26,16 +26,27 @@ export default async function Page({
 
     const openTodos = todos?.filter((todo) => todo.completed === false)
 
+    //TODO: create a way to connect users to entities. they can see the entities they are connected to and the ones they are not connected to.
+    // however they will only see the todos for the entities they are connected to.
+    // i need to create a ui where the an admin can select users per entity.
+    // i need to create a database table that connects users to entities.
+    // then i can fetch the entities a user is connected to
+
+    // a todo should be able to link to : "onboarding/overview/:groupId/:entityId/:chapterId/:stepId"
+
+    // currently i only have the chapter
+    // i can reverse when a user clicks on a todo to get the parents from the cms
+
     return (
         <>
-            <section className="flex w-full flex-col items-center">
+            <section className="mt-14 flex w-full flex-col items-center">
                 {openTodos?.length === 0 ? (
                     <>
                         <Title> Damn, you made it! welcome to the team </Title>
                         <div className="mt-28 flex h-96 w-96 flex-col justify-center">
                             <CelebrationAnimation />
                             <CompleteButton
-                                user={{ id: user.id, team: params.teamId }}
+                                user={{ id: user.id, team: params.groupId }}
                             >
                                 {' '}
                                 Finish{' '}

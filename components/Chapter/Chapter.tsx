@@ -1,47 +1,36 @@
-import { Box } from '@/components/Box/Box'
-import { Button } from '@/components/Button/Button'
-import { ProgressBar } from '@/components/Progres/Progres'
-import { Title } from '@/components/Title/Title'
-import ReactMarkdown from 'react-markdown'
-import Link from 'next/link'
-
-import { allGobalChaptersInfoQuery } from '../../../../../graphql/queries/globalChapter'
-import { clsx } from 'clsx'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeft, faCircleCheck } from '@fortawesome/free-solid-svg-icons'
-import { getClient } from '@/lib/client'
-
-import {
-    AllGobalChaptersInfoQuery,
-    Chapter,
-    TodosForStepQuery,
-} from '../../../../../generated/graphql'
+import { TodoForDb } from '@/app/onboarding/types/todo'
+import { TodosForStepQuery, Chapter as IChapter } from '@/generated/graphql'
+import { getClient } from '@/graphql/client'
 import { todosForStepQuery } from '@/graphql/queries/todo'
-import { TodoOverView } from '@/components/TodoOverView/TodoOverview'
-import { StepButton } from '@/components/StepButton/StepButton'
-
-import { currentUser } from '@clerk/nextjs/app-beta'
-import type { User } from '@clerk/nextjs/api'
-
+import { db } from '@/lib/db'
 import { getTodosForUser } from '@/utils/requests/_requests'
-import { TodoList } from '@/components/TodoOverView/TodoList'
 import {
+    convertCMSTodosForDB,
     incrementChapter,
     incrementStep,
-    decrementStep,
     decrementChapter,
-    convertCMSTodosForDB,
+    decrementStep,
 } from '@/utils/todo'
-import { GlobalStepPageParams } from '@/app/onboarding/types/pageProps'
-import { TodoForDb } from '@/app/onboarding/types/todo'
+import { currentUser } from '@clerk/nextjs'
+import { faCircleCheck, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { User } from '@prisma/client'
+import clsx from 'clsx'
 import { headers } from 'next/headers'
-import { ImageViewer } from '@/components/ImageViewer/ImageViewer'
-import { TodoWrapper } from '@/components/TodoWrapper/TodoWrapper'
-import { db } from '@/lib/db'
+import Link from 'next/link'
+import ReactMarkdown from 'react-markdown'
+import { Box } from '../Box/Box'
+import { ImageViewer } from '../ImageViewer/ImageViewer'
+import { StepButton } from '../StepButton/StepButton'
+import { Title } from '../Title/Title'
+import { TodoWrapper } from '../TodoWrapper/TodoWrapper'
 
-export const revalidate = 5
+import { Player } from '../Video/Player'
+import { ChapterProps } from './types'
+import { BackButton } from '../StepBackButton/BackButton'
+import { Progress } from 'flowbite-react'
 
-const getFirstStepId = (chapter: Chapter) => {
+const getFirstStepId = (chapter: IChapter) => {
     const sortedSteps = [
         ...(chapter?.linkedFrom?.onboardStepCollection?.items ?? []),
     ]?.sort((a, b) => a?.step! - b?.step!)
@@ -49,12 +38,17 @@ const getFirstStepId = (chapter: Chapter) => {
     return sortedSteps.at(0)?.sys?.id
 }
 
-export default async function Page({
-    params,
-}: {
-    params: GlobalStepPageParams
-}) {
+//@ts-ignore
+export const Chapter = async ({
+    chapterId,
+    stepId,
+    chapters,
+    basePath,
+    chapterCompletedLink,
+}: ChapterProps) => {
+    //@ts-ignore
     const user: User | null = await currentUser()
+
     const host = headers().get('host')
     if (!user) return <>no user was found</>
 
@@ -70,18 +64,15 @@ export default async function Page({
 
     const client = getClient()
 
-    const { data }: { data: AllGobalChaptersInfoQuery } = await client.query({
-        query: allGobalChaptersInfoQuery,
-    })
+    //should get all the chapters for the entity example all chapters for the company
+    // then it should pass the chapters
 
-    const sortedChapters = [...(data?.chapterCollection?.items ?? [])]?.sort(
-        (a, b) => a?.id! - b?.id!
-    )
+    const sortedChapters = [...(chapters?.items ?? [])]
 
-    const totalChapters = data?.chapterCollection?.total ?? 0
+    const totalChapters = chapters?.total ?? 0
 
     const indexOfCurrentChapter = sortedChapters.findIndex(
-        (chapter) => chapter?.sys.id === params.chapterId
+        (chapter) => chapter?.sys.id === chapterId
     )
 
     if (indexOfCurrentChapter < 0)
@@ -108,8 +99,10 @@ export default async function Page({
 
     //get the index of the current step
     const indexOfCurrentStep = sortedSteps?.findIndex(
-        (step) => step?.sys.id === params.stepId
+        (step) => step?.sys.id === stepId
     )
+
+    if (indexOfCurrentStep < 0) return <>no step was found matching this id</>
 
     const currentStepInfo = sortedSteps?.at(indexOfCurrentStep)
 
@@ -128,20 +121,22 @@ export default async function Page({
     const todosToRender: TodoForDb[] = convertCMSTodosForDB(
         todoData,
         user.id,
-        params.chapterId ?? '',
-        params.stepId,
+        chapterId ?? '',
+        stepId,
         dbTodos
     )
 
     const isLastChapter = indexOfCurrentChapter + 1 === totalChapters
 
-    const canDecrementStep =
-        indexOfCurrentStep !== 0 || indexOfCurrentChapter !== 0
+    //
+
+    const canDecrementStep = true
+    // indexOfCurrentStep !== 0 && indexOfCurrentChapter !== 0
 
     const isLastStepInChapter = indexOfCurrentStep + 1 === totalSteps
     const isfirstStepInChapter = indexOfCurrentStep === 0
 
-    const basePath = `/onboarding/global`
+    // const basePath = `/onboarding/global`
 
     //should accept a item array
     // and the path to route to when no more items are left
@@ -149,7 +144,8 @@ export default async function Page({
     const generateNextLink = (): string => {
         if (isLastStepInChapter) {
             if (isLastChapter) {
-                return `/onboarding/team-select`
+                console.log('last chapter', chapterCompletedLink)
+                return chapterCompletedLink
             }
 
             const firstStepId = [
@@ -172,7 +168,7 @@ export default async function Page({
 
         return incrementStep(
             basePath,
-            params.chapterId,
+            chapterId,
             sortedSteps?.at(indexOfCurrentStep + 1)?.sys.id!
         )
     }
@@ -200,7 +196,7 @@ export default async function Page({
 
         return decrementStep(
             basePath,
-            params.chapterId,
+            chapterId,
             sortedSteps?.at(indexOfCurrentStep - 1)?.sys.id!
         )
     }
@@ -210,7 +206,7 @@ export default async function Page({
 
     return (
         <>
-            <section className="flex w-full">
+            <section className="mt-6 flex w-full">
                 <div className="w-full [&>_div]:mt-4">
                     {todoData.onboardStep?.mainImage?.url ? (
                         <ImageViewer
@@ -218,20 +214,29 @@ export default async function Page({
                         />
                     ) : null}
 
-                    <Box>
-                        <Title>{currentStepInfo?.title}</Title>
+                    {currentStepInfo?.youtubeId ? (
+                        <Player youtubeId={currentStepInfo.youtubeId!}></Player>
+                    ) : null}
 
-                        <ReactMarkdown>
-                            {currentStepInfo.body ?? ''}
-                        </ReactMarkdown>
-                        {currentStepInfo?.codeBlock && (
-                            <code className="mt-6 block rounded-md bg-purple-200 p-4 ">
-                                <ReactMarkdown>
-                                    {currentStepInfo.codeBlock ?? ''}
-                                </ReactMarkdown>
-                            </code>
-                        )}
-                    </Box>
+                    {currentStepInfo?.title ||
+                    currentStepInfo?.body ||
+                    currentStepInfo?.codeBlock ? (
+                        <Box>
+                            <Title>{currentStepInfo?.title}</Title>
+
+                            <ReactMarkdown>
+                                {currentStepInfo.body ?? ''}
+                            </ReactMarkdown>
+                            {currentStepInfo?.codeBlock && (
+                                <code className="mt-6 block rounded-md bg-purple-200 p-4 ">
+                                    <ReactMarkdown>
+                                        {currentStepInfo.codeBlock ?? ''}
+                                    </ReactMarkdown>
+                                </code>
+                            )}
+                        </Box>
+                    ) : null}
+
                     {todosToRender?.length > 0 ? (
                         <Box>
                             <h3 className="mb-4 text-2xl font-bold">Todo:</h3>
@@ -248,14 +253,7 @@ export default async function Page({
                     ) : null}
 
                     <div className="mt-8 flex flex-col items-center justify-center gap-10 lg:flex-row">
-                        {canDecrementStep ? (
-                            <Link
-                                href={generatePreviousLink()}
-                                className="order-3 w-full lg:order-1 lg:w-auto"
-                            >
-                                <Button>Previous</Button>
-                            </Link>
-                        ) : null}
+                        {canDecrementStep ? <BackButton /> : null}
 
                         <div className="order-2 flex w-full flex-col">
                             <p className="mb-1 justify-between text-center  text-lg text-white ">
@@ -266,9 +264,12 @@ export default async function Page({
                                 of{' '}
                                 <span className="font-bold"> {totalSteps}</span>
                             </p>
-                            <ProgressBar
-                                max={totalSteps}
-                                value={indexOfCurrentStep + 1}
+                            <Progress
+                                progress={
+                                    ((indexOfCurrentStep + 1) / totalSteps) *
+                                    100
+                                }
+                                color="pink"
                             />
                         </div>
 
@@ -295,9 +296,7 @@ export default async function Page({
                                             ? ''
                                             : 'pointer-events-none '
                                     }
-                                    href={`/onboarding/global/${chapter?.sys
-                                        .id}/${
-                                        //@ts-ignore
+                                    href={`${basePath}/${chapter?.sys.id}/${
                                         chapter ? getFirstStepId(chapter) : ''
                                     }`}
                                 >

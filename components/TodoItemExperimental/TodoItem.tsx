@@ -27,6 +27,7 @@ export const TodoItem: FunctionComponent<TodoItemProps> = ({
 }) => {
     let [isPending, startTransition] = useTransition()
 
+    //TODO: maybe based on the id i can go up the tree and find the chapter and step
     return (
         <div className="flex items-center  ">
             {isPending ? (

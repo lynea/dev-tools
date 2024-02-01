@@ -7,74 +7,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { createOrUpdateUser } from '../../app/actions'
 import { useUser } from '@clerk/clerk-react'
-
-type SquareButtonProps = {
-    children: React.ReactNode
-    className?: string
-    active?: boolean
-} & React.ButtonHTMLAttributes<HTMLButtonElement>
-
-export const SqaureButton: FunctionComponent<SquareButtonProps> = ({
-    children,
-    onClick,
-    disabled,
-    active,
-    ...otherProps
-}) => {
-    return (
-        <button
-            {...otherProps}
-            onClick={onClick}
-            disabled={disabled}
-            className={clsx(
-                'mr-8 h-40  w-40 rounded-md  border-2 text-3xl font-bold transition-all duration-200 ease-in',
-                {
-                    'bg-gradient-to-t from-gradientEnd to-gradientStart text-main-200 ':
-                        active && !disabled,
-                    'border-pink text-white': !active && !disabled,
-                    'cursor-not-allowed border-gray-500 text-gray-500':
-                        disabled,
-                }
-            )}
-        >
-            {children}
-        </button>
-    )
-}
-
-type TeamSelectProps = {
-    teams: Array<{
-        __typename?: 'Team'
-        name?: string | null
-        alias?: string | null
-        sys: { __typename?: 'Sys'; id: string }
-        linkedFrom?: {
-            __typename?: 'TeamLinkingCollections'
-            chapterCollection?: {
-                __typename?: 'ChapterCollection'
-                items: Array<{
-                    __typename?: 'Chapter'
-                    id?: number | null
-                    sys: { __typename?: 'Sys'; id: string }
-                    linkedFrom?: {
-                        __typename?: 'ChapterLinkingCollections'
-                        onboardStepCollection?: {
-                            __typename?: 'OnboardStepCollection'
-                            items: Array<{
-                                __typename?: 'OnboardStep'
-                                step?: number | null
-                                sys: { __typename?: 'Sys'; id: string }
-                            } | null>
-                        } | null
-                    } | null
-                } | null>
-            } | null
-        } | null
-    } | null>
-}
-
-//get chapters where the teamid is the same as the selected team
-// get the first step of the first chapter
+import { SqaureButton } from '../SqaureButton/SquareButton'
+import { TeamSelectProps } from './types'
 
 export const TeamSelect: FunctionComponent<TeamSelectProps> = ({ teams }) => {
     const [selectedTeam, setSelectedTeam] = useState<string | undefined>(

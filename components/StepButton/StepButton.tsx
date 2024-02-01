@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 
 import { createTodosForUser, getTodosForUser } from '@/utils/requests/_requests'
 import { TodoForDb } from '@/app/onboarding/types/todo'
+import { createOrMutateTodo, createTodos } from '@/app/actions'
 
 type StepButtonProps = {
     todoInfo: TodoForDb[]
@@ -27,6 +28,8 @@ export const StepButton: FunctionComponent<StepButtonProps> = ({
 }) => {
     const router = useRouter()
 
+    console.log('route', route)
+
     const handleClick = async () => {
         const dbTodos = await getTodosForUser(userId, host)
         if (!userId) {
@@ -34,18 +37,16 @@ export const StepButton: FunctionComponent<StepButtonProps> = ({
             return
         }
 
+        console.log('todoInfo', todoInfo)
+
         const todosToBeAdded = todoInfo.filter(
             (todo) => !dbTodos?.some((dbTodo) => dbTodo.cmsId === todo.cmsId)
         )
 
         if (todosToBeAdded?.length) {
-            try {
-                await createTodosForUser(userId, todosToBeAdded)
-            } catch (error) {
-            } finally {
-                router.refresh()
-                router.push(route)
-            }
+            await createTodos(userId, todosToBeAdded)
+
+            router.push(route)
         } else {
             router.refresh()
             router.push(route)
