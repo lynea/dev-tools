@@ -16,5 +16,5 @@ export type Entities = Array<Entity>
 export type EntitySelectProps = {
     entities: Entities
     navigationPath: string
-    beforeNavigate?: () => void
+    smallButtonWhenSingleEntity?: boolean
 }

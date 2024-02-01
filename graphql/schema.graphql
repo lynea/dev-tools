@@ -8,6 +8,15 @@ type Query {
     where: AssetFilter
     order: [AssetOrder]
   ): AssetCollection
+  onboardStep(id: String!, preview: Boolean, locale: String): OnboardStep
+  onboardStepCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+    where: OnboardStepFilter
+    order: [OnboardStepOrder]
+  ): OnboardStepCollection
   chapter(id: String!, preview: Boolean, locale: String): Chapter
   chapterCollection(
     skip: Int = 0
@@ -17,6 +26,33 @@ type Query {
     where: ChapterFilter
     order: [ChapterOrder]
   ): ChapterCollection
+  youtubeVideo(id: String!, preview: Boolean, locale: String): YoutubeVideo
+  youtubeVideoCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+    where: YoutubeVideoFilter
+    order: [YoutubeVideoOrder]
+  ): YoutubeVideoCollection
+  entityGroup(id: String!, preview: Boolean, locale: String): EntityGroup
+  entityGroupCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+    where: EntityGroupFilter
+    order: [EntityGroupOrder]
+  ): EntityGroupCollection
+  entity(id: String!, preview: Boolean, locale: String): Entity
+  entityCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+    where: EntityFilter
+    order: [EntityOrder]
+  ): EntityCollection
   team(id: String!, preview: Boolean, locale: String): Team
   teamCollection(
     skip: Int = 0
@@ -44,15 +80,6 @@ type Query {
     where: CompanyFilter
     order: [CompanyOrder]
   ): CompanyCollection
-  onboardStep(id: String!, preview: Boolean, locale: String): OnboardStep
-  onboardStepCollection(
-    skip: Int = 0
-    limit: Int = 100
-    preview: Boolean
-    locale: String
-    where: OnboardStepFilter
-    order: [OnboardStepOrder]
-  ): OnboardStepCollection
   todo(id: String!, preview: Boolean, locale: String): Todo
   todoCollection(
     skip: Int = 0
@@ -79,6 +106,7 @@ type Query {
     where: EntryFilter
     order: [EntryOrder]
   ): EntryCollection
+  _node(id: ID!, preview: Boolean, locale: String): _Node
 }
 
 # Represents a binary file in a space. An asset can be any file type.
@@ -285,6 +313,8 @@ type OnboardStep implements Entry {
   step(locale: String): Int
   mainImage(preview: Boolean, locale: String): Asset
   chapter(preview: Boolean, locale: String, where: ChapterFilter): Chapter
+  video(preview: Boolean, locale: String): Asset
+  youtubeId(locale: String): String
 }
 
 type OnboardStepLinkingCollections {
@@ -366,6 +396,14 @@ input OnboardStepFilter {
   step_lte: Int
   mainImage_exists: Boolean
   chapter_exists: Boolean
+  video_exists: Boolean
+  youtubeId_exists: Boolean
+  youtubeId: String
+  youtubeId_not: String
+  youtubeId_in: [String]
+  youtubeId_not_in: [String]
+  youtubeId_contains: String
+  youtubeId_not_contains: String
   OR: [OnboardStepFilter]
   AND: [OnboardStepFilter]
 }
@@ -380,6 +418,15 @@ input cfChapterNestedFilter {
   name_not_in: [String]
   name_contains: String
   name_not_contains: String
+  id_exists: Boolean
+  id: Int
+  id_not: Int
+  id_in: [Int]
+  id_not_in: [Int]
+  id_gt: Int
+  id_gte: Int
+  id_lt: Int
+  id_lte: Int
   team_exists: Boolean
   global_exists: Boolean
   global: Boolean
@@ -459,6 +506,7 @@ type Chapter implements Entry {
   contentfulMetadata: ContentfulMetadata!
   linkedFrom(allowedLocales: [String]): ChapterLinkingCollections
   name(locale: String): String
+  id(locale: String): Int
   team(preview: Boolean, locale: String): ChapterTeam
   global(locale: String): Boolean
 }
@@ -484,6 +532,8 @@ enum ChapterLinkingCollectionsOnboardStepCollectionOrder {
   title_DESC
   step_ASC
   step_DESC
+  youtubeId_ASC
+  youtubeId_DESC
   sys_id_ASC
   sys_id_DESC
   sys_publishedAt_ASC
@@ -494,7 +544,7 @@ enum ChapterLinkingCollectionsOnboardStepCollectionOrder {
   sys_publishedVersion_DESC
 }
 
-union ChapterTeam = Company | Department | Team
+union ChapterTeam = Company | Department | Entity | EntityGroup | Team
 
 # a company within the group [See type definition](https://app.contentful.com/spaces/fyjyr27t2loo/content_types/company)
 type Company implements Entry {
@@ -540,6 +590,8 @@ type ChapterCollection {
 enum CompanyLinkingCollectionsChapterCollectionOrder {
   name_ASC
   name_DESC
+  id_ASC
+  id_DESC
   global_ASC
   global_DESC
   sys_id_ASC
@@ -597,6 +649,8 @@ type DepartmentLinkingCollections {
 enum DepartmentLinkingCollectionsChapterCollectionOrder {
   name_ASC
   name_DESC
+  id_ASC
+  id_DESC
   global_ASC
   global_DESC
   sys_id_ASC
@@ -651,6 +705,8 @@ type TeamLinkingCollections {
 enum TeamLinkingCollectionsChapterCollectionOrder {
   name_ASC
   name_DESC
+  id_ASC
+  id_DESC
   global_ASC
   global_DESC
   sys_id_ASC
@@ -814,6 +870,246 @@ enum CompanyLinkingCollectionsDepartmentCollectionOrder {
   sys_publishedVersion_DESC
 }
 
+# a entity within a specific level e.g a team, department or company [See type definition](https://app.contentful.com/spaces/fyjyr27t2loo/content_types/entity)
+type Entity implements Entry {
+  sys: Sys!
+  contentfulMetadata: ContentfulMetadata!
+  linkedFrom(allowedLocales: [String]): EntityLinkingCollections
+  name(locale: String): String
+  description(locale: String): String
+  parent(
+    preview: Boolean
+    locale: String
+    where: EntityGroupFilter
+  ): EntityGroup
+}
+
+type EntityLinkingCollections {
+  entryCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+  ): EntryCollection
+  chapterCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+    order: [EntityLinkingCollectionsChapterCollectionOrder]
+  ): ChapterCollection
+  entityGroupCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+    order: [EntityLinkingCollectionsEntityGroupCollectionOrder]
+  ): EntityGroupCollection
+}
+
+enum EntityLinkingCollectionsChapterCollectionOrder {
+  name_ASC
+  name_DESC
+  id_ASC
+  id_DESC
+  global_ASC
+  global_DESC
+  sys_id_ASC
+  sys_id_DESC
+  sys_publishedAt_ASC
+  sys_publishedAt_DESC
+  sys_firstPublishedAt_ASC
+  sys_firstPublishedAt_DESC
+  sys_publishedVersion_ASC
+  sys_publishedVersion_DESC
+}
+
+type EntityGroupCollection {
+  total: Int!
+  skip: Int!
+  limit: Int!
+  items: [EntityGroup]!
+}
+
+# a group of entities that are on the same level e.g. companies, departments or teams [See type definition](https://app.contentful.com/spaces/fyjyr27t2loo/content_types/entityGroup)
+type EntityGroup implements Entry {
+  sys: Sys!
+  contentfulMetadata: ContentfulMetadata!
+  linkedFrom(allowedLocales: [String]): EntityGroupLinkingCollections
+  level(locale: String): Int
+  name(locale: String): String
+  parent(preview: Boolean, locale: String, where: EntityFilter): Entity
+}
+
+type EntityGroupLinkingCollections {
+  entryCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+  ): EntryCollection
+  chapterCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+    order: [EntityGroupLinkingCollectionsChapterCollectionOrder]
+  ): ChapterCollection
+  entityCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+    order: [EntityGroupLinkingCollectionsEntityCollectionOrder]
+  ): EntityCollection
+}
+
+enum EntityGroupLinkingCollectionsChapterCollectionOrder {
+  name_ASC
+  name_DESC
+  id_ASC
+  id_DESC
+  global_ASC
+  global_DESC
+  sys_id_ASC
+  sys_id_DESC
+  sys_publishedAt_ASC
+  sys_publishedAt_DESC
+  sys_firstPublishedAt_ASC
+  sys_firstPublishedAt_DESC
+  sys_publishedVersion_ASC
+  sys_publishedVersion_DESC
+}
+
+type EntityCollection {
+  total: Int!
+  skip: Int!
+  limit: Int!
+  items: [Entity]!
+}
+
+enum EntityGroupLinkingCollectionsEntityCollectionOrder {
+  name_ASC
+  name_DESC
+  sys_id_ASC
+  sys_id_DESC
+  sys_publishedAt_ASC
+  sys_publishedAt_DESC
+  sys_firstPublishedAt_ASC
+  sys_firstPublishedAt_DESC
+  sys_publishedVersion_ASC
+  sys_publishedVersion_DESC
+}
+
+input EntityFilter {
+  parent: cfEntityGroupNestedFilter
+  sys: SysFilter
+  contentfulMetadata: ContentfulMetadataFilter
+  name_exists: Boolean
+  name: String
+  name_not: String
+  name_in: [String]
+  name_not_in: [String]
+  name_contains: String
+  name_not_contains: String
+  description_exists: Boolean
+  description: String
+  description_not: String
+  description_in: [String]
+  description_not_in: [String]
+  description_contains: String
+  description_not_contains: String
+  parent_exists: Boolean
+  OR: [EntityFilter]
+  AND: [EntityFilter]
+}
+
+input cfEntityGroupNestedFilter {
+  sys: SysFilter
+  contentfulMetadata: ContentfulMetadataFilter
+  level_exists: Boolean
+  level: Int
+  level_not: Int
+  level_in: [Int]
+  level_not_in: [Int]
+  level_gt: Int
+  level_gte: Int
+  level_lt: Int
+  level_lte: Int
+  name_exists: Boolean
+  name: String
+  name_not: String
+  name_in: [String]
+  name_not_in: [String]
+  name_contains: String
+  name_not_contains: String
+  parent_exists: Boolean
+  OR: [cfEntityGroupNestedFilter]
+  AND: [cfEntityGroupNestedFilter]
+}
+
+enum EntityLinkingCollectionsEntityGroupCollectionOrder {
+  level_ASC
+  level_DESC
+  name_ASC
+  name_DESC
+  sys_id_ASC
+  sys_id_DESC
+  sys_publishedAt_ASC
+  sys_publishedAt_DESC
+  sys_firstPublishedAt_ASC
+  sys_firstPublishedAt_DESC
+  sys_publishedVersion_ASC
+  sys_publishedVersion_DESC
+}
+
+input EntityGroupFilter {
+  parent: cfEntityNestedFilter
+  sys: SysFilter
+  contentfulMetadata: ContentfulMetadataFilter
+  level_exists: Boolean
+  level: Int
+  level_not: Int
+  level_in: [Int]
+  level_not_in: [Int]
+  level_gt: Int
+  level_gte: Int
+  level_lt: Int
+  level_lte: Int
+  name_exists: Boolean
+  name: String
+  name_not: String
+  name_in: [String]
+  name_not_in: [String]
+  name_contains: String
+  name_not_contains: String
+  parent_exists: Boolean
+  OR: [EntityGroupFilter]
+  AND: [EntityGroupFilter]
+}
+
+input cfEntityNestedFilter {
+  sys: SysFilter
+  contentfulMetadata: ContentfulMetadataFilter
+  name_exists: Boolean
+  name: String
+  name_not: String
+  name_in: [String]
+  name_not_in: [String]
+  name_contains: String
+  name_not_contains: String
+  description_exists: Boolean
+  description: String
+  description_not: String
+  description_in: [String]
+  description_not_in: [String]
+  description_contains: String
+  description_not_contains: String
+  parent_exists: Boolean
+  OR: [cfEntityNestedFilter]
+  AND: [cfEntityNestedFilter]
+}
+
 input ChapterFilter {
   sys: SysFilter
   contentfulMetadata: ContentfulMetadataFilter
@@ -824,6 +1120,15 @@ input ChapterFilter {
   name_not_in: [String]
   name_contains: String
   name_not_contains: String
+  id_exists: Boolean
+  id: Int
+  id_not: Int
+  id_in: [Int]
+  id_not_in: [Int]
+  id_gt: Int
+  id_gte: Int
+  id_lt: Int
+  id_lte: Int
   team_exists: Boolean
   global_exists: Boolean
   global: Boolean
@@ -931,11 +1236,109 @@ enum AssetOrder {
   sys_publishedVersion_DESC
 }
 
+enum OnboardStepOrder {
+  title_ASC
+  title_DESC
+  step_ASC
+  step_DESC
+  youtubeId_ASC
+  youtubeId_DESC
+  sys_id_ASC
+  sys_id_DESC
+  sys_publishedAt_ASC
+  sys_publishedAt_DESC
+  sys_firstPublishedAt_ASC
+  sys_firstPublishedAt_DESC
+  sys_publishedVersion_ASC
+  sys_publishedVersion_DESC
+}
+
 enum ChapterOrder {
   name_ASC
   name_DESC
+  id_ASC
+  id_DESC
   global_ASC
   global_DESC
+  sys_id_ASC
+  sys_id_DESC
+  sys_publishedAt_ASC
+  sys_publishedAt_DESC
+  sys_firstPublishedAt_ASC
+  sys_firstPublishedAt_DESC
+  sys_publishedVersion_ASC
+  sys_publishedVersion_DESC
+}
+
+# [See type definition](https://app.contentful.com/spaces/fyjyr27t2loo/content_types/youtubeVideo)
+type YoutubeVideo implements Entry {
+  sys: Sys!
+  contentfulMetadata: ContentfulMetadata!
+  linkedFrom(allowedLocales: [String]): YoutubeVideoLinkingCollections
+  youtubeId(locale: String): String
+}
+
+type YoutubeVideoLinkingCollections {
+  entryCollection(
+    skip: Int = 0
+    limit: Int = 100
+    preview: Boolean
+    locale: String
+  ): EntryCollection
+}
+
+type YoutubeVideoCollection {
+  total: Int!
+  skip: Int!
+  limit: Int!
+  items: [YoutubeVideo]!
+}
+
+input YoutubeVideoFilter {
+  sys: SysFilter
+  contentfulMetadata: ContentfulMetadataFilter
+  youtubeId_exists: Boolean
+  youtubeId: String
+  youtubeId_not: String
+  youtubeId_in: [String]
+  youtubeId_not_in: [String]
+  youtubeId_contains: String
+  youtubeId_not_contains: String
+  OR: [YoutubeVideoFilter]
+  AND: [YoutubeVideoFilter]
+}
+
+enum YoutubeVideoOrder {
+  youtubeId_ASC
+  youtubeId_DESC
+  sys_id_ASC
+  sys_id_DESC
+  sys_publishedAt_ASC
+  sys_publishedAt_DESC
+  sys_firstPublishedAt_ASC
+  sys_firstPublishedAt_DESC
+  sys_publishedVersion_ASC
+  sys_publishedVersion_DESC
+}
+
+enum EntityGroupOrder {
+  level_ASC
+  level_DESC
+  name_ASC
+  name_DESC
+  sys_id_ASC
+  sys_id_DESC
+  sys_publishedAt_ASC
+  sys_publishedAt_DESC
+  sys_firstPublishedAt_ASC
+  sys_firstPublishedAt_DESC
+  sys_publishedVersion_ASC
+  sys_publishedVersion_DESC
+}
+
+enum EntityOrder {
+  name_ASC
+  name_DESC
   sys_id_ASC
   sys_id_DESC
   sys_publishedAt_ASC
@@ -1087,21 +1490,6 @@ enum CompanyOrder {
   sys_publishedVersion_DESC
 }
 
-enum OnboardStepOrder {
-  title_ASC
-  title_DESC
-  step_ASC
-  step_DESC
-  sys_id_ASC
-  sys_id_DESC
-  sys_publishedAt_ASC
-  sys_publishedAt_DESC
-  sys_firstPublishedAt_ASC
-  sys_firstPublishedAt_DESC
-  sys_publishedVersion_ASC
-  sys_publishedVersion_DESC
-}
-
 input TodoFilter {
   step: cfOnboardStepNestedFilter
   sys: SysFilter
@@ -1169,6 +1557,14 @@ input cfOnboardStepNestedFilter {
   step_lte: Int
   mainImage_exists: Boolean
   chapter_exists: Boolean
+  video_exists: Boolean
+  youtubeId_exists: Boolean
+  youtubeId: String
+  youtubeId_not: String
+  youtubeId_in: [String]
+  youtubeId_not_in: [String]
+  youtubeId_contains: String
+  youtubeId_not_contains: String
   OR: [cfOnboardStepNestedFilter]
   AND: [cfOnboardStepNestedFilter]
 }
@@ -1252,4 +1648,8 @@ enum EntryOrder {
   sys_firstPublishedAt_DESC
   sys_publishedVersion_ASC
   sys_publishedVersion_DESC
+}
+
+interface _Node {
+  _id: ID!
 }

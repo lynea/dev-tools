@@ -21,11 +21,14 @@ import Link from 'next/link'
 import ReactMarkdown from 'react-markdown'
 import { Box } from '../Box/Box'
 import { ImageViewer } from '../ImageViewer/ImageViewer'
-import { ProgressBar } from '../Progres/Progres'
 import { StepButton } from '../StepButton/StepButton'
 import { Title } from '../Title/Title'
 import { TodoWrapper } from '../TodoWrapper/TodoWrapper'
-import { Button } from '../Button/Button'
+
+import { Player } from '../Video/Player'
+import { ChapterProps } from './types'
+import { BackButton } from '../StepBackButton/BackButton'
+import { Progress } from 'flowbite-react'
 
 const getFirstStepId = (chapter: IChapter) => {
     const sortedSteps = [
@@ -42,7 +45,8 @@ export const Chapter = async ({
     chapters,
     basePath,
     chapterCompletedLink,
-}) => {
+}: ChapterProps) => {
+    //@ts-ignore
     const user: User | null = await currentUser()
 
     const host = headers().get('host')
@@ -63,13 +67,7 @@ export const Chapter = async ({
     //should get all the chapters for the entity example all chapters for the company
     // then it should pass the chapters
 
-    // const sortedChapters = [...(data?.chapterCollection?.items ?? [])]?.sort(
-    //     (a, b) => a?.id! - b?.id!
-    // )
-
     const sortedChapters = [...(chapters?.items ?? [])]
-
-    console.log('sortedChapters', sortedChapters)
 
     const totalChapters = chapters?.total ?? 0
 
@@ -104,9 +102,9 @@ export const Chapter = async ({
         (step) => step?.sys.id === stepId
     )
 
-    const currentStepInfo = sortedSteps?.at(indexOfCurrentStep)
+    if (indexOfCurrentStep < 0) return <>no step was found matching this id</>
 
-    console.log('currentStepInfo', currentStepInfo)
+    const currentStepInfo = sortedSteps?.at(indexOfCurrentStep)
 
     const { data: todoData }: { data: TodosForStepQuery } = await client
         .query({
@@ -130,9 +128,10 @@ export const Chapter = async ({
 
     const isLastChapter = indexOfCurrentChapter + 1 === totalChapters
 
-    console.log(`${indexOfCurrentStep !== 0} &  ${indexOfCurrentChapter}`)
+    //
 
-    const canDecrementStep = indexOfCurrentStep !== 0
+    const canDecrementStep = true
+    // indexOfCurrentStep !== 0 && indexOfCurrentChapter !== 0
 
     const isLastStepInChapter = indexOfCurrentStep + 1 === totalSteps
     const isfirstStepInChapter = indexOfCurrentStep === 0
@@ -144,7 +143,6 @@ export const Chapter = async ({
     // and the index of the current step
     const generateNextLink = (): string => {
         if (isLastStepInChapter) {
-            console.log('last step in chapter')
             if (isLastChapter) {
                 console.log('last chapter', chapterCompletedLink)
                 return chapterCompletedLink
@@ -208,7 +206,7 @@ export const Chapter = async ({
 
     return (
         <>
-            <section className="flex w-full">
+            <section className="mt-6 flex w-full">
                 <div className="w-full [&>_div]:mt-4">
                     {todoData.onboardStep?.mainImage?.url ? (
                         <ImageViewer
@@ -216,20 +214,29 @@ export const Chapter = async ({
                         />
                     ) : null}
 
-                    <Box>
-                        <Title>{currentStepInfo?.title}</Title>
+                    {currentStepInfo?.youtubeId ? (
+                        <Player youtubeId={currentStepInfo.youtubeId!}></Player>
+                    ) : null}
 
-                        <ReactMarkdown>
-                            {currentStepInfo.body ?? ''}
-                        </ReactMarkdown>
-                        {currentStepInfo?.codeBlock && (
-                            <code className="mt-6 block rounded-md bg-purple-200 p-4 ">
-                                <ReactMarkdown>
-                                    {currentStepInfo.codeBlock ?? ''}
-                                </ReactMarkdown>
-                            </code>
-                        )}
-                    </Box>
+                    {currentStepInfo?.title ||
+                    currentStepInfo?.body ||
+                    currentStepInfo?.codeBlock ? (
+                        <Box>
+                            <Title>{currentStepInfo?.title}</Title>
+
+                            <ReactMarkdown>
+                                {currentStepInfo.body ?? ''}
+                            </ReactMarkdown>
+                            {currentStepInfo?.codeBlock && (
+                                <code className="mt-6 block rounded-md bg-purple-200 p-4 ">
+                                    <ReactMarkdown>
+                                        {currentStepInfo.codeBlock ?? ''}
+                                    </ReactMarkdown>
+                                </code>
+                            )}
+                        </Box>
+                    ) : null}
+
                     {todosToRender?.length > 0 ? (
                         <Box>
                             <h3 className="mb-4 text-2xl font-bold">Todo:</h3>
@@ -246,14 +253,7 @@ export const Chapter = async ({
                     ) : null}
 
                     <div className="mt-8 flex flex-col items-center justify-center gap-10 lg:flex-row">
-                        {canDecrementStep ? (
-                            <Link
-                                href={generatePreviousLink()}
-                                className="order-3 w-full lg:order-1 lg:w-auto"
-                            >
-                                <Button>Previous</Button>
-                            </Link>
-                        ) : null}
+                        {canDecrementStep ? <BackButton /> : null}
 
                         <div className="order-2 flex w-full flex-col">
                             <p className="mb-1 justify-between text-center  text-lg text-white ">
@@ -264,9 +264,12 @@ export const Chapter = async ({
                                 of{' '}
                                 <span className="font-bold"> {totalSteps}</span>
                             </p>
-                            <ProgressBar
-                                max={totalSteps}
-                                value={indexOfCurrentStep + 1}
+                            <Progress
+                                progress={
+                                    ((indexOfCurrentStep + 1) / totalSteps) *
+                                    100
+                                }
+                                color="pink"
                             />
                         </div>
 
@@ -293,8 +296,7 @@ export const Chapter = async ({
                                             ? ''
                                             : 'pointer-events-none '
                                     }
-                                    href={`/onboarding/global/${chapter?.sys
-                                        .id}/${
+                                    href={`${basePath}/${chapter?.sys.id}/${
                                         chapter ? getFirstStepId(chapter) : ''
                                     }`}
                                 >

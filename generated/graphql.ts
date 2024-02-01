@@ -207,6 +207,7 @@ export type Chapter = Entry & {
   __typename?: 'Chapter';
   contentfulMetadata: ContentfulMetadata;
   global?: Maybe<Scalars['Boolean']>;
+  id?: Maybe<Scalars['Int']>;
   linkedFrom?: Maybe<ChapterLinkingCollections>;
   name?: Maybe<Scalars['String']>;
   sys: Sys;
@@ -215,6 +216,11 @@ export type Chapter = Entry & {
 
 
 export type ChapterGlobalArgs = {
+  locale?: InputMaybe<Scalars['String']>;
+};
+
+
+export type ChapterIdArgs = {
   locale?: InputMaybe<Scalars['String']>;
 };
 
@@ -249,6 +255,15 @@ export type ChapterFilter = {
   global?: InputMaybe<Scalars['Boolean']>;
   global_exists?: InputMaybe<Scalars['Boolean']>;
   global_not?: InputMaybe<Scalars['Boolean']>;
+  id?: InputMaybe<Scalars['Int']>;
+  id_exists?: InputMaybe<Scalars['Boolean']>;
+  id_gt?: InputMaybe<Scalars['Int']>;
+  id_gte?: InputMaybe<Scalars['Int']>;
+  id_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  id_lt?: InputMaybe<Scalars['Int']>;
+  id_lte?: InputMaybe<Scalars['Int']>;
+  id_not?: InputMaybe<Scalars['Int']>;
+  id_not_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
   name?: InputMaybe<Scalars['String']>;
   name_contains?: InputMaybe<Scalars['String']>;
   name_exists?: InputMaybe<Scalars['Boolean']>;
@@ -295,12 +310,16 @@ export enum ChapterLinkingCollectionsOnboardStepCollectionOrder {
   SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
   SysPublishedVersionDesc = 'sys_publishedVersion_DESC',
   TitleAsc = 'title_ASC',
-  TitleDesc = 'title_DESC'
+  TitleDesc = 'title_DESC',
+  YoutubeIdAsc = 'youtubeId_ASC',
+  YoutubeIdDesc = 'youtubeId_DESC'
 }
 
 export enum ChapterOrder {
   GlobalAsc = 'global_ASC',
   GlobalDesc = 'global_DESC',
+  IdAsc = 'id_ASC',
+  IdDesc = 'id_DESC',
   NameAsc = 'name_ASC',
   NameDesc = 'name_DESC',
   SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
@@ -313,7 +332,7 @@ export enum ChapterOrder {
   SysPublishedVersionDesc = 'sys_publishedVersion_DESC'
 }
 
-export type ChapterTeam = Company | Department | Team;
+export type ChapterTeam = Company | Department | Entity | EntityGroup | Team;
 
 export type Company = Entry & {
   __typename?: 'Company';
@@ -432,6 +451,8 @@ export type CompanyLinkingCollectionsEntryCollectionArgs = {
 export enum CompanyLinkingCollectionsChapterCollectionOrder {
   GlobalAsc = 'global_ASC',
   GlobalDesc = 'global_DESC',
+  IdAsc = 'id_ASC',
+  IdDesc = 'id_DESC',
   NameAsc = 'name_ASC',
   NameDesc = 'name_DESC',
   SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
@@ -631,6 +652,8 @@ export type DepartmentLinkingCollectionsTeamCollectionArgs = {
 export enum DepartmentLinkingCollectionsChapterCollectionOrder {
   GlobalAsc = 'global_ASC',
   GlobalDesc = 'global_DESC',
+  IdAsc = 'id_ASC',
+  IdDesc = 'id_DESC',
   NameAsc = 'name_ASC',
   NameDesc = 'name_DESC',
   SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
@@ -669,6 +692,290 @@ export enum DepartmentOrder {
   DescriptionDesc = 'description_DESC',
   IdAsc = 'id_ASC',
   IdDesc = 'id_DESC',
+  NameAsc = 'name_ASC',
+  NameDesc = 'name_DESC',
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC'
+}
+
+export type Entity = Entry & {
+  __typename?: 'Entity';
+  contentfulMetadata: ContentfulMetadata;
+  description?: Maybe<Scalars['String']>;
+  linkedFrom?: Maybe<EntityLinkingCollections>;
+  name?: Maybe<Scalars['String']>;
+  parent?: Maybe<EntityGroup>;
+  sys: Sys;
+};
+
+
+export type EntityDescriptionArgs = {
+  locale?: InputMaybe<Scalars['String']>;
+};
+
+
+export type EntityLinkedFromArgs = {
+  allowedLocales?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+
+export type EntityNameArgs = {
+  locale?: InputMaybe<Scalars['String']>;
+};
+
+
+export type EntityParentArgs = {
+  locale?: InputMaybe<Scalars['String']>;
+  preview?: InputMaybe<Scalars['Boolean']>;
+  where?: InputMaybe<EntityGroupFilter>;
+};
+
+export type EntityCollection = {
+  __typename?: 'EntityCollection';
+  items: Array<Maybe<Entity>>;
+  limit: Scalars['Int'];
+  skip: Scalars['Int'];
+  total: Scalars['Int'];
+};
+
+export type EntityFilter = {
+  AND?: InputMaybe<Array<InputMaybe<EntityFilter>>>;
+  OR?: InputMaybe<Array<InputMaybe<EntityFilter>>>;
+  contentfulMetadata?: InputMaybe<ContentfulMetadataFilter>;
+  description?: InputMaybe<Scalars['String']>;
+  description_contains?: InputMaybe<Scalars['String']>;
+  description_exists?: InputMaybe<Scalars['Boolean']>;
+  description_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  description_not?: InputMaybe<Scalars['String']>;
+  description_not_contains?: InputMaybe<Scalars['String']>;
+  description_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  name?: InputMaybe<Scalars['String']>;
+  name_contains?: InputMaybe<Scalars['String']>;
+  name_exists?: InputMaybe<Scalars['Boolean']>;
+  name_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  name_not?: InputMaybe<Scalars['String']>;
+  name_not_contains?: InputMaybe<Scalars['String']>;
+  name_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  parent?: InputMaybe<CfEntityGroupNestedFilter>;
+  parent_exists?: InputMaybe<Scalars['Boolean']>;
+  sys?: InputMaybe<SysFilter>;
+};
+
+export type EntityGroup = Entry & {
+  __typename?: 'EntityGroup';
+  contentfulMetadata: ContentfulMetadata;
+  level?: Maybe<Scalars['Int']>;
+  linkedFrom?: Maybe<EntityGroupLinkingCollections>;
+  name?: Maybe<Scalars['String']>;
+  parent?: Maybe<Entity>;
+  sys: Sys;
+};
+
+
+export type EntityGroupLevelArgs = {
+  locale?: InputMaybe<Scalars['String']>;
+};
+
+
+export type EntityGroupLinkedFromArgs = {
+  allowedLocales?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+
+export type EntityGroupNameArgs = {
+  locale?: InputMaybe<Scalars['String']>;
+};
+
+
+export type EntityGroupParentArgs = {
+  locale?: InputMaybe<Scalars['String']>;
+  preview?: InputMaybe<Scalars['Boolean']>;
+  where?: InputMaybe<EntityFilter>;
+};
+
+export type EntityGroupCollection = {
+  __typename?: 'EntityGroupCollection';
+  items: Array<Maybe<EntityGroup>>;
+  limit: Scalars['Int'];
+  skip: Scalars['Int'];
+  total: Scalars['Int'];
+};
+
+export type EntityGroupFilter = {
+  AND?: InputMaybe<Array<InputMaybe<EntityGroupFilter>>>;
+  OR?: InputMaybe<Array<InputMaybe<EntityGroupFilter>>>;
+  contentfulMetadata?: InputMaybe<ContentfulMetadataFilter>;
+  level?: InputMaybe<Scalars['Int']>;
+  level_exists?: InputMaybe<Scalars['Boolean']>;
+  level_gt?: InputMaybe<Scalars['Int']>;
+  level_gte?: InputMaybe<Scalars['Int']>;
+  level_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  level_lt?: InputMaybe<Scalars['Int']>;
+  level_lte?: InputMaybe<Scalars['Int']>;
+  level_not?: InputMaybe<Scalars['Int']>;
+  level_not_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  name?: InputMaybe<Scalars['String']>;
+  name_contains?: InputMaybe<Scalars['String']>;
+  name_exists?: InputMaybe<Scalars['Boolean']>;
+  name_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  name_not?: InputMaybe<Scalars['String']>;
+  name_not_contains?: InputMaybe<Scalars['String']>;
+  name_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  parent?: InputMaybe<CfEntityNestedFilter>;
+  parent_exists?: InputMaybe<Scalars['Boolean']>;
+  sys?: InputMaybe<SysFilter>;
+};
+
+export type EntityGroupLinkingCollections = {
+  __typename?: 'EntityGroupLinkingCollections';
+  chapterCollection?: Maybe<ChapterCollection>;
+  entityCollection?: Maybe<EntityCollection>;
+  entryCollection?: Maybe<EntryCollection>;
+};
+
+
+export type EntityGroupLinkingCollectionsChapterCollectionArgs = {
+  limit?: InputMaybe<Scalars['Int']>;
+  locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<EntityGroupLinkingCollectionsChapterCollectionOrder>>>;
+  preview?: InputMaybe<Scalars['Boolean']>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type EntityGroupLinkingCollectionsEntityCollectionArgs = {
+  limit?: InputMaybe<Scalars['Int']>;
+  locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<EntityGroupLinkingCollectionsEntityCollectionOrder>>>;
+  preview?: InputMaybe<Scalars['Boolean']>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type EntityGroupLinkingCollectionsEntryCollectionArgs = {
+  limit?: InputMaybe<Scalars['Int']>;
+  locale?: InputMaybe<Scalars['String']>;
+  preview?: InputMaybe<Scalars['Boolean']>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
+export enum EntityGroupLinkingCollectionsChapterCollectionOrder {
+  GlobalAsc = 'global_ASC',
+  GlobalDesc = 'global_DESC',
+  IdAsc = 'id_ASC',
+  IdDesc = 'id_DESC',
+  NameAsc = 'name_ASC',
+  NameDesc = 'name_DESC',
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC'
+}
+
+export enum EntityGroupLinkingCollectionsEntityCollectionOrder {
+  NameAsc = 'name_ASC',
+  NameDesc = 'name_DESC',
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC'
+}
+
+export enum EntityGroupOrder {
+  LevelAsc = 'level_ASC',
+  LevelDesc = 'level_DESC',
+  NameAsc = 'name_ASC',
+  NameDesc = 'name_DESC',
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC'
+}
+
+export type EntityLinkingCollections = {
+  __typename?: 'EntityLinkingCollections';
+  chapterCollection?: Maybe<ChapterCollection>;
+  entityGroupCollection?: Maybe<EntityGroupCollection>;
+  entryCollection?: Maybe<EntryCollection>;
+};
+
+
+export type EntityLinkingCollectionsChapterCollectionArgs = {
+  limit?: InputMaybe<Scalars['Int']>;
+  locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<EntityLinkingCollectionsChapterCollectionOrder>>>;
+  preview?: InputMaybe<Scalars['Boolean']>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type EntityLinkingCollectionsEntityGroupCollectionArgs = {
+  limit?: InputMaybe<Scalars['Int']>;
+  locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<EntityLinkingCollectionsEntityGroupCollectionOrder>>>;
+  preview?: InputMaybe<Scalars['Boolean']>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type EntityLinkingCollectionsEntryCollectionArgs = {
+  limit?: InputMaybe<Scalars['Int']>;
+  locale?: InputMaybe<Scalars['String']>;
+  preview?: InputMaybe<Scalars['Boolean']>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
+export enum EntityLinkingCollectionsChapterCollectionOrder {
+  GlobalAsc = 'global_ASC',
+  GlobalDesc = 'global_DESC',
+  IdAsc = 'id_ASC',
+  IdDesc = 'id_DESC',
+  NameAsc = 'name_ASC',
+  NameDesc = 'name_DESC',
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC'
+}
+
+export enum EntityLinkingCollectionsEntityGroupCollectionOrder {
+  LevelAsc = 'level_ASC',
+  LevelDesc = 'level_DESC',
+  NameAsc = 'name_ASC',
+  NameDesc = 'name_DESC',
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC'
+}
+
+export enum EntityOrder {
   NameAsc = 'name_ASC',
   NameDesc = 'name_DESC',
   SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
@@ -824,6 +1131,8 @@ export type OnboardStep = Entry & {
   step?: Maybe<Scalars['Int']>;
   sys: Sys;
   title?: Maybe<Scalars['String']>;
+  video?: Maybe<Asset>;
+  youtubeId?: Maybe<Scalars['String']>;
 };
 
 
@@ -861,6 +1170,17 @@ export type OnboardStepStepArgs = {
 
 
 export type OnboardStepTitleArgs = {
+  locale?: InputMaybe<Scalars['String']>;
+};
+
+
+export type OnboardStepVideoArgs = {
+  locale?: InputMaybe<Scalars['String']>;
+  preview?: InputMaybe<Scalars['Boolean']>;
+};
+
+
+export type OnboardStepYoutubeIdArgs = {
   locale?: InputMaybe<Scalars['String']>;
 };
 
@@ -910,6 +1230,14 @@ export type OnboardStepFilter = {
   title_not?: InputMaybe<Scalars['String']>;
   title_not_contains?: InputMaybe<Scalars['String']>;
   title_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  video_exists?: InputMaybe<Scalars['Boolean']>;
+  youtubeId?: InputMaybe<Scalars['String']>;
+  youtubeId_contains?: InputMaybe<Scalars['String']>;
+  youtubeId_exists?: InputMaybe<Scalars['Boolean']>;
+  youtubeId_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  youtubeId_not?: InputMaybe<Scalars['String']>;
+  youtubeId_not_contains?: InputMaybe<Scalars['String']>;
+  youtubeId_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 };
 
 export type OnboardStepLinkingCollections = {
@@ -964,11 +1292,14 @@ export enum OnboardStepOrder {
   SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
   SysPublishedVersionDesc = 'sys_publishedVersion_DESC',
   TitleAsc = 'title_ASC',
-  TitleDesc = 'title_DESC'
+  TitleDesc = 'title_DESC',
+  YoutubeIdAsc = 'youtubeId_ASC',
+  YoutubeIdDesc = 'youtubeId_DESC'
 }
 
 export type Query = {
   __typename?: 'Query';
+  _node?: Maybe<_Node>;
   asset?: Maybe<Asset>;
   assetCollection?: Maybe<AssetCollection>;
   chapter?: Maybe<Chapter>;
@@ -977,6 +1308,10 @@ export type Query = {
   companyCollection?: Maybe<CompanyCollection>;
   department?: Maybe<Department>;
   departmentCollection?: Maybe<DepartmentCollection>;
+  entity?: Maybe<Entity>;
+  entityCollection?: Maybe<EntityCollection>;
+  entityGroup?: Maybe<EntityGroup>;
+  entityGroupCollection?: Maybe<EntityGroupCollection>;
   entryCollection?: Maybe<EntryCollection>;
   menu?: Maybe<Menu>;
   menuCollection?: Maybe<MenuCollection>;
@@ -986,6 +1321,15 @@ export type Query = {
   teamCollection?: Maybe<TeamCollection>;
   todo?: Maybe<Todo>;
   todoCollection?: Maybe<TodoCollection>;
+  youtubeVideo?: Maybe<YoutubeVideo>;
+  youtubeVideoCollection?: Maybe<YoutubeVideoCollection>;
+};
+
+
+export type Query_NodeArgs = {
+  id: Scalars['ID'];
+  locale?: InputMaybe<Scalars['String']>;
+  preview?: InputMaybe<Scalars['Boolean']>;
 };
 
 
@@ -1054,6 +1398,40 @@ export type QueryDepartmentCollectionArgs = {
   preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
   where?: InputMaybe<DepartmentFilter>;
+};
+
+
+export type QueryEntityArgs = {
+  id: Scalars['String'];
+  locale?: InputMaybe<Scalars['String']>;
+  preview?: InputMaybe<Scalars['Boolean']>;
+};
+
+
+export type QueryEntityCollectionArgs = {
+  limit?: InputMaybe<Scalars['Int']>;
+  locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<EntityOrder>>>;
+  preview?: InputMaybe<Scalars['Boolean']>;
+  skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<EntityFilter>;
+};
+
+
+export type QueryEntityGroupArgs = {
+  id: Scalars['String'];
+  locale?: InputMaybe<Scalars['String']>;
+  preview?: InputMaybe<Scalars['Boolean']>;
+};
+
+
+export type QueryEntityGroupCollectionArgs = {
+  limit?: InputMaybe<Scalars['Int']>;
+  locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<EntityGroupOrder>>>;
+  preview?: InputMaybe<Scalars['Boolean']>;
+  skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<EntityGroupFilter>;
 };
 
 
@@ -1132,6 +1510,23 @@ export type QueryTodoCollectionArgs = {
   preview?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
   where?: InputMaybe<TodoFilter>;
+};
+
+
+export type QueryYoutubeVideoArgs = {
+  id: Scalars['String'];
+  locale?: InputMaybe<Scalars['String']>;
+  preview?: InputMaybe<Scalars['Boolean']>;
+};
+
+
+export type QueryYoutubeVideoCollectionArgs = {
+  limit?: InputMaybe<Scalars['Int']>;
+  locale?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Array<InputMaybe<YoutubeVideoOrder>>>;
+  preview?: InputMaybe<Scalars['Boolean']>;
+  skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<YoutubeVideoFilter>;
 };
 
 export type Sys = {
@@ -1298,6 +1693,8 @@ export type TeamLinkingCollectionsEntryCollectionArgs = {
 export enum TeamLinkingCollectionsChapterCollectionOrder {
   GlobalAsc = 'global_ASC',
   GlobalDesc = 'global_DESC',
+  IdAsc = 'id_ASC',
+  IdDesc = 'id_DESC',
   NameAsc = 'name_ASC',
   NameDesc = 'name_DESC',
   SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
@@ -1437,6 +1834,76 @@ export enum TodoOrder {
   TitleDesc = 'title_DESC'
 }
 
+export type YoutubeVideo = Entry & {
+  __typename?: 'YoutubeVideo';
+  contentfulMetadata: ContentfulMetadata;
+  linkedFrom?: Maybe<YoutubeVideoLinkingCollections>;
+  sys: Sys;
+  youtubeId?: Maybe<Scalars['String']>;
+};
+
+
+export type YoutubeVideoLinkedFromArgs = {
+  allowedLocales?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+
+export type YoutubeVideoYoutubeIdArgs = {
+  locale?: InputMaybe<Scalars['String']>;
+};
+
+export type YoutubeVideoCollection = {
+  __typename?: 'YoutubeVideoCollection';
+  items: Array<Maybe<YoutubeVideo>>;
+  limit: Scalars['Int'];
+  skip: Scalars['Int'];
+  total: Scalars['Int'];
+};
+
+export type YoutubeVideoFilter = {
+  AND?: InputMaybe<Array<InputMaybe<YoutubeVideoFilter>>>;
+  OR?: InputMaybe<Array<InputMaybe<YoutubeVideoFilter>>>;
+  contentfulMetadata?: InputMaybe<ContentfulMetadataFilter>;
+  sys?: InputMaybe<SysFilter>;
+  youtubeId?: InputMaybe<Scalars['String']>;
+  youtubeId_contains?: InputMaybe<Scalars['String']>;
+  youtubeId_exists?: InputMaybe<Scalars['Boolean']>;
+  youtubeId_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  youtubeId_not?: InputMaybe<Scalars['String']>;
+  youtubeId_not_contains?: InputMaybe<Scalars['String']>;
+  youtubeId_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+export type YoutubeVideoLinkingCollections = {
+  __typename?: 'YoutubeVideoLinkingCollections';
+  entryCollection?: Maybe<EntryCollection>;
+};
+
+
+export type YoutubeVideoLinkingCollectionsEntryCollectionArgs = {
+  limit?: InputMaybe<Scalars['Int']>;
+  locale?: InputMaybe<Scalars['String']>;
+  preview?: InputMaybe<Scalars['Boolean']>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
+export enum YoutubeVideoOrder {
+  SysFirstPublishedAtAsc = 'sys_firstPublishedAt_ASC',
+  SysFirstPublishedAtDesc = 'sys_firstPublishedAt_DESC',
+  SysIdAsc = 'sys_id_ASC',
+  SysIdDesc = 'sys_id_DESC',
+  SysPublishedAtAsc = 'sys_publishedAt_ASC',
+  SysPublishedAtDesc = 'sys_publishedAt_DESC',
+  SysPublishedVersionAsc = 'sys_publishedVersion_ASC',
+  SysPublishedVersionDesc = 'sys_publishedVersion_DESC',
+  YoutubeIdAsc = 'youtubeId_ASC',
+  YoutubeIdDesc = 'youtubeId_DESC'
+}
+
+export type _Node = {
+  _id: Scalars['ID'];
+};
+
 export type CfChapterNestedFilter = {
   AND?: InputMaybe<Array<InputMaybe<CfChapterNestedFilter>>>;
   OR?: InputMaybe<Array<InputMaybe<CfChapterNestedFilter>>>;
@@ -1444,6 +1911,15 @@ export type CfChapterNestedFilter = {
   global?: InputMaybe<Scalars['Boolean']>;
   global_exists?: InputMaybe<Scalars['Boolean']>;
   global_not?: InputMaybe<Scalars['Boolean']>;
+  id?: InputMaybe<Scalars['Int']>;
+  id_exists?: InputMaybe<Scalars['Boolean']>;
+  id_gt?: InputMaybe<Scalars['Int']>;
+  id_gte?: InputMaybe<Scalars['Int']>;
+  id_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  id_lt?: InputMaybe<Scalars['Int']>;
+  id_lte?: InputMaybe<Scalars['Int']>;
+  id_not?: InputMaybe<Scalars['Int']>;
+  id_not_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
   name?: InputMaybe<Scalars['String']>;
   name_contains?: InputMaybe<Scalars['String']>;
   name_exists?: InputMaybe<Scalars['Boolean']>;
@@ -1530,6 +2006,52 @@ export type CfDepartmentNestedFilter = {
   sys?: InputMaybe<SysFilter>;
 };
 
+export type CfEntityGroupNestedFilter = {
+  AND?: InputMaybe<Array<InputMaybe<CfEntityGroupNestedFilter>>>;
+  OR?: InputMaybe<Array<InputMaybe<CfEntityGroupNestedFilter>>>;
+  contentfulMetadata?: InputMaybe<ContentfulMetadataFilter>;
+  level?: InputMaybe<Scalars['Int']>;
+  level_exists?: InputMaybe<Scalars['Boolean']>;
+  level_gt?: InputMaybe<Scalars['Int']>;
+  level_gte?: InputMaybe<Scalars['Int']>;
+  level_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  level_lt?: InputMaybe<Scalars['Int']>;
+  level_lte?: InputMaybe<Scalars['Int']>;
+  level_not?: InputMaybe<Scalars['Int']>;
+  level_not_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  name?: InputMaybe<Scalars['String']>;
+  name_contains?: InputMaybe<Scalars['String']>;
+  name_exists?: InputMaybe<Scalars['Boolean']>;
+  name_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  name_not?: InputMaybe<Scalars['String']>;
+  name_not_contains?: InputMaybe<Scalars['String']>;
+  name_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  parent_exists?: InputMaybe<Scalars['Boolean']>;
+  sys?: InputMaybe<SysFilter>;
+};
+
+export type CfEntityNestedFilter = {
+  AND?: InputMaybe<Array<InputMaybe<CfEntityNestedFilter>>>;
+  OR?: InputMaybe<Array<InputMaybe<CfEntityNestedFilter>>>;
+  contentfulMetadata?: InputMaybe<ContentfulMetadataFilter>;
+  description?: InputMaybe<Scalars['String']>;
+  description_contains?: InputMaybe<Scalars['String']>;
+  description_exists?: InputMaybe<Scalars['Boolean']>;
+  description_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  description_not?: InputMaybe<Scalars['String']>;
+  description_not_contains?: InputMaybe<Scalars['String']>;
+  description_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  name?: InputMaybe<Scalars['String']>;
+  name_contains?: InputMaybe<Scalars['String']>;
+  name_exists?: InputMaybe<Scalars['Boolean']>;
+  name_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  name_not?: InputMaybe<Scalars['String']>;
+  name_not_contains?: InputMaybe<Scalars['String']>;
+  name_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  parent_exists?: InputMaybe<Scalars['Boolean']>;
+  sys?: InputMaybe<SysFilter>;
+};
+
 export type CfOnboardStepNestedFilter = {
   AND?: InputMaybe<Array<InputMaybe<CfOnboardStepNestedFilter>>>;
   OR?: InputMaybe<Array<InputMaybe<CfOnboardStepNestedFilter>>>;
@@ -1567,6 +2089,14 @@ export type CfOnboardStepNestedFilter = {
   title_not?: InputMaybe<Scalars['String']>;
   title_not_contains?: InputMaybe<Scalars['String']>;
   title_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  video_exists?: InputMaybe<Scalars['Boolean']>;
+  youtubeId?: InputMaybe<Scalars['String']>;
+  youtubeId_contains?: InputMaybe<Scalars['String']>;
+  youtubeId_exists?: InputMaybe<Scalars['Boolean']>;
+  youtubeId_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  youtubeId_not?: InputMaybe<Scalars['String']>;
+  youtubeId_not_contains?: InputMaybe<Scalars['String']>;
+  youtubeId_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 };
 
 export type AllCompaniesQueryVariables = Exact<{ [key: string]: never; }>;
@@ -1592,6 +2122,44 @@ export type DepartmentQueryVariables = Exact<{
 
 
 export type DepartmentQuery = { __typename?: 'Query', department?: { __typename?: 'Department', name?: string | null, linkedFrom?: { __typename?: 'DepartmentLinkingCollections', chapterCollection?: { __typename?: 'ChapterCollection', total: number, items: Array<{ __typename?: 'Chapter', name?: string | null, sys: { __typename?: 'Sys', id: string }, linkedFrom?: { __typename?: 'ChapterLinkingCollections', onboardStepCollection?: { __typename?: 'OnboardStepCollection', total: number, items: Array<{ __typename?: 'OnboardStep', step?: number | null, title?: string | null, body?: string | null, codeBlock?: string | null, sys: { __typename?: 'Sys', id: string } } | null> } | null } | null } | null> } | null } | null } | null };
+
+export type FirstGroupWithEntityQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type FirstGroupWithEntityQuery = { __typename?: 'Query', entityGroupCollection?: { __typename?: 'EntityGroupCollection', items: Array<{ __typename?: 'EntityGroup', name?: string | null, level?: number | null, sys: { __typename?: 'Sys', id: string }, linkedFrom?: { __typename?: 'EntityGroupLinkingCollections', entityCollection?: { __typename?: 'EntityCollection', items: Array<{ __typename?: 'Entity', name?: string | null, sys: { __typename?: 'Sys', id: string }, linkedFrom?: { __typename?: 'EntityLinkingCollections', chapterCollection?: { __typename?: 'ChapterCollection', items: Array<{ __typename?: 'Chapter', sys: { __typename?: 'Sys', id: string }, linkedFrom?: { __typename?: 'ChapterLinkingCollections', onboardStepCollection?: { __typename?: 'OnboardStepCollection', items: Array<{ __typename?: 'OnboardStep', sys: { __typename?: 'Sys', id: string } } | null> } | null } | null } | null> } | null } | null } | null> } | null } | null } | null> } | null };
+
+export type EntityGroupQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type EntityGroupQuery = { __typename?: 'Query', entityGroup?: { __typename?: 'EntityGroup', name?: string | null, level?: number | null, linkedFrom?: { __typename?: 'EntityGroupLinkingCollections', entityCollection?: { __typename?: 'EntityCollection', items: Array<{ __typename?: 'Entity', name?: string | null, sys: { __typename?: 'Sys', id: string }, linkedFrom?: { __typename?: 'EntityLinkingCollections', chapterCollection?: { __typename?: 'ChapterCollection', items: Array<{ __typename?: 'Chapter', sys: { __typename?: 'Sys', id: string }, linkedFrom?: { __typename?: 'ChapterLinkingCollections', onboardStepCollection?: { __typename?: 'OnboardStepCollection', items: Array<{ __typename?: 'OnboardStep', sys: { __typename?: 'Sys', id: string } } | null> } | null } | null } | null> } | null } | null } | null> } | null } | null } | null };
+
+export type EntityInfoQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type EntityInfoQuery = { __typename?: 'Query', entity?: { __typename?: 'Entity', name?: string | null, parent?: { __typename?: 'EntityGroup', level?: number | null } | null, linkedFrom?: { __typename?: 'EntityLinkingCollections', chapterCollection?: { __typename?: 'ChapterCollection', total: number, items: Array<{ __typename?: 'Chapter', name?: string | null, sys: { __typename?: 'Sys', id: string }, linkedFrom?: { __typename?: 'ChapterLinkingCollections', onboardStepCollection?: { __typename?: 'OnboardStepCollection', total: number, items: Array<{ __typename?: 'OnboardStep', step?: number | null, title?: string | null, body?: string | null, codeBlock?: string | null, youtubeId?: string | null, sys: { __typename?: 'Sys', id: string } } | null> } | null } | null } | null> } | null } | null } | null };
+
+export type AllEntityGroupQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type AllEntityGroupQuery = { __typename?: 'Query', entityGroupCollection?: { __typename?: 'EntityGroupCollection', items: Array<{ __typename?: 'EntityGroup', name?: string | null, level?: number | null, sys: { __typename?: 'Sys', id: string }, linkedFrom?: { __typename?: 'EntityGroupLinkingCollections', entityCollection?: { __typename?: 'EntityCollection', items: Array<{ __typename?: 'Entity', name?: string | null, description?: string | null, sys: { __typename?: 'Sys', id: string } } | null> } | null } | null } | null> } | null };
+
+export type AllEntityGroupWithEntityQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllEntityGroupWithEntityQuery = { __typename?: 'Query', entityGroupCollection?: { __typename?: 'EntityGroupCollection', items: Array<{ __typename?: 'EntityGroup', name?: string | null, sys: { __typename?: 'Sys', id: string }, linkedFrom?: { __typename?: 'EntityGroupLinkingCollections', entityCollection?: { __typename?: 'EntityCollection', items: Array<{ __typename?: 'Entity', name?: string | null, description?: string | null, sys: { __typename?: 'Sys', id: string } } | null> } | null } | null } | null> } | null };
+
+export type ChapterWithFirstStepQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type ChapterWithFirstStepQuery = { __typename?: 'Query', chapter?: { __typename?: 'Chapter', linkedFrom?: { __typename?: 'ChapterLinkingCollections', onboardStepCollection?: { __typename?: 'OnboardStepCollection', items: Array<{ __typename?: 'OnboardStep', sys: { __typename?: 'Sys', id: string } } | null> } | null } | null } | null };
 
 export type AllGobalChaptersInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1856,6 +2424,347 @@ export function useDepartmentLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type DepartmentQueryHookResult = ReturnType<typeof useDepartmentQuery>;
 export type DepartmentLazyQueryHookResult = ReturnType<typeof useDepartmentLazyQuery>;
 export type DepartmentQueryResult = Apollo.QueryResult<DepartmentQuery, DepartmentQueryVariables>;
+export const FirstGroupWithEntityDocument = gql`
+    query firstGroupWithEntity {
+  entityGroupCollection(order: level_ASC, limit: 1) {
+    items {
+      sys {
+        id
+      }
+      name
+      level
+      linkedFrom {
+        entityCollection {
+          items {
+            name
+            sys {
+              id
+            }
+            linkedFrom {
+              chapterCollection(limit: 1, order: id_ASC) {
+                items {
+                  sys {
+                    id
+                  }
+                  linkedFrom {
+                    onboardStepCollection(limit: 1, order: step_ASC) {
+                      items {
+                        sys {
+                          id
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useFirstGroupWithEntityQuery__
+ *
+ * To run a query within a React component, call `useFirstGroupWithEntityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFirstGroupWithEntityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFirstGroupWithEntityQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useFirstGroupWithEntityQuery(baseOptions?: Apollo.QueryHookOptions<FirstGroupWithEntityQuery, FirstGroupWithEntityQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FirstGroupWithEntityQuery, FirstGroupWithEntityQueryVariables>(FirstGroupWithEntityDocument, options);
+      }
+export function useFirstGroupWithEntityLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FirstGroupWithEntityQuery, FirstGroupWithEntityQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FirstGroupWithEntityQuery, FirstGroupWithEntityQueryVariables>(FirstGroupWithEntityDocument, options);
+        }
+export type FirstGroupWithEntityQueryHookResult = ReturnType<typeof useFirstGroupWithEntityQuery>;
+export type FirstGroupWithEntityLazyQueryHookResult = ReturnType<typeof useFirstGroupWithEntityLazyQuery>;
+export type FirstGroupWithEntityQueryResult = Apollo.QueryResult<FirstGroupWithEntityQuery, FirstGroupWithEntityQueryVariables>;
+export const EntityGroupDocument = gql`
+    query entityGroup($id: String!) {
+  entityGroup(id: $id) {
+    name
+    level
+    linkedFrom {
+      entityCollection {
+        items {
+          name
+          sys {
+            id
+          }
+          linkedFrom {
+            chapterCollection(limit: 1, order: id_ASC) {
+              items {
+                sys {
+                  id
+                }
+                linkedFrom {
+                  onboardStepCollection(limit: 1, order: step_ASC) {
+                    items {
+                      sys {
+                        id
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useEntityGroupQuery__
+ *
+ * To run a query within a React component, call `useEntityGroupQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEntityGroupQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEntityGroupQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useEntityGroupQuery(baseOptions: Apollo.QueryHookOptions<EntityGroupQuery, EntityGroupQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EntityGroupQuery, EntityGroupQueryVariables>(EntityGroupDocument, options);
+      }
+export function useEntityGroupLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EntityGroupQuery, EntityGroupQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EntityGroupQuery, EntityGroupQueryVariables>(EntityGroupDocument, options);
+        }
+export type EntityGroupQueryHookResult = ReturnType<typeof useEntityGroupQuery>;
+export type EntityGroupLazyQueryHookResult = ReturnType<typeof useEntityGroupLazyQuery>;
+export type EntityGroupQueryResult = Apollo.QueryResult<EntityGroupQuery, EntityGroupQueryVariables>;
+export const EntityInfoDocument = gql`
+    query entityInfo($id: String!) {
+  entity(id: $id) {
+    parent {
+      level
+    }
+    name
+    linkedFrom {
+      chapterCollection(order: id_ASC) {
+        total
+        items {
+          sys {
+            id
+          }
+          name
+          linkedFrom {
+            onboardStepCollection(order: step_ASC) {
+              total
+              items {
+                sys {
+                  id
+                }
+                step
+                title
+                body
+                codeBlock
+                youtubeId
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useEntityInfoQuery__
+ *
+ * To run a query within a React component, call `useEntityInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEntityInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEntityInfoQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useEntityInfoQuery(baseOptions: Apollo.QueryHookOptions<EntityInfoQuery, EntityInfoQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EntityInfoQuery, EntityInfoQueryVariables>(EntityInfoDocument, options);
+      }
+export function useEntityInfoLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EntityInfoQuery, EntityInfoQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EntityInfoQuery, EntityInfoQueryVariables>(EntityInfoDocument, options);
+        }
+export type EntityInfoQueryHookResult = ReturnType<typeof useEntityInfoQuery>;
+export type EntityInfoLazyQueryHookResult = ReturnType<typeof useEntityInfoLazyQuery>;
+export type EntityInfoQueryResult = Apollo.QueryResult<EntityInfoQuery, EntityInfoQueryVariables>;
+export const AllEntityGroupDocument = gql`
+    query allEntityGroup($id: String!) {
+  entityGroupCollection(order: level_ASC, where: {parent: {sys: {id: $id}}}) {
+    items {
+      name
+      level
+      sys {
+        id
+      }
+      linkedFrom {
+        entityCollection {
+          items {
+            sys {
+              id
+            }
+            name
+            description
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useAllEntityGroupQuery__
+ *
+ * To run a query within a React component, call `useAllEntityGroupQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAllEntityGroupQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAllEntityGroupQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useAllEntityGroupQuery(baseOptions: Apollo.QueryHookOptions<AllEntityGroupQuery, AllEntityGroupQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AllEntityGroupQuery, AllEntityGroupQueryVariables>(AllEntityGroupDocument, options);
+      }
+export function useAllEntityGroupLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AllEntityGroupQuery, AllEntityGroupQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AllEntityGroupQuery, AllEntityGroupQueryVariables>(AllEntityGroupDocument, options);
+        }
+export type AllEntityGroupQueryHookResult = ReturnType<typeof useAllEntityGroupQuery>;
+export type AllEntityGroupLazyQueryHookResult = ReturnType<typeof useAllEntityGroupLazyQuery>;
+export type AllEntityGroupQueryResult = Apollo.QueryResult<AllEntityGroupQuery, AllEntityGroupQueryVariables>;
+export const AllEntityGroupWithEntityDocument = gql`
+    query allEntityGroupWithEntity {
+  entityGroupCollection(order: level_ASC) {
+    items {
+      sys {
+        id
+      }
+      name
+      linkedFrom {
+        entityCollection {
+          items {
+            sys {
+              id
+            }
+            name
+            description
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useAllEntityGroupWithEntityQuery__
+ *
+ * To run a query within a React component, call `useAllEntityGroupWithEntityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAllEntityGroupWithEntityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAllEntityGroupWithEntityQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAllEntityGroupWithEntityQuery(baseOptions?: Apollo.QueryHookOptions<AllEntityGroupWithEntityQuery, AllEntityGroupWithEntityQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AllEntityGroupWithEntityQuery, AllEntityGroupWithEntityQueryVariables>(AllEntityGroupWithEntityDocument, options);
+      }
+export function useAllEntityGroupWithEntityLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AllEntityGroupWithEntityQuery, AllEntityGroupWithEntityQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AllEntityGroupWithEntityQuery, AllEntityGroupWithEntityQueryVariables>(AllEntityGroupWithEntityDocument, options);
+        }
+export type AllEntityGroupWithEntityQueryHookResult = ReturnType<typeof useAllEntityGroupWithEntityQuery>;
+export type AllEntityGroupWithEntityLazyQueryHookResult = ReturnType<typeof useAllEntityGroupWithEntityLazyQuery>;
+export type AllEntityGroupWithEntityQueryResult = Apollo.QueryResult<AllEntityGroupWithEntityQuery, AllEntityGroupWithEntityQueryVariables>;
+export const ChapterWithFirstStepDocument = gql`
+    query chapterWithFirstStep($id: String!) {
+  chapter(id: $id) {
+    linkedFrom {
+      onboardStepCollection(order: step_ASC, limit: 1) {
+        items {
+          sys {
+            id
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useChapterWithFirstStepQuery__
+ *
+ * To run a query within a React component, call `useChapterWithFirstStepQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChapterWithFirstStepQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChapterWithFirstStepQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useChapterWithFirstStepQuery(baseOptions: Apollo.QueryHookOptions<ChapterWithFirstStepQuery, ChapterWithFirstStepQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ChapterWithFirstStepQuery, ChapterWithFirstStepQueryVariables>(ChapterWithFirstStepDocument, options);
+      }
+export function useChapterWithFirstStepLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ChapterWithFirstStepQuery, ChapterWithFirstStepQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ChapterWithFirstStepQuery, ChapterWithFirstStepQueryVariables>(ChapterWithFirstStepDocument, options);
+        }
+export type ChapterWithFirstStepQueryHookResult = ReturnType<typeof useChapterWithFirstStepQuery>;
+export type ChapterWithFirstStepLazyQueryHookResult = ReturnType<typeof useChapterWithFirstStepLazyQuery>;
+export type ChapterWithFirstStepQueryResult = Apollo.QueryResult<ChapterWithFirstStepQuery, ChapterWithFirstStepQueryVariables>;
 export const AllGobalChaptersInfoDocument = gql`
     query allGobalChaptersInfo {
   chapterCollection(where: {team_exists: false}) {

@@ -4,7 +4,8 @@ export interface StepPageParams {
     stepId: string
 }
 export interface CompanyStepPageParams {
-    companyId: string
+    groupId: string
+    entityId: string
     chapterId: string
     stepId: string
 }
@@ -20,6 +21,9 @@ export interface TeamsStepPageParams {
     stepId: string
 }
 
+export interface EntityGroupSelectPageParams {
+    groupId: string
+}
 export interface GlobalStepPageParams {
     chapterId: string
     stepId: string
@@ -30,5 +34,8 @@ export interface TeamPageParams {
 }
 
 export interface CompletedPageParams {
-    teamId: string
+    groupId: string
+    entityId: string
+    chapterId: string
+    stepId: string
 }

@@ -10,11 +10,13 @@ import { EntitySelectProps } from './types'
 
 export const EntitySelect: FunctionComponent<EntitySelectProps> = ({
     entities,
-    beforeNavigate,
     navigationPath,
+    smallButtonWhenSingleEntity = false,
 }) => {
     const [selectedEntity, setSelectedEntity] = useState<string | undefined>(
-        undefined
+        entities.length === 1 && smallButtonWhenSingleEntity
+            ? entities.at(0)?.id
+            : undefined
     )
     const { user } = useUser()
 
@@ -28,7 +30,10 @@ export const EntitySelect: FunctionComponent<EntitySelectProps> = ({
 
         try {
             startTransition(() => {
-                beforeNavigate?.()
+                startTransition(() =>
+                    //@ts-ignore
+                    createOrUpdateUser({ team: selectedEntity, id: user.id })
+                )
             })
         } catch (error) {
             console.log(error)
@@ -43,6 +48,17 @@ export const EntitySelect: FunctionComponent<EntitySelectProps> = ({
         }
     }
 
+    if (entities.length < 2 && smallButtonWhenSingleEntity)
+        return (
+            <button
+                className="mt-9 rounded-md bg-pink-600 px-6 py-3 text-xl font-bold text-white"
+                onClick={navigateToFirstStep}
+            >
+                {' '}
+                Just click here
+            </button>
+        )
+
     return (
         <>
             <div className=" mb-12 flex justify-between ">
@@ -56,7 +72,7 @@ export const EntitySelect: FunctionComponent<EntitySelectProps> = ({
 
                             setSelectedEntity(entity.id)
                         }}
-                        className="border-pink mr-8 h-40 w-40 rounded-md border-2 text-3xl font-bold text-white"
+                        className={entities.length > 1 ? 'mr-8' : ''}
                     >
                         <h3> {entity?.name}</h3>
                     </SqaureButton>
