@@ -1,65 +1,103 @@
 'use server'
 
 import { db } from '@/lib/db'
-import { revalidateTag } from 'next/cache'
-import { TodoForDb } from './onboarding/types/todo'
+import { revalidatePath, revalidateTag } from 'next/cache'
 import { User, UserSchema } from '@/lib/schema/user.schema'
+import { Todo } from '@prisma/client'
+import { auth } from '@clerk/nextjs'
 
 //we can create them when page loads e.g. filter out the ones that are not in the db yet
 
-export async function createOrMutateTodo(userId: string, todo: TodoForDb) {
-    const dbTodos = await db.todo
-        .findMany({
+export async function updateTodo(todo: Todo, completed: boolean | undefined) {
+    console.log('got a todo with status: ', completed)
+
+    const { userId } = auth()
+
+    if (!userId) {
+        throw new Error('You must be signed in to modify a todo')
+    }
+
+    // Ensure the user exists
+    const user = await db.user.findUnique({
+        where: {
+            id: userId,
+        },
+    })
+
+    if (!user) {
+        throw new Error('user with id: ' + userId + ' does not exist')
+    }
+
+    const res = await db.userTodo
+        .upsert({
             where: {
-                owner: userId,
+                userId_todoId: {
+                    userId: userId,
+                    todoId: todo.id,
+                },
+            },
+            update: {
+                isCompleted: !completed,
+            },
+            create: {
+                userId: userId,
+                todoId: todo.id,
+                isCompleted: true,
             },
         })
         .catch((err) => {
             console.log(err)
         })
 
-    //check if its already in the db for this user
+    console.log('dbResponse:', res)
 
-    if (dbTodos) {
-        const alreadyExtistingTodo = dbTodos.find(
-            (dbTodo) => dbTodo.cmsId === todo.cmsId
-        )
+    revalidatePath(
+        '/onboarding/[groupSlug]/[entitySlug]/[chapterId]/[stepId]',
+        'page'
+    )
+}
 
-        if (alreadyExtistingTodo) {
-            console.log('updating')
-            //update the todo
-            const res = await db.todo.update({
-                where: {
-                    id: alreadyExtistingTodo.id,
-                },
-                data: {
-                    completed: !todo.completed,
-                },
-            })
-        } else {
-            console.log('creating')
-            const res = await db.todo.create({
-                data: {
-                    ...todo,
-                    completed: true,
-                    owner: userId,
-                },
-            })
-        }
+export async function createTodos(todos: Todo[]) {
+    const { userId } = auth()
+
+    if (!userId) {
+        throw new Error('You must be signed in to modify a todo')
     }
 
-    revalidateTag('todos')
-}
-export async function createTodos(userId: string, todos: TodoForDb[]) {
-    const todosTocreate = await db.todo
-        .createMany({
-            data: [...todos],
-        })
-        .catch((err) => {
-            console.log(err)
-        })
+    //check which ones are already in the db
+    const existingTodos = await db.userTodo.findMany({
+        where: {
+            userId: userId,
+        },
+    })
 
-    revalidateTag('todos')
+    const newTodos = todos.filter((todo) => {
+        return !existingTodos.some((existingTodo) => {
+            return existingTodo.todoId === todo.id
+        })
+    })
+
+    if (newTodos?.length === 0) {
+        return
+    }
+
+    console.log('found new todos creating them:', newTodos)
+
+    const userTodos = await db.userTodo.createMany({
+        data: todos.map((todo) => {
+            return {
+                userId: userId,
+                todoId: todo.id,
+                isCompleted: false,
+            }
+        }),
+    })
+
+    console.log('created todos:', userTodos)
+    revalidatePath(
+        '/onboarding/[groupSlug]/[entitySlug]/[chapterId]/[stepId]',
+        'page'
+    )
 }
 
 export async function createOrUpdateUser(
@@ -74,8 +112,8 @@ export async function createOrUpdateUser(
 
     const res = await db.user.upsert({
         where: { id: user.id },
-        update: { ...user, hasCompleted },
-        create: { ...user, hasCompleted },
+        update: { ...user },
+        create: { ...user },
     })
 
     return res

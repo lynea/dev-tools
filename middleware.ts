@@ -1,7 +1,7 @@
 import { authMiddleware } from '@clerk/nextjs'
 
 export default authMiddleware({
-    publicRoutes: ['((?!^//api/todos/).*)'],
+    publicRoutes: ['/api/todos/(.*)', '/api/webhooks(.*)'],
 })
 
 // Stop Middleware running on static files and public folder
@@ -17,7 +17,7 @@ export const config = {
          */
         '/((?!.+\\.[\\w]+$|_next).*)',
         '/',
-        '/onboarding',
+        '/dashboard',
         '/(api|trpc)(.*)',
     ],
 }

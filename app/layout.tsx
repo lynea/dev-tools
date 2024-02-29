@@ -43,7 +43,6 @@ export default function RootLayout({
         <html lang="en">
             <body className="flex h-full min-h-screen w-full flex-col items-center  justify-center bg-main-200">
                 <TodoOverView>
-                    {/* @ts-ignore */}
                     <TodoList />
                 </TodoOverView>
                 <main className=" mt-20 flex h-full min-h-[calc(100vh_-_10rem)]   w-11/12 items-center  justify-center lg:mt-8 lg:max-w-6xl">

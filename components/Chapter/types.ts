@@ -1,9 +1,9 @@
-import { ChapterCollection } from '@/generated/graphql'
+import { Chapter, Step } from '@prisma/client'
 
 export type ChapterProps = {
     chapterId: string
     stepId: string
-    chapters: ChapterCollection
+    chapters: Array<Chapter & { steps: Step[] }>
     basePath: string
     chapterCompletedLink: string
 }

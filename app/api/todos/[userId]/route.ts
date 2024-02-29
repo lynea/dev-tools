@@ -20,7 +20,11 @@ export async function GET(
     const todos = await db.todo
         .findMany({
             where: {
-                owner: userId,
+                userTodos: {
+                    some: {
+                        userId: userId,
+                    },
+                },
             },
         })
         .catch((err) => {

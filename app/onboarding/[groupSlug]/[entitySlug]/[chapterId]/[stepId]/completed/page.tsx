@@ -1,4 +1,4 @@
-import { currentUser } from '@clerk/nextjs/app-beta'
+import { currentUser } from '@clerk/nextjs'
 import type { User } from '@clerk/nextjs/api'
 
 import { CelebrationAnimation } from '@/components/CelebrationAnimation/CelebrationAnimation'
@@ -9,6 +9,7 @@ import { TodoItem } from '@/components/TodoItemExperimental/TodoItem'
 import { headers } from 'next/headers'
 import { CompleteButton } from '@/components/CompleteButton/CompleteButton'
 import { CompletedPageParams } from '@/app/onboarding/types/pageProps'
+import { db } from '@/lib/db'
 
 export const dynamic = 'force-dynamic'
 
@@ -22,9 +23,19 @@ export default async function Page({
 
     if (!user?.id) return <>no user was found</>
 
-    const todos = await getTodosForUser(user.id, host!)
+    const userTodos = await db.userTodo.findMany({
+        where: {
+            userId: user.id,
+            isCompleted: false,
+        },
+        include: {
+            todo: true,
+        },
+    })
 
-    const openTodos = todos?.filter((todo) => todo.completed === false)
+    const renderTodos = userTodos?.map((userTodo) => {
+        return { ...userTodo.todo, completed: userTodo.isCompleted }
+    })
 
     //TODO: create a way to connect users to entities. they can see the entities they are connected to and the ones they are not connected to.
     // however they will only see the todos for the entities they are connected to.
@@ -40,14 +51,12 @@ export default async function Page({
     return (
         <>
             <section className="mt-14 flex w-full flex-col items-center">
-                {openTodos?.length === 0 ? (
+                {renderTodos?.length === 0 ? (
                     <>
                         <Title> Damn, you made it! welcome to the team </Title>
                         <div className="mt-28 flex h-96 w-96 flex-col justify-center">
                             <CelebrationAnimation />
-                            <CompleteButton
-                                user={{ id: user.id, team: params.groupId }}
-                            >
+                            <CompleteButton user={{ id: user.id }}>
                                 {' '}
                                 Finish{' '}
                             </CompleteButton>
@@ -55,14 +64,13 @@ export default async function Page({
                     </>
                 ) : (
                     <Box>
-                        <Title>You have {openTodos?.length} todos left</Title>
+                        <Title>You have {renderTodos?.length} todos left</Title>
                         <div className="mt-4 flex flex-col">
-                            {openTodos?.map((todo) => (
+                            {renderTodos?.map((renderTodo) => (
                                 <TodoItem
                                     withLink
-                                    todo={todo}
-                                    userId={user.id}
-                                    key={todo.cmsId}
+                                    todo={renderTodo}
+                                    key={renderTodo.id}
                                 />
                             ))}
                         </div>

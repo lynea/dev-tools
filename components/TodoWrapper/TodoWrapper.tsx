@@ -1,28 +1,28 @@
 'use client'
 
-import { TodoForDb } from '@/app/onboarding/types/todo'
 import { FunctionComponent, useEffect, useState } from 'react'
 import { TodoItem } from '../TodoItemExperimental/TodoItem'
+import { Todo } from '@prisma/client'
 
 // a todoWrapper fetches a list of todos from an api enpoint
 // when clicked it adds it to the db
 // then refetches the list of todos
 
+export type RenderTodo = Todo & { completed: boolean }
+
 type TodoWrapperProps = {
-    todos: TodoForDb[]
-    userId: string
+    todos: Array<RenderTodo>
     withFilter?: boolean
     withLink?: boolean
 }
 
 export const TodoWrapper: FunctionComponent<TodoWrapperProps> = ({
     todos,
-    userId,
     withFilter = false,
     withLink = false,
 }) => {
     const [filter, setFilter] = useState(withFilter)
-    const [todosToShow, setTodosToShow] = useState<TodoForDb[]>()
+    const [todosToShow, setTodosToShow] = useState<RenderTodo[]>()
     useEffect(() => {
         const filtered = filter
             ? todos.filter((todo) => !todo.completed)
@@ -52,15 +52,14 @@ export const TodoWrapper: FunctionComponent<TodoWrapperProps> = ({
                         className="mr-6 inline-block pl-[0.15rem] text-white hover:cursor-pointer"
                         htmlFor="flexSwitchCheckDefault"
                     >
-                        {`${filter ? 'Show' : 'Hide'} completed`}
+                        Show completed todos
                     </label>
                 </div>
             ) : null}
             {todosToShow?.map((todo, index) => (
                 <TodoItem
-                    userId={userId}
                     todo={todo}
-                    key={todo.cmsId + index}
+                    key={todo.id + index}
                     withLink={withLink}
                 />
             ))}

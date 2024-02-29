@@ -1,11 +1,5 @@
-import { TodoForDb } from '@/app/onboarding/types/todo'
-import { TodosForStepQuery, Chapter as IChapter } from '@/generated/graphql'
 import { getClient } from '@/graphql/client'
-import { todosForStepQuery } from '@/graphql/queries/todo'
-import { db } from '@/lib/db'
-import { getTodosForUser } from '@/utils/requests/_requests'
 import {
-    convertCMSTodosForDB,
     incrementChapter,
     incrementStep,
     decrementChapter,
@@ -14,7 +8,7 @@ import {
 import { currentUser } from '@clerk/nextjs'
 import { faCircleCheck, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { User } from '@prisma/client'
+import { Step, Chapter as IChapter, User, Todo } from '@prisma/client'
 import clsx from 'clsx'
 import { headers } from 'next/headers'
 import Link from 'next/link'
@@ -29,16 +23,14 @@ import { Player } from '../Video/Player'
 import { ChapterProps } from './types'
 import { BackButton } from '../StepBackButton/BackButton'
 import { Progress } from 'flowbite-react'
+import { db } from '@/lib/db'
 
-const getFirstStepId = (chapter: IChapter) => {
-    const sortedSteps = [
-        ...(chapter?.linkedFrom?.onboardStepCollection?.items ?? []),
-    ]?.sort((a, b) => a?.step! - b?.step!)
+const getFirstStepId = (chapter: IChapter & { steps: Step[] }) => {
+    const sortedSteps = [...chapter.steps]
 
-    return sortedSteps.at(0)?.sys?.id
+    return sortedSteps?.at(0)?.id
 }
 
-//@ts-ignore
 export const Chapter = async ({
     chapterId,
     stepId,
@@ -46,97 +38,89 @@ export const Chapter = async ({
     basePath,
     chapterCompletedLink,
 }: ChapterProps) => {
-    //@ts-ignore
     const user: User | null = await currentUser()
 
     const host = headers().get('host')
     if (!user) return <>no user was found</>
 
-    const dbTodos = await getTodosForUser(user.id, host!)
-
-    const dbUser = await db.user.findFirst({
+    const allTodos = await db.todo.findMany({
         where: {
-            id: user.id,
+            stepId: stepId,
         },
     })
 
-    const hasCompletedAll = dbUser?.hasCompleted
+    const completedTodos = await db.todo.findMany({
+        where: {
+            stepId: stepId,
+            userTodos: {
+                some: {
+                    userId: user.id,
+                    isCompleted: true,
+                },
+            },
+        },
+    })
+
+    const renderTodos: Array<Todo & { completed: boolean }> = allTodos.map(
+        (todo) => {
+            return {
+                ...todo,
+                completed: completedTodos.some(
+                    (completedTodo) => completedTodo.id === todo.id
+                ),
+            }
+        }
+    )
+
+    //TODO: fix:
+    const hasCompletedAll = false
 
     const client = getClient()
 
-    //should get all the chapters for the entity example all chapters for the company
-    // then it should pass the chapters
+    const totalChapters = chapters.length ?? 0
 
-    const sortedChapters = [...(chapters?.items ?? [])]
-
-    const totalChapters = chapters?.total ?? 0
-
-    const indexOfCurrentChapter = sortedChapters.findIndex(
-        (chapter) => chapter?.sys.id === chapterId
+    const indexOfCurrentChapter = chapters.findIndex(
+        (chapter) => chapter.id === chapterId
     )
 
     if (indexOfCurrentChapter < 0)
         return <>no chapter was found matching this id</>
 
-    const chapterInfo = sortedChapters.at(indexOfCurrentChapter)
+    const chapterInfo = chapters.at(indexOfCurrentChapter)
 
     //TODO: would be nicer to find the index of the current one and then slice the next and the prev ones out;
     // and then do [prev, current, next] = sliced
 
-    const previousChapterInfo = sortedChapters.at(indexOfCurrentChapter - 1)
+    const previousChapterInfo = chapters.at(indexOfCurrentChapter - 1)
 
-    const nextChapterInfo = sortedChapters.at(indexOfCurrentChapter + 1)
+    const nextChapterInfo = chapters.at(indexOfCurrentChapter + 1)
 
-    const stepsForChapter =
-        chapterInfo?.linkedFrom?.onboardStepCollection?.items
+    const stepsForChapter = chapterInfo?.steps
 
-    const totalSteps =
-        chapterInfo?.linkedFrom?.onboardStepCollection?.total ?? 0
+    const totalSteps = chapterInfo?.steps.length ?? 0
 
     const sortedSteps = [...(stepsForChapter ?? [])]?.sort(
-        (a, b) => a?.step! - b?.step!
+        (a, b) => a?.order! - b?.order!
     )
 
     //get the index of the current step
     const indexOfCurrentStep = sortedSteps?.findIndex(
-        (step) => step?.sys.id === stepId
+        (step) => step?.id === stepId
     )
 
-    if (indexOfCurrentStep < 0) return <>no step was found matching this id</>
+    console.log('indexOfCurrentStep: ', indexOfCurrentStep)
 
-    const currentStepInfo = sortedSteps?.at(indexOfCurrentStep)
+    if (indexOfCurrentStep! < 0) return <>no step was found matching this id</>
 
-    const { data: todoData }: { data: TodosForStepQuery } = await client
-        .query({
-            query: todosForStepQuery,
-            variables: {
-                stepId: currentStepInfo?.sys.id,
-            },
-        })
-        .catch((err) => {
-            console.log('failed to get todos for step from the cms', err)
-            return { data: { onboardStep: null } }
-        })
-
-    const todosToRender: TodoForDb[] = convertCMSTodosForDB(
-        todoData,
-        user.id,
-        chapterId ?? '',
-        stepId,
-        dbTodos
-    )
+    const currentStepInfo = sortedSteps?.at(indexOfCurrentStep!)
 
     const isLastChapter = indexOfCurrentChapter + 1 === totalChapters
-
-    //
 
     const canDecrementStep = true
     // indexOfCurrentStep !== 0 && indexOfCurrentChapter !== 0
 
-    const isLastStepInChapter = indexOfCurrentStep + 1 === totalSteps
+    const isLastStepInChapter = indexOfCurrentStep! + 1 === totalSteps
     const isfirstStepInChapter = indexOfCurrentStep === 0
-
-    // const basePath = `/onboarding/global`
 
     //should accept a item array
     // and the path to route to when no more items are left
@@ -148,14 +132,9 @@ export const Chapter = async ({
                 return chapterCompletedLink
             }
 
-            const firstStepId = [
-                ...(nextChapterInfo?.linkedFrom?.onboardStepCollection?.items ??
-                    []),
-            ]
-                ?.sort((a, b) => a?.step! - b?.step!)
-                .at(0)?.sys.id
+            const firstStepId = nextChapterInfo?.steps?.at(0)?.id
 
-            const id = nextChapterInfo?.sys.id
+            const id = nextChapterInfo?.id
 
             if (!id || !firstStepId)
                 throw new Error('could not generate next link')
@@ -169,35 +148,30 @@ export const Chapter = async ({
         return incrementStep(
             basePath,
             chapterId,
-            sortedSteps?.at(indexOfCurrentStep + 1)?.sys.id!
+            sortedSteps?.at(indexOfCurrentStep! + 1)?.id!
         )
     }
 
     const generatePreviousLink = (): string => {
         if (isfirstStepInChapter) {
-            const stepsofPreviousChapter = [
-                ...(previousChapterInfo?.linkedFrom?.onboardStepCollection
-                    ?.items ?? []),
-            ]
+            const stepsofPreviousChapter = previousChapterInfo?.steps
 
-            const lastStepOfPreviousChapter = stepsofPreviousChapter
-                ?.sort((a, b) => a?.step! - b?.step!)
-                .at(stepsofPreviousChapter.length - 1)?.sys.id
+            const lastStepOfPreviousChapter = stepsofPreviousChapter?.at(0)
 
             if (!lastStepOfPreviousChapter)
                 throw new Error('could not generate previous link')
 
             return decrementChapter(
                 basePath,
-                previousChapterInfo?.sys.id!,
-                lastStepOfPreviousChapter
+                previousChapterInfo?.id!,
+                lastStepOfPreviousChapter.id
             )
         }
 
         return decrementStep(
             basePath,
             chapterId,
-            sortedSteps?.at(indexOfCurrentStep - 1)?.sys.id!
+            sortedSteps?.at(indexOfCurrentStep! - 1)?.id!
         )
     }
 
@@ -207,37 +181,30 @@ export const Chapter = async ({
     return (
         <>
             <section className="mt-6 flex w-full">
-                <div className="w-full [&>_div]:mt-4">
-                    {todoData.onboardStep?.mainImage?.url ? (
+                <div className="w-full whitespace-pre-line [&>_div]:mt-4">
+                    {/* {todoData.onboardStep?.mainImage?.url ? (
                         <ImageViewer
                             url={todoData.onboardStep?.mainImage?.url}
                         />
-                    ) : null}
+                    ) : null} */}
 
-                    {currentStepInfo?.youtubeId ? (
-                        <Player youtubeId={currentStepInfo.youtubeId!}></Player>
+                    {currentStepInfo?.videoUrl ? (
+                        <Player youtubeId={currentStepInfo.videoUrl!}></Player>
                     ) : null}
 
                     {currentStepInfo?.title ||
-                    currentStepInfo?.body ||
-                    currentStepInfo?.codeBlock ? (
+                    //  currentStepInfo?.codeBlock
+                    currentStepInfo?.description ? (
                         <Box>
                             <Title>{currentStepInfo?.title}</Title>
 
                             <ReactMarkdown>
-                                {currentStepInfo.body ?? ''}
+                                {currentStepInfo.description ?? ''}
                             </ReactMarkdown>
-                            {currentStepInfo?.codeBlock && (
-                                <code className="mt-6 block rounded-md bg-purple-200 p-4 ">
-                                    <ReactMarkdown>
-                                        {currentStepInfo.codeBlock ?? ''}
-                                    </ReactMarkdown>
-                                </code>
-                            )}
                         </Box>
                     ) : null}
 
-                    {todosToRender?.length > 0 ? (
+                    {renderTodos?.length > 0 ? (
                         <Box>
                             <h3 className="mb-4 text-2xl font-bold">Todo:</h3>
                             <div
@@ -245,8 +212,8 @@ export const Chapter = async ({
                                 data-testid="body-todos"
                             >
                                 <TodoWrapper
-                                    userId={user.id}
-                                    todos={todosToRender}
+                                    todos={renderTodos}
+                                    withLink={false}
                                 />
                             </div>
                         </Box>
@@ -259,14 +226,14 @@ export const Chapter = async ({
                             <p className="mb-1 justify-between text-center  text-lg text-white ">
                                 Step{' '}
                                 <span className="font-bold">
-                                    {indexOfCurrentStep + 1}
+                                    {indexOfCurrentStep! + 1}
                                 </span>{' '}
                                 of{' '}
                                 <span className="font-bold"> {totalSteps}</span>
                             </p>
                             <Progress
                                 progress={
-                                    ((indexOfCurrentStep + 1) / totalSteps) *
+                                    ((indexOfCurrentStep! + 1) / totalSteps) *
                                     100
                                 }
                                 color="pink"
@@ -274,21 +241,16 @@ export const Chapter = async ({
                         </div>
 
                         <StepButton
-                            host={host!}
-                            userId={user.id}
                             route={generateNextLink()}
-                            todoInfo={todosToRender}
+                            todosToBeAdded={renderTodos}
                         />
                     </div>
                 </div>
 
                 <div className="mt-4 ml-6 flex  flex-col items-center ">
                     <ol className="w-72 space-y-4 ">
-                        {sortedChapters?.map((chapter, index) => (
-                            <li
-                                key={chapter?.sys.id}
-                                className="cursor-pointer"
-                            >
+                        {chapters?.map((chapter, index) => (
+                            <li key={chapter?.id} className="cursor-pointer">
                                 <Link
                                     className={
                                         index < indexOfCurrentChapter ||
@@ -296,7 +258,7 @@ export const Chapter = async ({
                                             ? ''
                                             : 'pointer-events-none '
                                     }
-                                    href={`${basePath}/${chapter?.sys.id}/${
+                                    href={`${basePath}/${chapter?.id}/${
                                         chapter ? getFirstStepId(chapter) : ''
                                     }`}
                                 >
@@ -325,7 +287,7 @@ export const Chapter = async ({
                                             </span>
                                             <h3 className="">{`${
                                                 index + 1
-                                            }: ${chapter?.name}`}</h3>
+                                            }: ${chapter?.title}`}</h3>
                                             {index < indexOfCurrentChapter ||
                                             hasCompletedAll ? (
                                                 <FontAwesomeIcon
@@ -351,3 +313,5 @@ export const Chapter = async ({
         </>
     )
 }
+
+//
