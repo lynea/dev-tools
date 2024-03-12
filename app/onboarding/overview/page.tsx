@@ -43,7 +43,7 @@ export default async function Page({
                                     href={`/onboarding/overview/${groupWithEntities.id}/${entity.id}`}
                                     className=" relative max-w-md bg-slate-50 "
                                 >
-                                    <h5 className="text-2xl font-bold tracking-tight   ">
+                                    <h5 className="text-2xl font-bold tracking-tight text-main-200  ">
                                         {entity?.name}
                                     </h5>
                                 </Card>

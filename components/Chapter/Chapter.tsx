@@ -37,9 +37,9 @@ export const Chapter = async ({
     chapterCompletedLink,
     entityTitle,
 }: ChapterProps) => {
-    const { user } = auth()
+    const { userId } = auth()
 
-    if (!user) return <>no user was found</>
+    if (!userId) return <>no user was found</>
 
     const allTodos = await db.todo.findMany({
         where: {
@@ -54,7 +54,7 @@ export const Chapter = async ({
             stepId: stepId,
             userTodos: {
                 some: {
-                    userId: user.id,
+                    userId: userId,
                     isCompleted: true,
                 },
             },
@@ -138,7 +138,9 @@ export const Chapter = async ({
             const id = nextChapterInfo?.id
 
             if (!id || !firstStepId)
-                throw new Error('could not generate next link')
+                throw new Error(
+                    `could not generate next link for chapter ${id} and first step ${firstStepId}`
+                )
 
             return incrementChapter(basePath, {
                 id,

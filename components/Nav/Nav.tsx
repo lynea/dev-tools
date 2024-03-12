@@ -38,8 +38,8 @@ export const Nav: FunctionComponent<NavProps> = ({
 
                                 <Image
                                     src="/onboardify-logo.svg"
-                                    width={30}
-                                    height={30}
+                                    width={25}
+                                    height={25}
                                     alt="logo"
                                 />
                             </NavigationMenuLink>
