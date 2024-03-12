@@ -6,4 +6,5 @@ export type ChapterProps = {
     chapters: Array<Chapter & { steps: Step[] }>
     basePath: string
     chapterCompletedLink: string
+    entityTitle: string
 }

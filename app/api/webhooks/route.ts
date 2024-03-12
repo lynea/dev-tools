@@ -147,6 +147,30 @@ export async function POST(req: Request) {
 
             console.log('a invite was accepted and a user was created: ', res)
 
+            console.log('syncing todos for the user and the organization')
+
+            //get all the todos for the organization
+            const todos = await db.todo.findMany({
+                where: {
+                    organizationId: bodyObject.data.organization_id,
+                },
+            })
+
+            console.log('todos:', todos.length)
+
+            //add them to the user
+            const todosForUser = await db.userTodo.createMany({
+                data: todos.map((todo) => {
+                    return {
+                        userId: bodyObject.data.id,
+                        todoId: todo.id,
+                        isCompleted: false,
+                    }
+                }),
+            })
+
+            console.log('todosForUser:', todosForUser.count)
+
             break
 
         default:

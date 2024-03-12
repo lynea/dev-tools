@@ -1,15 +1,10 @@
 'use client'
-
-import { Todo } from '@prisma/client'
 import { FunctionComponent, useTransition } from 'react'
 import { updateTodo } from '../../app/actions'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-    faSpinner,
-    faSquareArrowUpRight,
-} from '@fortawesome/free-solid-svg-icons'
-import Link from 'next/link'
+import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { RenderTodo } from '../TodoWrapper/TodoWrapper'
+import { Checkbox } from '../ui/checkbox'
 
 interface TodoItemProps {
     todo: RenderTodo
@@ -36,13 +31,11 @@ export const TodoItem: FunctionComponent<TodoItemProps> = ({
                     className=" text-white"
                 />
             ) : (
-                <input
-                    type="checkbox"
+                <Checkbox
                     id={todo.id}
                     disabled={isPending}
-                    className="h-4 w-4 rounded border-gray-300 bg-gray-100 text-pink-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600 "
                     checked={todo?.completed}
-                    onChange={() =>
+                    onClick={() =>
                         startTransition(() => updateTodo(todo, todo.completed))
                     }
                 />
@@ -50,7 +43,7 @@ export const TodoItem: FunctionComponent<TodoItemProps> = ({
 
             <label
                 htmlFor={todo.id}
-                className="ml-2 w-full py-4 text-sm  font-bold text-white"
+                className="ml-2 w-full py-4 text-sm  font-bold text-foreground"
             >
                 {' '}
                 {todo?.description}

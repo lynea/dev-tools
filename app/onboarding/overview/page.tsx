@@ -2,7 +2,7 @@ import { auth } from '@clerk/nextjs'
 import { Title } from '@/components/Title/Title'
 import { db } from '@/lib/db'
 import { CompletedPageParams } from '@/app/onboarding/types/pageProps'
-import { Breadcrumb, BreadcrumbItem, Card } from 'flowbite-react'
+import { Card } from 'flowbite-react'
 
 export default async function Page({
     params,
@@ -33,7 +33,7 @@ export default async function Page({
 
                 {groupWithEntities.entities.map((entity) => (
                     <>
-                        <h2 className="mb-4 mt-4 text-4xl font-bold text-white">
+                        <h2 className="mb-4 mt-4 text-4xl font-bold text-foreground">
                             {groupWithEntities.name}
                         </h2>
                         <div className=" mb-10 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
@@ -41,9 +41,9 @@ export default async function Page({
                                 <Card
                                     key={entity?.name! + index}
                                     href={`/onboarding/overview/${groupWithEntities.id}/${entity.id}`}
-                                    className=" relative max-w-md text-main-200"
+                                    className=" relative max-w-md bg-slate-50 "
                                 >
-                                    <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                                    <h5 className="text-2xl font-bold tracking-tight   ">
                                         {entity?.name}
                                     </h5>
                                 </Card>

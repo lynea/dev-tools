@@ -89,93 +89,81 @@ const createChapterAndSteps = async (entityId: string) => {
 }
 
 async function main() {
-    // Seed Users
-    const alice = await db.user.create({
-        data: {
-            id: 'user_2OVpomuqiqieyOJkzr9knpEjPa3',
-        },
-    })
-
-    const bob = await prisma.user.create({
-        data: {},
-    })
-
-    // Seed Organizations
-    const org1 = await prisma.organization.create({
-        data: {
-            name: 'The sharing group',
-            slug: 'the-sharing-group',
-            createdByUserId: alice.id,
-            id: 'org_2bme3utaOlKWytwIOGqSLkP85Uy',
-        },
-    })
-
-    // Seed UserOrganization
-    await prisma.userOrganization.createMany({
-        data: [
-            { userId: alice.id, organizationId: org1.id, role: Role.admin },
-            { userId: bob.id, organizationId: org1.id, role: Role.user },
-        ],
-    })
-
-    // Seed EntityGroup
-    const entityGroup1 = await prisma.entityGroup.create({
-        data: {
-            name: 'companies',
-            slug: 'companies',
-            organizationId: org1.id,
-            level: 1,
-        },
-    })
-
-    const entityGroup2 = await prisma.entityGroup.create({
-        data: {
-            name: 'department',
-            slug: 'department',
-            organizationId: org1.id,
-            level: 2,
-        },
-    })
-
-    // Seed Entity
-    const entity1 = await prisma.entity.create({
-        data: {
-            name: 'mijndomein',
-            slug: 'mijndomein',
-            entityGroupId: entityGroup1.id,
-        },
-    })
-
-    const entity2 = await prisma.entity.create({
-        data: {
-            name: 'development',
-            slug: 'development',
-            entityGroupId: entityGroup2.id,
-        },
-    })
-
-    // Seed Chapter and Steps
-    await createChapterAndSteps(entity1.id)
-
-    await createChapterAndSteps(entity2.id)
-
-    // Seed UserTodo
-    // await prisma.userTodo.createMany({
+    // // Seed Users
+    // const alice = await db.user.create({
+    //     data: {
+    //         id: 'user_2OVpomuqiqieyOJkzr9knpEjPa3',
+    //     },
+    // })
+    // const bob = await prisma.user.create({
+    //     data: {},
+    // })
+    // // Seed Organizations
+    // const org1 = await prisma.organization.create({
+    //     data: {
+    //         name: 'The sharing group',
+    //         slug: 'the-sharing-group',
+    //         createdByUserId: alice.id,
+    //         id: 'org_2bme3utaOlKWytwIOGqSLkP85Uy',
+    //     },
+    // })
+    // // Seed UserOrganization
+    // await prisma.userOrganization.createMany({
     //     data: [
-    //         { userId: alice.id, todoId: todo1.id, isCompleted: false },
-    //         { userId: bob.id, todoId: todo1.id, isCompleted: true },
+    //         { userId: alice.id, organizationId: org1.id, role: Role.admin },
+    //         { userId: bob.id, organizationId: org1.id, role: Role.user },
     //     ],
     // })
-
-    //seed userentity
-    await prisma.userEntity.createMany({
-        data: [
-            { userId: alice.id, entityId: entity1.id },
-            { userId: bob.id, entityId: entity1.id },
-        ],
-    })
-
-    console.log('Database has been seeded!')
+    // // Seed EntityGroup
+    // const entityGroup1 = await prisma.entityGroup.create({
+    //     data: {
+    //         name: 'companies',
+    //         slug: 'companies',
+    //         organizationId: org1.id,
+    //         level: 1,
+    //     },
+    // })
+    // const entityGroup2 = await prisma.entityGroup.create({
+    //     data: {
+    //         name: 'department',
+    //         slug: 'department',
+    //         organizationId: org1.id,
+    //         level: 2,
+    //     },
+    // })
+    // // Seed Entity
+    // const entity1 = await prisma.entity.create({
+    //     data: {
+    //         name: 'mijndomein',
+    //         slug: 'mijndomein',
+    //         entityGroupId: entityGroup1.id,
+    //     },
+    // })
+    // const entity2 = await prisma.entity.create({
+    //     data: {
+    //         name: 'development',
+    //         slug: 'development',
+    //         entityGroupId: entityGroup2.id,
+    //     },
+    // })
+    // // Seed Chapter and Steps
+    // await createChapterAndSteps(entity1.id)
+    // await createChapterAndSteps(entity2.id)
+    // // Seed UserTodo
+    // // await prisma.userTodo.createMany({
+    // //     data: [
+    // //         { userId: alice.id, todoId: todo1.id, isCompleted: false },
+    // //         { userId: bob.id, todoId: todo1.id, isCompleted: true },
+    // //     ],
+    // // })
+    // //seed userentity
+    // await prisma.userEntity.createMany({
+    //     data: [
+    //         { userId: alice.id, entityId: entity1.id },
+    //         { userId: bob.id, entityId: entity1.id },
+    //     ],
+    // })
+    // console.log('Database has been seeded!')
 }
 
 main()

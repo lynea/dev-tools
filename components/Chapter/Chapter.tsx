@@ -1,18 +1,15 @@
-import { getClient } from '@/graphql/client'
 import {
     incrementChapter,
     incrementStep,
     decrementChapter,
     decrementStep,
 } from '@/utils/todo'
-import { currentUser } from '@clerk/nextjs'
+import { auth } from '@clerk/nextjs'
 import { faCircleCheck, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Step, Chapter as IChapter, User, Todo } from '@prisma/client'
 import clsx from 'clsx'
-import { headers } from 'next/headers'
 import Link from 'next/link'
-import ReactMarkdown from 'react-markdown'
 import { Box } from '../Box/Box'
 import { ImageViewer } from '../ImageViewer/ImageViewer'
 import { StepButton } from '../StepButton/StepButton'
@@ -22,8 +19,9 @@ import { TodoWrapper } from '../TodoWrapper/TodoWrapper'
 import { Player } from '../Video/Player'
 import { ChapterProps } from './types'
 import { BackButton } from '../StepBackButton/BackButton'
-import { Progress } from 'flowbite-react'
+
 import { db } from '@/lib/db'
+import { Progress } from '../ui/progress'
 
 const getFirstStepId = (chapter: IChapter & { steps: Step[] }) => {
     const sortedSteps = [...chapter.steps]
@@ -37,10 +35,10 @@ export const Chapter = async ({
     chapters,
     basePath,
     chapterCompletedLink,
+    entityTitle,
 }: ChapterProps) => {
-    const user: User | null = await currentUser()
+    const { user } = auth()
 
-    const host = headers().get('host')
     if (!user) return <>no user was found</>
 
     const allTodos = await db.todo.findMany({
@@ -48,6 +46,8 @@ export const Chapter = async ({
             stepId: stepId,
         },
     })
+
+    console.log('allTodos: ', allTodos)
 
     const completedTodos = await db.todo.findMany({
         where: {
@@ -74,8 +74,6 @@ export const Chapter = async ({
 
     //TODO: fix:
     const hasCompletedAll = false
-
-    const client = getClient()
 
     const totalChapters = chapters.length ?? 0
 
@@ -125,6 +123,9 @@ export const Chapter = async ({
     //should accept a item array
     // and the path to route to when no more items are left
     // and the index of the current step
+    // when it is the last chapter and step we should check if there is an entity with a higher level
+    // and if there is we should route to the first step of that entity
+
     const generateNextLink = (): string => {
         if (isLastStepInChapter) {
             if (isLastChapter) {
@@ -180,6 +181,7 @@ export const Chapter = async ({
 
     return (
         <>
+            <h2 className="self-start text-5xl font-bold">{entityTitle}</h2>
             <section className="mt-6 flex w-full">
                 <div className="w-full whitespace-pre-line [&>_div]:mt-4">
                     {/* {todoData.onboardStep?.mainImage?.url ? (
@@ -198,9 +200,15 @@ export const Chapter = async ({
                         <Box>
                             <Title>{currentStepInfo?.title}</Title>
 
-                            <ReactMarkdown>
+                            <div
+                                dangerouslySetInnerHTML={{
+                                    __html: currentStepInfo?.description ?? '',
+                                }}
+                            ></div>
+
+                            {/* <ReactMarkdown >
                                 {currentStepInfo.description ?? ''}
-                            </ReactMarkdown>
+                            </ReactMarkdown> */}
                         </Box>
                     ) : null}
 
@@ -232,11 +240,10 @@ export const Chapter = async ({
                                 <span className="font-bold"> {totalSteps}</span>
                             </p>
                             <Progress
-                                progress={
+                                value={
                                     ((indexOfCurrentStep! + 1) / totalSteps) *
                                     100
                                 }
-                                color="pink"
                             />
                         </div>
 
@@ -270,11 +277,11 @@ export const Chapter = async ({
                                                     index >
                                                         indexOfCurrentChapter &&
                                                     !hasCompletedAll,
-                                                'bg-pink-400  text-main-200 ':
+                                                'bg-gradientStart  text-main-200 ':
                                                     index <
                                                         indexOfCurrentChapter ||
                                                     hasCompletedAll,
-                                                'border-pink-500 bg-purple-200 font-bold text-purple-700 ':
+                                                'border-gradientStart bg-purple-200 font-bold text-purple-700 ':
                                                     index ===
                                                     indexOfCurrentChapter,
                                             }

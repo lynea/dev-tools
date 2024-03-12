@@ -4,9 +4,7 @@ import type { User } from '@clerk/nextjs/api'
 import { CelebrationAnimation } from '@/components/CelebrationAnimation/CelebrationAnimation'
 import { Title } from '@/components/Title/Title'
 import { Box } from '@/components/Box/Box'
-import { getTodosForUser } from '@/utils/requests/_requests'
 import { TodoItem } from '@/components/TodoItemExperimental/TodoItem'
-import { headers } from 'next/headers'
 import { CompleteButton } from '@/components/CompleteButton/CompleteButton'
 import { CompletedPageParams } from '@/app/onboarding/types/pageProps'
 import { db } from '@/lib/db'
@@ -19,7 +17,6 @@ export default async function Page({
     params: CompletedPageParams
 }) {
     const user: User | null = await currentUser()
-    const host = headers().get('host')
 
     if (!user?.id) return <>no user was found</>
 
@@ -56,10 +53,7 @@ export default async function Page({
                         <Title> Damn, you made it! welcome to the team </Title>
                         <div className="mt-28 flex h-96 w-96 flex-col justify-center">
                             <CelebrationAnimation />
-                            <CompleteButton user={{ id: user.id }}>
-                                {' '}
-                                Finish{' '}
-                            </CompleteButton>
+                            <CompleteButton> Finish </CompleteButton>
                         </div>
                     </>
                 ) : (

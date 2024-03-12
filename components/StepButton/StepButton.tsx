@@ -3,7 +3,6 @@
 import { FunctionComponent } from 'react'
 import { Button } from '../Button/Button'
 import { useRouter } from 'next/navigation'
-import { createTodos } from '@/app/actions'
 import { Todo } from '@prisma/client'
 
 type StepButtonProps = {
@@ -19,7 +18,6 @@ export const StepButton: FunctionComponent<StepButtonProps> = ({
 
     const handleClick = async () => {
         if (todosToBeAdded?.length) {
-            await createTodos(todosToBeAdded)
             router.push(route)
         } else {
             router.refresh()

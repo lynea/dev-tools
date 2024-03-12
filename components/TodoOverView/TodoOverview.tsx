@@ -1,9 +1,17 @@
 'use client'
 
 import { FunctionComponent, ReactNode, useState } from 'react'
+import { Button } from '@/components/ui/button'
+import {
+    Sheet,
+    SheetContent,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from '@/components/ui/sheet'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars, faXmark } from '@fortawesome/free-solid-svg-icons'
-import { TodoList } from './TodoList'
+import { faListUl, faSun } from '@fortawesome/free-solid-svg-icons'
+
 //it gets a list of todos from the server and displays them in a list
 
 type TodoOverViewProps = {
@@ -13,41 +21,23 @@ type TodoOverViewProps = {
 export const TodoOverView: FunctionComponent<TodoOverViewProps> = ({
     children,
 }) => {
-    const [isOpen, setIsOpen] = useState(false)
-
     return (
-        <>
-            <button
-                className="font-sm absolute top-3 right-10 z-40 w-fit text-white"
-                onClick={() => setIsOpen(!isOpen)}
-            >
-                {' '}
-                {isOpen ? (
-                    <FontAwesomeIcon icon={faXmark} />
-                ) : (
-                    <FontAwesomeIcon icon={faBars} />
-                )}
-            </button>
-
-            <div
-                onClick={() => setIsOpen(!isOpen)}
-                className={`absolute top-0 right-0 z-20   h-full w-full cursor-pointer backdrop-blur-lg backdrop-filter ${
-                    isOpen ? 'block' : 'hidden'
-                } `}
-            >
-                {' '}
-            </div>
-
-            <div
-                className={`absolute top-0 right-0 z-30 flex h-full min-h-screen w-96 flex-col overflow-y-scroll bg-gray-800 p-6 duration-300 ease-in-out ${
-                    isOpen
-                        ? 'visible translate-x-0 '
-                        : ' hidden translate-x-full'
-                }`}
-            >
-                <h3 className="mb-4 text-3xl font-bold text-white">Todos</h3>
+        <Sheet>
+            <SheetTrigger asChild>
+                <Button variant="outline" size="icon">
+                    <FontAwesomeIcon
+                        icon={faListUl}
+                        className="h-[1.4rem] w-[1.2rem] "
+                    />
+                    <span className="sr-only">Toggle theme</span>
+                </Button>
+            </SheetTrigger>
+            <SheetContent>
+                <SheetHeader>
+                    <SheetTitle>Todos</SheetTitle>
+                </SheetHeader>
                 {children}
-            </div>
-        </>
+            </SheetContent>
+        </Sheet>
     )
 }

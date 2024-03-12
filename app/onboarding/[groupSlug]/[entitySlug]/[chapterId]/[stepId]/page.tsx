@@ -37,10 +37,24 @@ export default async function Page({
     const sortedChapters =
         entityWithChapters?.chapters?.sort((a, b) => a.order - b.order) ?? []
 
-    //TODO: needs fix
-    const nextEntityGroup = await db.entityGroup.findUnique({
+    console.log('slug', params.groupSlug)
+
+    const currentEntityGroup = await db.entityGroup.findUnique({
         where: {
-            slug: params.entitySlug,
+            slug: params.groupSlug,
+        },
+    })
+
+    if (!currentEntityGroup) throw new Error('no entity group found')
+
+    const nextEntityGroup = await db.entityGroup.findFirst({
+        where: {
+            level: {
+                gt: currentEntityGroup.level,
+            },
+        },
+        orderBy: {
+            level: 'asc',
         },
     })
 
@@ -61,6 +75,7 @@ export default async function Page({
             chapterId={params.chapterId}
             stepId={params.stepId}
             chapters={sortedChapters}
+            entityTitle={entityWithChapters.name}
         />
     )
 }

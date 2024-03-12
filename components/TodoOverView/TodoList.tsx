@@ -53,7 +53,7 @@ export const TodoList = async () => {
             <TodoWrapper todos={renderTodos} withFilter />
             {hasCompletedAll ? (
                 <Link href={`/onboarding/overview`}>
-                    <button className="mt-9 w-full rounded-md bg-pink-600 px-6 py-3 text-xl font-bold text-white">
+                    <button className="mt-9 w-full rounded-md bg-pink px-6 py-3 text-xl font-bold text-white">
                         {' '}
                         Overview
                     </button>

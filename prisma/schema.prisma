@@ -3,9 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider     = "mysql"
-  url          = env("DATABASE_URL")
-  relationMode = "prisma"
+  provider = "postgresql"
+  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
 model User {
@@ -14,6 +14,8 @@ model User {
   userEntities         UserEntity[]
   createdOrganizations Organization[]
   userTodos            UserTodo[]
+  startedAt            DateTime?      
+  finishedAt           DateTime?
 }
 
 model Organization {
@@ -22,6 +24,9 @@ model Organization {
   name              String
   userOrganizations UserOrganization[]
   entities          Entity[]
+  chapters          Chapter[]
+  steps             Step[]
+  todos             Todo[]
   createdByUserId   String
   createdBy         User               @relation(fields: [createdByUserId], references: [id])
   EntityGroup       EntityGroup[]
@@ -76,6 +81,11 @@ model Chapter {
   entity   Entity? @relation(fields: [entityId], references: [id])
   steps    Step[]
   order          Int @default(100)
+  Organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime?         @updatedAt
+
 }
 
 model Step {
@@ -87,6 +97,8 @@ model Step {
   chapter     Chapter @relation(fields: [chapterId], references: [id])
   todos       Todo[]
   order          Int @default(100)
+  Organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?
   videoUrl       String? 
 }
 
@@ -97,6 +109,8 @@ model Todo {
   stepId      String
   step        Step      @relation(fields: [stepId], references: [id])
   userTodos   UserTodo[]
+  Organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?
 }
 
 

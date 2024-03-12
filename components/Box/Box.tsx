@@ -8,7 +8,7 @@ type BoxProps = {
 export const Box: FunctionComponent<BoxProps> = ({ children }) => {
     return (
         <div
-            className={`${styles.box} " [&_img]:max-w-sm" w-full  rounded bg-main-100 p-4  text-white`}
+            className={`${styles.box} " [&_img]:max-w-sm" w-full rounded  bg-slate-50 p-4 text-foreground drop-shadow-lg  dark:bg-main-100`}
         >
             {children}
         </div>
