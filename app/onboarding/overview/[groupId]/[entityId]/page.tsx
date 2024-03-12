@@ -8,7 +8,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import Link from 'next/link'
 
-import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import {
     Table,
@@ -19,6 +18,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table'
+import { Card } from 'flowbite-react'
 
 export default async function Page({
     params,
