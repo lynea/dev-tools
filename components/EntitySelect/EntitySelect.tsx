@@ -7,6 +7,7 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { useUser } from '@clerk/clerk-react'
 import { SqaureButton } from '../SqaureButton/SquareButton'
 import { EntitySelectProps } from './types'
+import { toast } from 'sonner'
 
 export const EntitySelect: FunctionComponent<EntitySelectProps> = ({
     entities,
@@ -26,32 +27,31 @@ export const EntitySelect: FunctionComponent<EntitySelectProps> = ({
 
     const navigateToFirstStep = async () => {
         if (!entities || !selectedEntity || !user) return
+
+        const navigationEntity = entities.find(
+            (entity) => entity.id === selectedEntity
+        )
+
+        if (!navigationEntity?.firstChapterId) {
+            toast('could not find first chapter')
+            return
+        }
+        if (!navigationEntity?.firstStepId) {
+            toast('could not find first step')
+            return
+        }
+
         setLoading(true)
 
-        try {
-            startTransition(() => {
-                startTransition(() =>
-                    //@ts-ignore
-                    createOrUpdateUser({ team: selectedEntity, id: user.id })
-                )
-            })
-        } catch (error) {
-            console.log(error)
-        } finally {
-            const navigationEntity = entities.find(
-                (entity) => entity.id === selectedEntity
-            )
+        const path = `${navigationPath}/${selectedEntity}/${navigationEntity?.firstChapterId}/${navigationEntity?.firstStepId}`
 
-            const path = `${navigationPath}/${selectedEntity}/${navigationEntity?.firstChapterId}/${navigationEntity?.firstStepId}`
-
-            router.push(path)
-        }
+        router.push(path)
     }
 
     if (entities.length < 2 && smallButtonWhenSingleEntity)
         return (
             <button
-                className="mt-9 rounded-md bg-pink-600 px-6 py-3 text-xl font-bold text-white"
+                className="mt-9 rounded-md bg-pink px-6 py-3 text-xl font-bold text-white"
                 onClick={navigateToFirstStep}
             >
                 {' '}
@@ -62,21 +62,25 @@ export const EntitySelect: FunctionComponent<EntitySelectProps> = ({
     return (
         <>
             <div className=" mb-12 flex justify-between ">
-                {entities.map((entity) => (
-                    <SqaureButton
-                        disabled={!entity.firstStepId}
-                        key={entity?.id}
-                        active={selectedEntity === entity.id}
-                        onClick={() => {
-                            setLoading(false)
+                {entities.map((entity) => {
+                    console.log('entity: ', entity)
 
-                            setSelectedEntity(entity.id)
-                        }}
-                        className={entities.length > 1 ? 'mr-8' : ''}
-                    >
-                        <h3> {entity?.name}</h3>
-                    </SqaureButton>
-                ))}
+                    return (
+                        <SqaureButton
+                            disabled={!entity.firstStepId}
+                            key={entity?.id}
+                            active={selectedEntity === entity.id}
+                            onClick={() => {
+                                setLoading(false)
+
+                                setSelectedEntity(entity.id)
+                            }}
+                            className={entities.length > 1 ? 'mr-8' : ''}
+                        >
+                            <h3> {entity?.name}</h3>
+                        </SqaureButton>
+                    )
+                })}
             </div>
 
             <div
@@ -89,7 +93,7 @@ export const EntitySelect: FunctionComponent<EntitySelectProps> = ({
                 <p className="mt-6  text-2xl text-white"> Great choise !</p>
 
                 <button
-                    className={`mt-9 rounded-md bg-pink-600 px-6 py-3 text-xl font-bold text-white ${
+                    className={`mt-9 rounded-md bg-pink px-6 py-3 text-xl font-bold text-white ${
                         loading ? '' : 'animate-bounce'
                     }  `}
                     onClick={navigateToFirstStep}

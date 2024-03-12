@@ -1,6 +1,4 @@
-import { Todo } from '@prisma/client'
 import {
-    convertCMSTodosForDB,
     decrementChapter,
     decrementStep,
     incrementChapter,
@@ -49,61 +47,5 @@ describe('utils: step', () => {
         )
 
         expect(result).toEqual(expectedPath)
-    })
-
-    test('should convert CMS todos to DB todos', () => {
-        const cmsTodos = {
-            onboardStep: {
-                linkedFrom: {
-                    todoCollection: {
-                        items: [
-                            {
-                                title: 'Todo 1',
-                                description: 'Description 1',
-                                sys: { id: '1' },
-                            },
-                            {
-                                title: 'Todo 2',
-                                description: 'Description 2',
-                                sys: { id: '2' },
-                            },
-                        ],
-                    },
-                },
-            },
-        }
-        const owner = 'test'
-        const dbTodos: Todo[] = [
-            {
-                title: 'Todo 1',
-                body: 'Description 1',
-                cmsId: '1',
-                owner,
-                completed: true,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                id: '1',
-            },
-        ]
-        const expectedTodos = [
-            {
-                title: 'Todo 1',
-                body: 'Description 1',
-                cmsId: '1',
-                owner,
-                completed: true,
-            },
-            {
-                title: 'Todo 2',
-                body: 'Description 2',
-                cmsId: '2',
-                owner,
-                completed: false,
-            },
-        ]
-
-        const result = convertCMSTodosForDB(cmsTodos, owner, dbTodos)
-
-        expect(result).toEqual(expectedTodos)
     })
 })

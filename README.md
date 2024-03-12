@@ -43,3 +43,11 @@ npx prisma migrate dev
 ```bash
 npx prisma db push
 ```
+
+```bash
+npx prisma migrate reset
+```
+
+```bash
+npx prisma generate
+```

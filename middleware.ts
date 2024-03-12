@@ -1,31 +1,37 @@
-import { withClerkMiddleware, getAuth } from '@clerk/nextjs/server'
+import { authMiddleware, redirectToSignIn } from '@clerk/nextjs'
 import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
 
-// Set the paths that don't require the user to be signed in
-const publicPaths = ['/', '/api/todos*', '/api/todos', '/sign-in*', '/sign-up*']
-
-const isPublic = (path: string) => {
-    return publicPaths.find((x) =>
-        path.match(new RegExp(`^${x}$`.replace('*$', '($|/)')))
-    )
-}
-
-export default withClerkMiddleware((request: NextRequest) => {
-    if (isPublic(request.nextUrl.pathname)) {
+export default authMiddleware({
+    afterAuth(auth, req, evt) {
+        // Handle users who aren't authenticated
+        if (!auth.userId && !auth.isPublicRoute) {
+            return redirectToSignIn({ returnBackUrl: req.url })
+        }
+        // Redirect signed in users to organization selection page if they are not active in an organization
+        if (
+            auth.userId &&
+            !auth.orgId &&
+            req.nextUrl.pathname !== '/account/organization/create'
+        ) {
+            const orgSelection = new URL(
+                '/account/organization/create',
+                req.url
+            )
+            return NextResponse.redirect(orgSelection)
+        }
+        // If the user is signed in and trying to access a protected route, allow them to access route
+        if (auth.userId && !auth.isPublicRoute) {
+            return NextResponse.next()
+        }
+        // Allow users visiting public routes to access them
         return NextResponse.next()
-    }
-    // if the user is not signed in redirect them to the sign in page.
-    const { userId } = getAuth(request)
+    },
 
-    if (!userId) {
-        // redirect the users to /pages/sign-in/[[...index]].ts
-
-        const signInUrl = new URL('/sign-in', request.url)
-        signInUrl.searchParams.set('redirect_url', request.url)
-        return NextResponse.redirect(signInUrl)
-    }
-    return NextResponse.next()
+    publicRoutes: [
+        '/api/todos/(.*)',
+        '/api/webhooks(.*)',
+        '/api/uploadthing(.*)',
+    ],
 })
 
 // Stop Middleware running on static files and public folder
@@ -39,7 +45,9 @@ export const config = {
          * - public folder
          * - public folder
          */
-        '/((?!static|.*\\..*|_next|favicon.ico).*)',
+        '/((?!.+\\.[\\w]+$|_next).*)',
         '/',
+        '/dashboard',
+        '/(api|trpc)(.*)',
     ],
 }

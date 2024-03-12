@@ -4,8 +4,8 @@ export interface StepPageParams {
     stepId: string
 }
 export interface CompanyStepPageParams {
-    groupId: string
-    entityId: string
+    groupSlug: string
+    entitySlug: string
     chapterId: string
     stepId: string
 }
@@ -22,7 +22,7 @@ export interface TeamsStepPageParams {
 }
 
 export interface EntityGroupSelectPageParams {
-    groupId: string
+    groupSlug: string
 }
 export interface GlobalStepPageParams {
     chapterId: string

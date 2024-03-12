@@ -1,7 +1,3 @@
-import { TodoForDb } from '@/app/onboarding/types/todo'
-import { TodosForStepQuery } from '@/generated/graphql'
-import { Todo } from '@prisma/client'
-
 const incrementStep = (
     basePath: string,
     currentChapter: string,
@@ -28,34 +24,4 @@ const decrementChapter = (
     lastStepOfPreviousChapter: string
 ) => `${basePath}/${prevChapter}/${lastStepOfPreviousChapter}`
 
-const convertCMSTodosForDB = (
-    cmsTodos: TodosForStepQuery,
-    owner: string,
-    currentChapter: string,
-    currentStep: string,
-    dbTodos: Todo[]
-): TodoForDb[] => {
-    return (
-        cmsTodos?.onboardStep?.linkedFrom?.todoCollection?.items.map(
-            (todoForStep) => ({
-                title: todoForStep?.title ?? '',
-                body: todoForStep?.description ?? '',
-                cmsId: todoForStep?.sys?.id ?? '',
-                chapterId: currentChapter,
-                stepId: currentStep,
-                owner,
-                completed:
-                    dbTodos?.find((todo) => todo.cmsId === todoForStep?.sys?.id)
-                        ?.completed ?? false,
-            })
-        ) || []
-    )
-}
-
-export {
-    incrementStep,
-    decrementStep,
-    incrementChapter,
-    decrementChapter,
-    convertCMSTodosForDB,
-}
+export { incrementStep, decrementStep, incrementChapter, decrementChapter }

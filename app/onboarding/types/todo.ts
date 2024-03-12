@@ -6,10 +6,6 @@ export type StepTodo = {
 
 export interface TodoForDb {
     title: string
-    body: string
-    cmsId: string
-    chapterId: string
+    description: string
     stepId: string
-    owner: string
-    completed: boolean
 }

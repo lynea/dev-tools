@@ -1,59 +1,131 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider     = "mysql"
-  url          = env("DATABASE_URL")
-  relationMode = "prisma"
+  provider = "postgresql"
+  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
 model User {
-  id        String   @id @default(uuid())
-  team String 
-  hasCompleted Boolean @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  entities  UserEntity[]
+  id             String           @id @default(uuid())   
+  userOrganizations    UserOrganization[]
+  userEntities         UserEntity[]
+  createdOrganizations Organization[]
+  userTodos            UserTodo[]
+  startedAt            DateTime?      
+  finishedAt           DateTime?
 }
 
-// a user has many entities 
+model Organization {
+  id             String           @id @default(uuid())
+  slug              String   
+  name              String
+  userOrganizations UserOrganization[]
+  entities          Entity[]
+  chapters          Chapter[]
+  steps             Step[]
+  todos             Todo[]
+  createdByUserId   String
+  createdBy         User               @relation(fields: [createdByUserId], references: [id])
+  EntityGroup       EntityGroup[]
+}
 
-model Todo {
-  id        String   @id @default(uuid())
-  cmsId     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  title     String
-  body      String
-  
-  chapterId String
-  stepId    String 
-  owner     String   @default("")
-  completed Boolean  @default(false)
+model UserOrganization {
+  userId         String @unique
+  organizationId String
+  role           Role
+  user           User         @relation(fields: [userId], references: [id])
+  organization   Organization @relation(fields: [organizationId], references: [id])
 
+  @@id([userId, organizationId])
+}
 
-  @@unique([id, owner])
+model EntityGroup {
+  id             String           @id @default(uuid())
+  slug          String  @unique
+  name           String
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  entities       Entity[]
+  level          Int @default(100)
 }
 
 model Entity {
-  id        String   @id @default(uuid())
-  cmsId     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  users   UserEntity[]
+  id             String           @id @default(uuid())
+  slug            String  @unique
+  name           String
+  entityGroupId  String
+  entityGroup    EntityGroup   @relation(fields: [entityGroupId], references: [id])
+  userEntities   UserEntity[]
+  chapters       Chapter[]
+  Organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?
 }
 
 model UserEntity {
-  userId    String
-  entityId  String
-  user      User @relation(fields: [userId], references: [id])
-  entity    Entity @relation(fields: [entityId], references: [id])
+  userId   String
+  entityId String
+  user     User   @relation(fields: [userId], references: [id])
+  entity   Entity @relation(fields: [entityId], references: [id])
 
   @@id([userId, entityId])
-  @@index([userId]) // Add an index for userId
-  @@index([entityId]) // Add an index for entityId
+}
+
+model Chapter {
+  id             String           @id @default(uuid())
+  slug        String  
+  title    String
+  entityId String
+  entity   Entity? @relation(fields: [entityId], references: [id])
+  steps    Step[]
+  order          Int @default(100)
+  Organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime?         @updatedAt
+
+}
+
+model Step {
+ id             String           @id @default(uuid())
+  slug        String  
+  title       String
+  description String @db.Text
+  chapterId   String
+  chapter     Chapter @relation(fields: [chapterId], references: [id])
+  todos       Todo[]
+  order          Int @default(100)
+  Organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?
+  videoUrl       String? 
+}
+
+model Todo {
+  id             String           @id @default(uuid())
+  title       String
+  description String
+  stepId      String
+  step        Step      @relation(fields: [stepId], references: [id])
+  userTodos   UserTodo[]
+  Organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?
+}
+
+
+model UserTodo {
+  userId      String
+  todoId      String
+  isCompleted Boolean   @default(false)
+  completedAt DateTime?
+  user        User      @relation(fields: [userId], references: [id])
+  todo        Todo      @relation(fields: [todoId], references: [id])
+
+  @@id([userId, todoId])
+}
+
+enum Role {
+  admin
+  user
 }

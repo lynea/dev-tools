@@ -1,27 +1,48 @@
-import { getTodosForUser } from '@/utils/requests/_requests'
-import { currentUser } from '@clerk/nextjs'
-import { User } from '@clerk/nextjs/dist/types/server'
-import { headers } from 'next/headers'
-import { TodoWrapper } from '../TodoWrapper/TodoWrapper'
+import { auth } from '@clerk/nextjs'
 import Link from 'next/link'
 import { db } from '@/lib/db'
+import { Todo } from '@prisma/client'
+import { TodoWrapper } from '@/components/TodoWrapper/TodoWrapper'
 
 export const TodoList = async () => {
     //get the curent user
-    const user: User | null = await currentUser()
-    const host = headers().get('host')
 
-    const dbUser = await db.user.findFirst({
+    const { userId } = auth()
+
+    //todo fix
+    const hasCompletedAll = false
+
+    if (!userId) return <>no user was found</>
+
+    const todos = await db.todo.findMany({
         where: {
-            id: user?.id,
+            userTodos: {
+                some: {
+                    userId,
+                },
+            },
         },
     })
 
-    const hasCompletedAll = dbUser?.hasCompleted
+    const completedTodos = await db.userTodo.findMany({
+        where: {
+            userId,
+            isCompleted: true,
+        },
+    })
 
-    if (!user) return <>no user was found</>
+    // map the todos check which todos are completed and assign them completed true
 
-    const todos = await getTodosForUser(user.id, host!)
+    const renderTodos: Array<Todo & { completed: boolean }> = todos.map(
+        (todo) => {
+            return {
+                ...todo,
+                completed: completedTodos.some(
+                    (completedTodo) => completedTodo.todoId === todo.id
+                ),
+            }
+        }
+    )
 
     if (!todos?.length) {
         return <p className="text-center text-white">You have no todos yet</p>
@@ -29,10 +50,10 @@ export const TodoList = async () => {
 
     return (
         <div className="flex flex-col">
-            <TodoWrapper userId={user.id} todos={todos} withFilter withLink />
+            <TodoWrapper todos={renderTodos} withFilter />
             {hasCompletedAll ? (
                 <Link href={`/onboarding/overview`}>
-                    <button className="mt-9 w-full rounded-md bg-pink-600 px-6 py-3 text-xl font-bold text-white">
+                    <button className="mt-9 w-full rounded-md bg-pink px-6 py-3 text-xl font-bold text-white">
                         {' '}
                         Overview
                     </button>
