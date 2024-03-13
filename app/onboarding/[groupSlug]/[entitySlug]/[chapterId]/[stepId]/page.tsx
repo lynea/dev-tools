@@ -11,7 +11,7 @@ export default async function Page({
 }: {
     params: CompanyStepPageParams
 }) {
-    const entityWithChapters = await prisma.entity.findUnique({
+    const entityWithChapters = await db.entity.findUnique({
         where: {
             slug: params.entitySlug,
         },
