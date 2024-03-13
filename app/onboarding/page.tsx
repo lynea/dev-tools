@@ -88,7 +88,7 @@ export default async function Page() {
         <section className="flex w-full flex-col items-center justify-center ">
             <Toast />
             <Title size="xl"> My onboarding </Title>
-            <h2 className="mt-6 mb-2 text-4xl font-bold text-white">
+            <h2 className="mb-2 mt-6 text-4xl font-bold text-foreground">
                 {' '}
                 Welcome {user?.firstName}!{' '}
             </h2>

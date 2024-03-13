@@ -28,7 +28,7 @@ export default function OnboardingLayout({
                     </>
                 }
             />
-            <main className="  mt-14 flex  h-full min-h-screen w-3/5  flex-col items-center justify-center ">
+            <main className="   flex  h-full min-h-screen w-3/5  flex-col items-center justify-center ">
                 {children}
             </main>
             <footer className="white mt-10 flex w-full items-center justify-center py-5 text-foreground  ">

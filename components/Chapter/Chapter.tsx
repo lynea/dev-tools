@@ -256,7 +256,7 @@ export const Chapter = async ({
                     </div>
                 </div>
 
-                <div className="mt-4 ml-6 flex  flex-col items-center ">
+                <div className="ml-6 mt-4 flex  flex-col items-center ">
                     <ol className="w-72 space-y-4 ">
                         {chapters?.map((chapter, index) => (
                             <li key={chapter?.id} className="cursor-pointer">
