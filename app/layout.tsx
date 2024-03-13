@@ -47,7 +47,7 @@ export default function RootLayout({
                             <Flowbite theme={{ theme: customTheme }}>
                                 <ThemeProvider
                                     attribute="class"
-                                    defaultTheme="system"
+                                    defaultTheme="dark"
                                     enableSystem
                                     disableTransitionOnChange
                                 >

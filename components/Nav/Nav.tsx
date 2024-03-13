@@ -28,7 +28,7 @@ export const Nav: FunctionComponent<NavProps> = ({
             <NavigationMenuList className="flex w-screen justify-between px-5">
                 <span className="flex items-center gap-3">
                     <NavigationMenuItem>
-                        <Link href="/account" legacyBehavior passHref>
+                        <Link href="/onboarding" legacyBehavior passHref>
                             <NavigationMenuLink
                                 className={navigationMenuTriggerStyle()}
                             >

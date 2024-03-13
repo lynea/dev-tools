@@ -92,13 +92,13 @@ export default async function Page() {
                 {' '}
                 Welcome {user?.firstName}!{' '}
             </h2>
-            <h2 className="text-3xl font-bold text-white">
+            <h2 className="text-3xl font-bold text-foreground">
                 {`And congrats on your first day at ${organizationInfo?.name}!`}
             </h2>
             <div className="mb-12 h-96">
                 <TSGScene />
             </div>
-            <p className="mt-20  text-2xl text-white">
+            <p className="mt-20  text-2xl text-foreground">
                 {' '}
                 We will get you up to speed in no time{' '}
             </p>
