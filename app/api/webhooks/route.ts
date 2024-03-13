@@ -158,18 +158,20 @@ export async function POST(req: Request) {
 
             console.log('todos:', todos.length)
 
-            //add them to the user
-            const todosForUser = await db.userTodo.createMany({
-                data: todos.map((todo) => {
-                    return {
-                        userId: bodyObject.data.id,
-                        todoId: todo.id,
-                        isCompleted: false,
-                    }
-                }),
-            })
+            if (todos.length > 0) {
+                //add them to the user
+                const todosForUser = await db.userTodo.createMany({
+                    data: todos.map((todo) => {
+                        return {
+                            userId: bodyObject.data.id,
+                            todoId: todo.id,
+                            isCompleted: false,
+                        }
+                    }),
+                })
 
-            console.log('todosForUser:', todosForUser.count)
+                console.log('todosForUser:', todosForUser.count)
+            }
 
             break
 
