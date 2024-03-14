@@ -30,7 +30,12 @@ export default async function Page() {
 
     if (!allSteps.length) return <p>No groups found</p>
 
-    const properties = Object?.keys(allSteps[0])
+    const properties = Object?.keys(allSteps[0]).filter(
+        (property) =>
+            property !== 'organizationId' &&
+            property !== 'createdAt' &&
+            property !== 'updatedAt'
+    )
 
     return (
         <>
@@ -51,9 +56,9 @@ export default async function Page() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {allSteps.map((group) => {
+                            {allSteps.map((step) => {
                                 return (
-                                    <TableRow key={group.id}>
+                                    <TableRow key={step.id}>
                                         {properties.map((property, index) => {
                                             return (
                                                 <TableCell key={index}>
@@ -64,7 +69,7 @@ export default async function Page() {
                                         })}
                                         <TableCell>
                                             <Link
-                                                href={`/account/entity-group/${group.id}`}
+                                                href={`/account/step/${step.id}`}
                                             >
                                                 <Button
                                                     variant="outline"

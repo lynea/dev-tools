@@ -22,6 +22,7 @@ import { BackButton } from '../StepBackButton/BackButton'
 
 import { db } from '@/lib/db'
 import { Progress } from '../ui/progress'
+import { Button } from '../ui/button'
 
 const getFirstStepId = (chapter: IChapter & { steps: Step[] }) => {
     const sortedSteps = [...chapter.steps]
@@ -46,8 +47,6 @@ export const Chapter = async ({
             stepId: stepId,
         },
     })
-
-    console.log('allTodos: ', allTodos)
 
     const completedTodos = await db.todo.findMany({
         where: {
@@ -106,19 +105,17 @@ export const Chapter = async ({
         (step) => step?.id === stepId
     )
 
-    console.log('indexOfCurrentStep: ', indexOfCurrentStep)
-
     if (indexOfCurrentStep! < 0) return <>no step was found matching this id</>
 
     const currentStepInfo = sortedSteps?.at(indexOfCurrentStep!)
 
     const isLastChapter = indexOfCurrentChapter + 1 === totalChapters
-
-    const canDecrementStep = true
-    // indexOfCurrentStep !== 0 && indexOfCurrentChapter !== 0
+    const isFirstChapter = indexOfCurrentChapter === 0
 
     const isLastStepInChapter = indexOfCurrentStep! + 1 === totalSteps
     const isfirstStepInChapter = indexOfCurrentStep === 0
+
+    const canDecrementStep = !isFirstChapter && !isfirstStepInChapter
 
     //should accept a item array
     // and the path to route to when no more items are left
@@ -129,7 +126,6 @@ export const Chapter = async ({
     const generateNextLink = (): string => {
         if (isLastStepInChapter) {
             if (isLastChapter) {
-                console.log('last chapter', chapterCompletedLink)
                 return chapterCompletedLink
             }
 
@@ -157,18 +153,26 @@ export const Chapter = async ({
 
     const generatePreviousLink = (): string => {
         if (isfirstStepInChapter) {
-            const stepsofPreviousChapter = previousChapterInfo?.steps
+            if (isFirstChapter) {
+                //you cannot go back from the first chapter
+                return '#'
+            }
 
-            const lastStepOfPreviousChapter = stepsofPreviousChapter?.at(0)
+            //last step of previous chapter
+            const lastStepId = previousChapterInfo?.steps?.at(-0)?.id
 
-            if (!lastStepOfPreviousChapter)
-                throw new Error('could not generate previous link')
+            //previous chapter id
+            const id = previousChapterInfo?.id
 
-            return decrementChapter(
-                basePath,
-                previousChapterInfo?.id!,
-                lastStepOfPreviousChapter.id
-            )
+            if (!id || !lastStepId)
+                throw new Error(
+                    `could not generate next link for chapter ${id} and first step ${lastStepId}`
+                )
+
+            return decrementChapter(basePath, {
+                id,
+                lastStepId,
+            })
         }
 
         return decrementStep(
@@ -230,7 +234,25 @@ export const Chapter = async ({
                     ) : null}
 
                     <div className="mt-8 flex flex-col items-center justify-center gap-10 lg:flex-row">
-                        {canDecrementStep ? <BackButton /> : null}
+                        <Link
+                            href={generatePreviousLink()}
+                            className={
+                                !canDecrementStep ? 'pointer-events-none ' : ''
+                            }
+                            aria-disabled={!canDecrementStep}
+                            tabIndex={!canDecrementStep ? -1 : undefined}
+                        >
+                            <Button
+                                className={
+                                    !canDecrementStep
+                                        ? 'cursor-not-allowed'
+                                        : ''
+                                }
+                                disabled={!canDecrementStep}
+                            >
+                                back
+                            </Button>
+                        </Link>
 
                         <div className="order-2 flex w-full flex-col">
                             <p className="mb-1 justify-between text-center  text-lg text-white ">
@@ -249,10 +271,9 @@ export const Chapter = async ({
                             />
                         </div>
 
-                        <StepButton
-                            route={generateNextLink()}
-                            todosToBeAdded={renderTodos}
-                        />
+                        <Link href={generateNextLink()} className="order-3">
+                            <Button>Next</Button>
+                        </Link>
                     </div>
                 </div>
 
@@ -262,10 +283,10 @@ export const Chapter = async ({
                             <li key={chapter?.id} className="cursor-pointer">
                                 <Link
                                     className={
-                                        index < indexOfCurrentChapter ||
+                                        index > indexOfCurrentChapter ||
                                         hasCompletedAll
                                             ? ''
-                                            : 'pointer-events-none '
+                                            : 'pointer-events-none cursor-not-allowed '
                                     }
                                     href={`${basePath}/${chapter?.id}/${
                                         chapter ? getFirstStepId(chapter) : ''
@@ -275,7 +296,7 @@ export const Chapter = async ({
                                         className={clsx(
                                             'w-full rounded-lg  border border-white p-4  ',
                                             {
-                                                'bg-gray-100 text-main-200  ':
+                                                'cursor-not-allowed bg-gray-100 text-main-200  ':
                                                     index >
                                                         indexOfCurrentChapter &&
                                                     !hasCompletedAll,

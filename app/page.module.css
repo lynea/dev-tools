@@ -39,10 +39,6 @@
     font-family: var(--font-mono);
 }
 
-code {
-    color: white !important;
-}
-
 .grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(33%, auto));

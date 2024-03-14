@@ -12,9 +12,7 @@ export const VideoPlayer = (props) => {
         // Ensure Video.js player is only initialized once
         if (!playerRef.current) {
             //@ts-ignore
-            playerRef.current = videojs(videoRef.current, props, () => {
-                console.log('player is ready')
-            })
+            playerRef.current = videojs(videoRef.current, props, () => {})
         }
     }, [props])
 

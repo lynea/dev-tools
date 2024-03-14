@@ -44,8 +44,6 @@ export const EntitySelect: FunctionComponent<EntitySelectProps> = ({
         <>
             <div className=" mb-12 flex justify-between ">
                 {entities.map((entity) => {
-                    console.log('entity: ', entity)
-
                     return (
                         <SqaureButton
                             disabled={!entity.firstStepId}

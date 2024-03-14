@@ -3,6 +3,7 @@
         "target": "ES2015",
         "lib": ["dom", "dom.iterable", "esnext"],
         "allowJs": true,
+        "allowSyntheticDefaultImports": true,
         "skipLibCheck": true,
         "strict": true,
         "forceConsistentCasingInFileNames": true,

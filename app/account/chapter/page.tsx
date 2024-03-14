@@ -24,17 +24,18 @@ export default async function Page() {
             organizationId: orgId,
         },
         orderBy: {
-            order: 'asc',
+            createdAt: 'desc',
         },
     })
-
-    console.log('all!', allchapters)
 
     if (allchapters?.length < 1) return <p>No groups found</p>
 
     //remove organizationId from the list of properties
     const properties = Object?.keys(allchapters[0]).filter(
-        (property) => property !== 'organizationId'
+        (property) =>
+            property !== 'organizationId' &&
+            property !== 'createdAt' &&
+            property !== 'updatedAt'
     )
 
     return (

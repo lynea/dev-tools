@@ -27,7 +27,12 @@ export default async function Page() {
 
     if (!allEntities.length) return <p>No entities found</p>
 
-    const properties = Object?.keys(allEntities[0])
+    const properties = Object?.keys(allEntities[0]).filter(
+        (property) =>
+            property !== 'organizationId' &&
+            property !== 'createdAt' &&
+            property !== 'updatedAt'
+    )
 
     return (
         <>

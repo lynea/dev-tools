@@ -11,8 +11,6 @@ export default async function Page() {
 
     const { orgId, orgRole } = auth()
 
-    console.log(user?.firstName)
-
     if (!orgId) throw new Error('no orgId found create one ')
     if (!user) throw new Error('no user found')
 
@@ -46,9 +44,7 @@ export default async function Page() {
             </>
         )
 
-    if (!dbUser.startedAt && organizationInfo.todos.length > 0) {
-        console.log('user has not started yet, setting start time')
-
+    if (!dbUser.startedAt) {
         await db.user.update({
             where: {
                 id: user.id,

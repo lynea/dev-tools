@@ -43,13 +43,6 @@ export default async function Page() {
         )
     }
 
-    //  properties = Object?.keys(lastChapters[0]).filter(
-    //     (property) =>
-    //         property !== 'organizationId' &&
-    //         property !== 'createdAt' &&
-    //         property !== 'updatedAt'
-    // )
-
     const entities = await db.entity.findMany({
         where: {
             organizationId: orgId,

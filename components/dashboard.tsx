@@ -17,23 +17,49 @@ import {
     TableBody,
     Table,
 } from '@/components/ui/table'
+import { FunctionComponent } from 'react'
+import { User } from '@prisma/client'
+import dayjs from 'dayjs'
 
-export function Dashboard() {
+type DashboardProps = {
+    users: User[]
+}
+
+export const Dashboard: FunctionComponent<DashboardProps> = ({ users }) => {
+    const started = users?.filter((user) => user.startedAt !== null).length
+    const finished = users?.filter((user) => user.finishedAt !== null).length
+
     return (
         <>
             <div className="grid gap-4 md:grid-cols-2">
                 <Card>
-                    <CardContent className="flex flex-col gap-1">
-                        <CardTitle className="mt-2 text-sm font-semibold tracking-wide">
-                            Onboarded Developers
+                    <CardContent className="item flex h-full flex-col items-center justify-center">
+                        <CardTitle className="my-2 text-sm font-semibold tracking-wide">
+                            Started onboarding
                         </CardTitle>
-                        <BarChart className="h-[150px]" />
-                        <CardTitle className="text-2xl font-bold">
-                            1,234
-                        </CardTitle>
+                        <p className="text-9xl"> {started} </p>
                     </CardContent>
                 </Card>
                 <Card>
+                    <CardContent className="item flex h-full flex-col items-center justify-center">
+                        <CardTitle className="my-2 text-sm font-semibold tracking-wide">
+                            Finished onboarding
+                        </CardTitle>
+                        <p className="text-9xl"> {finished} </p>
+                    </CardContent>
+                </Card>
+                {/* <Card>
+                    <CardContent className="flex flex-col gap-1">
+                        <CardTitle className="my-2 text-sm font-semibold tracking-wide">
+                            Completed onboarding
+                        </CardTitle>
+                        <BarChart className="h-[150px]" />
+                        <CardTitle className="text-2xl font-bold">
+                            {stats?.started}
+                        </CardTitle>
+                    </CardContent>
+                </Card> */}
+                {/* <Card>
                     <CardContent className="mt-2 flex flex-col gap-1">
                         <CardTitle className="text-sm font-semibold tracking-wide">
                             Active Projects
@@ -41,10 +67,10 @@ export function Dashboard() {
                         <FilledtimeseriesChart className="h-[150px]" />
                         <CardTitle className="text-2xl font-bold">56</CardTitle>
                     </CardContent>
-                </Card>
+                </Card> */}
                 <Card>
                     <CardContent className="flex flex-col gap-1">
-                        <CardTitle className="mt-2 text-sm font-semibold tracking-wide">
+                        <CardTitle className="my-2 text-sm font-semibold tracking-wide">
                             Average Onboarding Time
                         </CardTitle>
                         <LineChart className="h-[150px]" />
@@ -63,84 +89,40 @@ export function Dashboard() {
                                 Email
                             </TableHead>
                             <TableHead className="hidden md:table-cell">
-                                Onboarding Date
+                                Start date
                             </TableHead>
                             <TableHead className="hidden md:table-cell">
-                                Status
+                                completed
                             </TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        <TableRow>
-                            <TableCell className="font-medium">
-                                Alice Johnson
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                                alice@example.com
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                                2023-08-15
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                                Completed
-                            </TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell className="font-medium">
-                                Bob Smith
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                                bob@example.com
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                                2023-08-15
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                                Completed
-                            </TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell className="font-medium">
-                                Eve Wilson
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                                eve@example.com
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                                2023-08-15
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                                Completed
-                            </TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell className="font-medium">
-                                Max Brown
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                                max@example.com
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                                2023-08-15
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                                Active
-                            </TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell className="font-medium">
-                                Sara Lee
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                                sara@example.com
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                                2023-08-15
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                                Active
-                            </TableCell>
-                        </TableRow>
+                        {users?.map((user) => {
+                            return (
+                                <TableRow key={user.id}>
+                                    <TableCell className="font-medium">
+                                        {user.id}
+                                    </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                        not implemented
+                                    </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                        {user?.startedAt
+                                            ? dayjs(user.startedAt).format(
+                                                  'DD/MM/YYYY'
+                                              )
+                                            : 'not started'}
+                                    </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                        {user?.finishedAt
+                                            ? dayjs(user.finishedAt).format(
+                                                  'DD/MM/YYYY'
+                                              )
+                                            : 'not completed'}
+                                    </TableCell>
+                                </TableRow>
+                            )
+                        })}
                     </TableBody>
                 </Table>
             </Card>
@@ -297,7 +279,7 @@ function LineChart(props: { className: string }) {
                     {
                         id: 'Desktop',
                         data: [
-                            { x: 'Jan', y: 43 },
+                            { x: 'Jan', y: 0 },
                             { x: 'Feb', y: 137 },
                             { x: 'Mar', y: 61 },
                             { x: 'Apr', y: 145 },

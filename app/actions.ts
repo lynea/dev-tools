@@ -205,6 +205,7 @@ export async function createChapter(data: z.infer<typeof chapterSchema>) {
 
     console.log('created chapter:', created)
 }
+
 export async function createStep(data: z.infer<typeof stepSchema>) {
     const { userId, orgId } = auth()
 
@@ -268,4 +269,26 @@ export async function createTodo(data: z.infer<typeof todoSchema>) {
     })
 
     console.log('created todo:', created)
+}
+
+export async function setUserCompleted() {
+    const { userId } = auth()
+
+    if (!userId) {
+        throw new Error('You must be signed in to perform this action')
+    }
+
+    try {
+        const user = await db.user.update({
+            where: {
+                id: userId,
+            },
+            data: {
+                finishedAt: new Date(),
+            },
+        })
+        return user
+    } catch (error) {
+        throw new Error('could not set user as complete')
+    }
 }

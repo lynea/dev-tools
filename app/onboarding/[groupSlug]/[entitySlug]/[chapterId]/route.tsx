@@ -14,7 +14,6 @@ export async function GET(
         }
     }
 ) {
-    console.log('hitting route handler ')
     const client = getClient()
 
     //get the chapter and then its first step

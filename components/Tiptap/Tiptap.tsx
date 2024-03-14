@@ -24,7 +24,6 @@ export const Tiptap: FunctionComponent<TiptapProps> = ({
         },
         onUpdate: ({ editor }) => {
             onChange(editor.getHTML())
-            console.log('editor', editor.getHTML())
         },
     })
 

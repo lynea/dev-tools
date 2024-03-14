@@ -20,8 +20,7 @@ const incrementChapter = (
 
 const decrementChapter = (
     basePath: string,
-    prevChapter: string,
-    lastStepOfPreviousChapter: string
-) => `${basePath}/${prevChapter}/${lastStepOfPreviousChapter}`
+    prevChapter: { id: string; lastStepId: string }
+) => `${basePath}/${prevChapter.id}/${prevChapter.lastStepId}`
 
 export { incrementStep, decrementStep, incrementChapter, decrementChapter }

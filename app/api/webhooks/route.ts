@@ -54,7 +54,6 @@ export async function POST(req: Request) {
     const bodyObject = JSON.parse(body)
 
     const createUser = async (userId: string) => {
-        console.log('userid sdsdsds', userId)
         const res = await db.user.create({
             data: {
                 id: userId,
