@@ -1,9 +1,6 @@
 import { authMiddleware } from '@clerk/nextjs'
 
 export default authMiddleware({
-    afterAuth: async (req, res, session) => {
-        console.log('User has been authenticated')
-    },
     publicRoutes: [
         '/api/todos/(.*)',
         '/api/webhooks(.*)',
