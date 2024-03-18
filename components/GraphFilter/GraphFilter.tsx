@@ -32,7 +32,7 @@ export const GraphFilter: FunctionComponent<GraphFilterProps> = ({
 
     return (
         <div>
-            <h2 className="mb-5 text-2xl font-bold text-white opacity-70">
+            <h2 className="mb-5 text-2xl font-bold text-foreground opacity-70">
                 {firstRun?.name} {secondRun?.name ? `vs ${secondRun.name}` : ''}
             </h2>
             <input
@@ -41,7 +41,7 @@ export const GraphFilter: FunctionComponent<GraphFilterProps> = ({
                 className="mb-5"
                 onChange={() => setShouldCompare(!shouldCompare)}
             />
-            <label className="text-white" htmlFor="compare">
+            <label className="text-foreground" htmlFor="compare">
                 {' '}
                 compare to previous run
             </label>{' '}
@@ -54,14 +54,14 @@ export const GraphFilter: FunctionComponent<GraphFilterProps> = ({
                 scoreRuns={[firstRun?.scores ?? [], secondRun?.scores ?? []]}
             />
             <div className="mt-6 flex w-full flex-col items-center ">
-                <p className="text-white"> filter by team</p>
+                <p className="text-foreground"> filter by team</p>
                 <div className="mt-2 flex justify-center ">
                     {filterValues?.map((filterValue, index) => (
                         <button
                             key={filterValue + index}
                             className={`mr-5  rounded-sm px-2 py-1 font-bold ${
                                 filterValue && filter.includes(filterValue)
-                                    ? 'bg-pink text-white'
+                                    ? 'bg-pink text-foreground'
                                     : 'bg-white text-purple-200'
                             } `}
                             onClick={() => handleTeamFilter(filterValue!!)}

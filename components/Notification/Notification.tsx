@@ -5,5 +5,5 @@ type NotificationProps = {
 }
 
 export const Alert: FunctionComponent<NotificationProps> = ({ children }) => (
-    <div className="bg-red rounded-md p-4 text-white ">{children}</div>
+    <div className="rounded-md bg-red p-4 text-foreground ">{children}</div>
 )

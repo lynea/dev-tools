@@ -82,7 +82,7 @@ export default async function Page({
     const nextGroup = allGroups[indexOfCurrentGroup + 1]
 
     if (!currentEntityInfo)
-        return <h2 className="text-white">no entity found with that id</h2>
+        return <h2 className="text-foreground">no entity found with that id</h2>
 
     //we should get all entity groups and all enties in them
 
@@ -138,7 +138,7 @@ export default async function Page({
                 </Table>
             </section>
             <section className="mt-5 w-full ">
-                <h2 className="mb-4 mt-4 text-4xl font-bold text-white">
+                <h2 className="mb-4 mt-4 text-4xl font-bold text-foreground">
                     {nextGroup?.name}
                 </h2>
                 {nextGroup?.entities?.map((entity, index) => (

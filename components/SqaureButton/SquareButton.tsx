@@ -20,7 +20,7 @@ export const SqaureButton: FunctionComponent<SquareButtonProps> = ({
                 {
                     'bg-gradient-to-t from-gradientEnd to-gradientStart text-main-200  ':
                         active && !disabled,
-                    'border-pink text-main-200 dark:text-white':
+                    'border-pink text-main-200 dark:text-foreground':
                         !active && !disabled,
                     'cursor-not-allowed border-gray-500 text-gray-500':
                         disabled,

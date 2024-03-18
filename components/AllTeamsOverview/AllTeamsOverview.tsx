@@ -60,7 +60,7 @@ export const AllTeamsOverview: FunctionComponent<AllTeamsOverviewProps> = ({
 
     return (
         <div>
-            <h2 className="mb-5 text-2xl font-bold text-white opacity-70">
+            <h2 className="mb-5 text-2xl font-bold text-foreground opacity-70">
                 {lastResults.name}{' '}
                 {secondLastResults ? `vs ${secondLastResults.name}` : ''}
             </h2>
@@ -70,7 +70,7 @@ export const AllTeamsOverview: FunctionComponent<AllTeamsOverviewProps> = ({
                 className="mb-5"
                 onChange={() => setShouldCompare(!shouldCompare)}
             />
-            <label className="text-white" htmlFor="compare">
+            <label className="text-foreground" htmlFor="compare">
                 {' '}
                 compare to previous run
             </label>{' '}
@@ -81,7 +81,7 @@ export const AllTeamsOverview: FunctionComponent<AllTeamsOverviewProps> = ({
             ) : null}
             <Graph scoreRuns={[lastScores, secondLastScores]} />
             <div className="mt-6 flex w-full flex-col items-center ">
-                <p className="text-white"> filter by team</p>
+                <p className="text-foreground"> filter by team</p>
                 <div className="mt-2 flex justify-center ">
                     {teamNames.length &&
                         teamNames?.map((teamName, index) => (
@@ -91,7 +91,7 @@ export const AllTeamsOverview: FunctionComponent<AllTeamsOverviewProps> = ({
                                     (teamName &&
                                         selectedTeams.includes(teamName)) ||
                                     selectedTeams.length < 1
-                                        ? 'bg-pink text-white'
+                                        ? 'bg-pink text-foreground'
                                         : 'bg-white text-purple-200'
                                 } `}
                                 onClick={() => handleTeamFilter(teamName!!)}

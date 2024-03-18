@@ -8,7 +8,7 @@ export const LinkGenerator: FunctionComponent = () => {
 
     return (
         <div className="flex w-full flex-col items-center justify-center">
-            <label htmlFor="fname" className="mb-3 text-white">
+            <label htmlFor="fname" className="mb-3 text-foreground">
                 First name:
             </label>
             <input
@@ -18,7 +18,7 @@ export const LinkGenerator: FunctionComponent = () => {
                 onChange={(e) => setName(e.target.value.trim())}
             />
 
-            <label htmlFor="team" className="my-3 text-white ">
+            <label htmlFor="team" className="my-3 text-foreground ">
                 {' '}
                 which team will he/she join?
             </label>
@@ -34,10 +34,10 @@ export const LinkGenerator: FunctionComponent = () => {
 
             {name?.length && name.length > 0 && team ? (
                 <>
-                    <p className="mt-6 text-white">your link: </p>
+                    <p className="mt-6 text-foreground">your link: </p>
                     <a
                         href={`/onboarding?name=${name}&team=${team}`}
-                        className="text-white"
+                        className="text-foreground"
                     >{`/onboarding?name=${name}&team=${team}`}</a>
                 </>
             ) : null}

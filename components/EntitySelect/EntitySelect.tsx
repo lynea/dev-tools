@@ -69,7 +69,10 @@ export const EntitySelect: FunctionComponent<EntitySelectProps> = ({
                         : 'invisible'
                 }`}
             >
-                <p className="mt-6  text-2xl text-white"> Great choise !</p>
+                <p className="mt-6  text-2xl text-foreground">
+                    {' '}
+                    Great choise !
+                </p>
 
                 <Link href={path}>
                     <button

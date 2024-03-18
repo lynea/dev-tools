@@ -34,7 +34,7 @@ export default async function Page({
     if (!entityGroupInfo?.entities.length)
         return (
             <section className="flex w-full flex-col items-center justify-center ">
-                <p className="mb-5 text-white">
+                <p className="mb-5 text-foreground">
                     There are no entities under this group yet please{' '}
                     {orgRole === 'org:admin'
                         ? 'create one'

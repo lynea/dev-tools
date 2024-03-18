@@ -34,7 +34,7 @@ export default async function Page() {
     if (!organizationInfo)
         return (
             <>
-                <p className="mb-5 text-white">
+                <p className="mb-5 text-foreground">
                     you are not part of any organization yet please create one
                     or ask someone to invite you to one
                 </p>
@@ -67,7 +67,7 @@ export default async function Page() {
     if (!firstEntityGroupForOrg)
         return (
             <section className="flex w-full flex-col items-center justify-center ">
-                <p className="mb-5 text-white">
+                <p className="mb-5 text-foreground">
                     There are no entitygroups under this organization yet please{' '}
                     {orgRole === 'org:admin'
                         ? 'create one'
@@ -84,7 +84,7 @@ export default async function Page() {
         <section className="flex w-full flex-col items-center justify-center ">
             <Toast />
             <Title size="xl"> My onboarding </Title>
-            <h2 className="mb-2 mt-6 text-4xl font-bold text-foreground">
+            <h2 className="mt-6 mb-2 text-4xl font-bold text-foreground">
                 {' '}
                 Welcome {user?.firstName}!{' '}
             </h2>

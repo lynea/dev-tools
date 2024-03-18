@@ -58,7 +58,7 @@ export default async function Page() {
     // return (
     //     <section className="w-full">
     //         <Title> Knowledge overview</Title>
-    //         <h2 className="my-10 text-3xl font-bold text-white">
+    //         <h2 className="my-10 text-3xl font-bold text-foreground">
     //             Teams per context
     //         </h2>
 
