@@ -28,7 +28,7 @@ export const TodoItem: FunctionComponent<TodoItemProps> = ({
                 <FontAwesomeIcon
                     icon={faSpinner}
                     spinPulse
-                    className=" text-white"
+                    className=" text-foreground"
                 />
             ) : (
                 <Checkbox
@@ -55,7 +55,7 @@ export const TodoItem: FunctionComponent<TodoItemProps> = ({
                 >
                     <FontAwesomeIcon
                         icon={faSquareArrowUpRight}
-                        className=" ml-3 text-white"
+                        className=" ml-3 text-foreground"
                     />
                 </Link>
             )} */}

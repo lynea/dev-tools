@@ -14,7 +14,7 @@ export const CompleteButton = ({ children }: { children: ReactNode }) => {
 
     return (
         <button
-            className="mt-28 flex animate-bounce justify-center rounded-md bg-pink px-6 py-3 text-xl font-bold text-white "
+            className="mt-28 flex animate-bounce justify-center rounded-md bg-pink px-6 py-3 text-xl font-bold text-foreground "
             onClick={handeClick}
         >
             {children}

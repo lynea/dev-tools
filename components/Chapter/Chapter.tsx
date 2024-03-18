@@ -233,7 +233,7 @@ export const Chapter = async ({
                         {canDecrementStep ? <BackButton /> : null}
 
                         <div className="order-2 flex w-full flex-col">
-                            <p className="mb-1 justify-between text-center  text-lg text-white ">
+                            <p className="mb-1 justify-between text-center  text-lg text-foreground ">
                                 Step{' '}
                                 <span className="font-bold">
                                     {indexOfCurrentStep! + 1}

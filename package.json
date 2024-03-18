@@ -54,8 +54,6 @@
         "contentful": "^9.3.5",
         "eslint": "8.57.0",
         "eslint-config-next": "^14.1.0",
-        "flowbite": "^1.7.0",
-        "flowbite-react": "^0.7.2",
         "googleapis": "^112.0.0",
         "graphql": "^16.7.1",
         "lottie-react": "^2.4.0",

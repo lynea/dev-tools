@@ -54,7 +54,7 @@ const Toolbar = ({ editor }: Props) => {
                     }}
                     className={
                         editor.isActive('underline')
-                            ? 'rounded-lg bg-sky-700 p-2 text-white'
+                            ? 'rounded-lg bg-sky-700 p-2 text-foreground'
                             : 'text-sky-400'
                     }
                 >

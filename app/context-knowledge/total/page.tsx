@@ -81,7 +81,7 @@ export default async function Page() {
     //         </div>
     //         <section className="w-full">
     //             <Title> Knowledge overview</Title>
-    //             <h2 className="mb-8  text-3xl font-bold text-white">
+    //             <h2 className="mb-8  text-3xl font-bold text-foreground">
     //                 Total score per team
     //             </h2>
 

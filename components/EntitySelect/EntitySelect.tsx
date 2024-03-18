@@ -51,7 +51,7 @@ export const EntitySelect: FunctionComponent<EntitySelectProps> = ({
     if (entities.length < 2 && smallButtonWhenSingleEntity)
         return (
             <button
-                className="mt-9 rounded-md bg-pink px-6 py-3 text-xl font-bold text-white"
+                className="mt-9 rounded-md bg-pink px-6 py-3 text-xl font-bold text-foreground"
                 onClick={navigateToFirstStep}
             >
                 {' '}
@@ -90,10 +90,13 @@ export const EntitySelect: FunctionComponent<EntitySelectProps> = ({
                         : 'invisible'
                 }`}
             >
-                <p className="mt-6  text-2xl text-white"> Great choise !</p>
+                <p className="mt-6  text-2xl text-foreground">
+                    {' '}
+                    Great choise !
+                </p>
 
                 <button
-                    className={`mt-9 rounded-md bg-pink px-6 py-3 text-xl font-bold text-white ${
+                    className={`mt-9 rounded-md bg-pink px-6 py-3 text-xl font-bold text-foreground ${
                         loading ? '' : 'animate-bounce'
                     }  `}
                     onClick={navigateToFirstStep}

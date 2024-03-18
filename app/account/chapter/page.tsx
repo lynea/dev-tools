@@ -34,7 +34,10 @@ export default async function Page() {
 
     //remove organizationId from the list of properties
     const properties = Object?.keys(allchapters[0]).filter(
-        (property) => property !== 'organizationId'
+        (property) =>
+            property !== 'organizationId' &&
+            property !== 'createdAt' &&
+            property !== 'updatedAt'
     )
 
     return (

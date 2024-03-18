@@ -2,7 +2,7 @@ import { auth } from '@clerk/nextjs'
 import { Title } from '@/components/Title/Title'
 import { db } from '@/lib/db'
 import { CompletedPageParams } from '@/app/onboarding/types/pageProps'
-import { Card } from 'flowbite-react'
+import { Card } from '@/components/ui/card'
 
 export default async function Page({
     params,
