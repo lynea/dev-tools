@@ -25,6 +25,7 @@ export default async function Page() {
                 <div className="flex flex-nowrap gap-6">
                     {allDataForOrg.map((group) => (
                         <Suspense
+                            key={group.id}
                             fallback={
                                 <Skeleton className="h-full w-[30rem] rounded-xl" />
                             }

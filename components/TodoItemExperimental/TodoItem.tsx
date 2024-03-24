@@ -1,6 +1,6 @@
 'use client'
 import { FunctionComponent, useTransition } from 'react'
-import { updateTodo } from '../../app/actions'
+import { updateTodoStatus } from '../../app/actions'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { RenderTodo } from '../TodoWrapper/TodoWrapper'
@@ -36,7 +36,9 @@ export const TodoItem: FunctionComponent<TodoItemProps> = ({
                     disabled={isPending}
                     checked={todo?.completed}
                     onClick={() =>
-                        startTransition(() => updateTodo(todo, todo.completed))
+                        startTransition(() =>
+                            updateTodoStatus(todo, todo.completed)
+                        )
                     }
                 />
             )}

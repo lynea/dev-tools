@@ -1,14 +1,10 @@
 import { auth } from '@clerk/nextjs'
 import { Title } from '@/components/Title/Title'
 import { db } from '@/lib/db'
-import { CompletedPageParams } from '@/app/onboarding/types/pageProps'
-import { Card } from '@/components/ui/card'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
 
-export default async function Page({
-    params,
-}: {
-    params: CompletedPageParams
-}) {
+export default async function Page() {
     const userInfo = auth()
 
     const { orgId } = userInfo
@@ -38,15 +34,16 @@ export default async function Page({
                         </h2>
                         <div className=" mb-10 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
                             {groupWithEntities.entities.map((entity, index) => (
-                                <Card
+                                <Link
                                     key={entity?.name! + index}
                                     href={`/onboarding/overview/${groupWithEntities.id}/${entity.id}`}
-                                    className=" relative max-w-md bg-slate-50 "
                                 >
-                                    <h5 className="text-2xl font-bold tracking-tight text-main-200  ">
-                                        {entity?.name}
-                                    </h5>
-                                </Card>
+                                    <Button className="  flex max-w-md items-center justify-center bg-foreground px-16 py-10 text-background hover:bg-gradient-to-t hover:from-gradientEnd hover:to-gradientStart ">
+                                        <h5 className="text-2xl font-bold tracking-tight ">
+                                            {entity?.name}
+                                        </h5>
+                                    </Button>
+                                </Link>
                             ))}
                         </div>
                     </>

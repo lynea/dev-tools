@@ -9,12 +9,12 @@ import Link from 'next/link'
 export default async function Page() {
     const user = await currentUser()
 
-    const { orgId, orgRole } = auth()
+    const { orgId, orgRole, userId } = auth()
 
-    console.log(user?.firstName)
+    console.log(user?.id, orgId, orgRole)
 
-    if (!orgId) throw new Error('no orgId found create one ')
     if (!user) throw new Error('no user found')
+    if (!orgId) throw new Error('no orgId found create one ')
 
     const organizationInfo = await db.organization.findFirst({
         where: {
@@ -27,7 +27,7 @@ export default async function Page() {
 
     const dbUser = await db.user.findFirst({
         where: {
-            id: user.id,
+            id: userId,
         },
     })
 
@@ -46,12 +46,10 @@ export default async function Page() {
             </>
         )
 
-    if (!dbUser.startedAt && organizationInfo.todos.length > 0) {
-        console.log('user has not started yet, setting start time')
-
+    if (!dbUser.startedAt) {
         await db.user.update({
             where: {
-                id: user.id,
+                id: userId,
             },
             data: {
                 startedAt: new Date(),

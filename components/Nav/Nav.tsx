@@ -24,7 +24,7 @@ export const Nav: FunctionComponent<NavProps> = ({
     isAdmin,
 }) => {
     return (
-        <NavigationMenu className="inline-block  py-4">
+        <NavigationMenu className="  inline-block py-4">
             <NavigationMenuList className="flex w-screen justify-between px-5">
                 <span className="flex items-center gap-3">
                     <NavigationMenuItem>

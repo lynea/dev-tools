@@ -37,8 +37,6 @@ export default async function Page({
     const sortedChapters =
         entityWithChapters?.chapters?.sort((a, b) => a.order - b.order) ?? []
 
-    console.log('slug', params.groupSlug)
-
     const currentEntityGroup = await db.entityGroup.findUnique({
         where: {
             slug: params.groupSlug,

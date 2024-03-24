@@ -1,6 +1,11 @@
 import { db } from '@/lib/db'
 import { EntityForm } from './EntityForm'
 import { auth } from '@clerk/nextjs'
+import { Separator } from '@/components/ui/separator'
+
+import { Suspense } from 'react'
+import { Skeleton } from '@/components/ui/skeleton'
+import { EntityTable } from '@/components/EntityTable/EntityTable'
 
 export default async function Page() {
     const { orgId } = auth()
@@ -13,5 +18,15 @@ export default async function Page() {
         },
     })
 
-    return <EntityForm entityGroups={entityGroups} />
+    return (
+        <div>
+            <EntityForm entityGroups={entityGroups} />
+            <Separator className="my-16" />
+            <Suspense
+                fallback={<Skeleton className="mt-6 h-20 w-full rounded-xl" />}
+            >
+                <EntityTable limit={5} />
+            </Suspense>
+        </div>
+    )
 }

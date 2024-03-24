@@ -85,8 +85,6 @@ export default async function Page({
         const formattedEntities: Entities = entities.map((entity) => {
             //get the first chapter of the entity
 
-            console.log('entity: ', entity)
-
             return {
                 firstChapterId: entity.firstChapter?.id ?? '',
                 firstStepId: entity.firstChapter?.steps[0]?.id ?? '',

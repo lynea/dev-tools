@@ -21,7 +21,7 @@ import {
 } from '@/components/ui/select'
 import { todoSchema } from '@/lib/schema/entityGroup.schema'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Step } from '@prisma/client'
+import { Step, Todo } from '@prisma/client'
 import { ReloadIcon } from '@radix-ui/react-icons'
 
 import { useForm } from 'react-hook-form'

@@ -37,8 +37,6 @@ export const Player = ({ youtubeId }: { youtubeId: string }) => {
         ],
     }
 
-    console.log('settings', settings)
-
     useEffect(() => {
         if (videoNode.current && !initialized.current) {
             initialized.current = true //prevent duplicate initialization
@@ -46,9 +44,7 @@ export const Player = ({ youtubeId }: { youtubeId: string }) => {
             player.current = videojs(videoNode.current, {
                 ...initialOptions,
                 ...settings,
-            }).ready(function () {
-                console.log('Player Ready')
-            })
+            }).ready(function () {})
         }
         //clear up player on dismount
         return () => {

@@ -18,7 +18,6 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table'
-import { Card } from 'flowbite-react'
 
 export default async function Page({
     params,
@@ -150,14 +149,14 @@ export default async function Page({
                         <Link
                             href={`/onboarding/overview/${nextGroup.id}/${entity?.id}`}
                         >
-                            <Card
+                            <Button
                                 key={entity?.name! + index}
-                                className=" relative max-w-md text-main-200"
+                                className="  flex max-w-md items-center justify-center bg-foreground px-16 py-10 text-background hover:bg-gradient-to-t hover:from-gradientEnd hover:to-gradientStart "
                             >
-                                <h5 className="text-2xl font-bold tracking-tight text-main-200">
+                                <h5 className="text-2xl font-bold tracking-tight ">
                                     {entity?.name}
                                 </h5>
-                            </Card>
+                            </Button>
                         </Link>
                     </div>
                 ))}

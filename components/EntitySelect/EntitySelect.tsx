@@ -1,13 +1,11 @@
 'use client'
 
-import { FunctionComponent, startTransition, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSpinner } from '@fortawesome/free-solid-svg-icons'
+import { FunctionComponent, useState } from 'react'
+
 import { useUser } from '@clerk/clerk-react'
 import { SqaureButton } from '../SqaureButton/SquareButton'
 import { EntitySelectProps } from './types'
-import { toast } from 'sonner'
+import Link from 'next/link'
 
 export const EntitySelect: FunctionComponent<EntitySelectProps> = ({
     entities,
@@ -23,48 +21,26 @@ export const EntitySelect: FunctionComponent<EntitySelectProps> = ({
 
     const [loading, setLoading] = useState<boolean>(false)
 
-    const router = useRouter()
+    const navigationEntity = entities.find(
+        (entity) => entity.id === selectedEntity
+    )
 
-    const navigateToFirstStep = async () => {
-        if (!entities || !selectedEntity || !user) return
+    const path = `${navigationPath}/${selectedEntity}/${navigationEntity?.firstChapterId}/${navigationEntity?.firstStepId}`
 
-        const navigationEntity = entities.find(
-            (entity) => entity.id === selectedEntity
-        )
-
-        if (!navigationEntity?.firstChapterId) {
-            toast('could not find first chapter')
-            return
-        }
-        if (!navigationEntity?.firstStepId) {
-            toast('could not find first step')
-            return
-        }
-
-        setLoading(true)
-
-        const path = `${navigationPath}/${selectedEntity}/${navigationEntity?.firstChapterId}/${navigationEntity?.firstStepId}`
-
-        router.push(path)
-    }
-
-    if (entities.length < 2 && smallButtonWhenSingleEntity)
+    if (navigationEntity && entities?.length < 2 && smallButtonWhenSingleEntity)
         return (
-            <button
-                className="mt-9 rounded-md bg-pink px-6 py-3 text-xl font-bold text-foreground"
-                onClick={navigateToFirstStep}
-            >
-                {' '}
-                Just click here
-            </button>
+            <Link href={path}>
+                <button className="mt-9 rounded-md bg-pink px-6 py-3 text-xl font-bold text-white">
+                    {' '}
+                    Just click here
+                </button>
+            </Link>
         )
 
     return (
         <>
             <div className=" mb-12 flex justify-between ">
                 {entities.map((entity) => {
-                    console.log('entity: ', entity)
-
                     return (
                         <SqaureButton
                             disabled={!entity.firstStepId}
@@ -95,22 +71,15 @@ export const EntitySelect: FunctionComponent<EntitySelectProps> = ({
                     Great choise !
                 </p>
 
-                <button
-                    className={`mt-9 rounded-md bg-pink px-6 py-3 text-xl font-bold text-foreground ${
-                        loading ? '' : 'animate-bounce'
-                    }  `}
-                    onClick={navigateToFirstStep}
-                    disabled={loading}
-                >
-                    {loading ? (
-                        <FontAwesomeIcon
-                            icon={faSpinner}
-                            className="mr-4 animate-spin"
-                        />
-                    ) : null}
-
-                    {loading ? 'loading...' : 'i am ready'}
-                </button>
+                <Link href={path}>
+                    <button
+                        className={`mt-9 rounded-md bg-pink px-6 py-3 text-xl font-bold text-white ${
+                            loading ? '' : 'animate-bounce'
+                        }  `}
+                    >
+                        i am ready
+                    </button>
+                </Link>
             </div>
         </>
     )

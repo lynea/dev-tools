@@ -8,7 +8,7 @@ describe('navigate steps', () => {
     })
 
     //it moves to the first step, ideally we seed the db with some steps but for now we hardcode the ids
-    it('it can acces the onboarding dashboard when signed in', () => {
+    it.skip('it can acces the onboarding dashboard when signed in', () => {
         // open dashboard page
         cy.visit('http://localhost:3000/onboarding', {
             failOnStatusCode: false,

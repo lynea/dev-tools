@@ -1,5 +1,6 @@
 'use client'
 
+import { setUserCompleted } from '@/app/actions'
 import { useRouter } from 'next/navigation'
 import { ReactNode } from 'react'
 
@@ -8,6 +9,9 @@ export const CompleteButton = ({ children }: { children: ReactNode }) => {
 
     const handeClick = async (e: any) => {
         e.preventDefault()
+        const user = await setUserCompleted()
+
+        if (!user) return
 
         router.push(`/onboarding/overview`)
     }
