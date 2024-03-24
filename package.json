@@ -4,6 +4,7 @@
     "private": true,
     "scripts": {
         "test": "vitest",
+        "precypress": "npx prisma migrate reset",
         "cypress": "cypress open",
         "dev": "next dev",
         "build": "next build",

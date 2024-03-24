@@ -1,13 +1,10 @@
 'use client'
 
-import { FunctionComponent, startTransition, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSpinner } from '@fortawesome/free-solid-svg-icons'
+import { FunctionComponent, useState } from 'react'
+
 import { useUser } from '@clerk/clerk-react'
 import { SqaureButton } from '../SqaureButton/SquareButton'
 import { EntitySelectProps } from './types'
-import { toast } from 'sonner'
 import Link from 'next/link'
 
 export const EntitySelect: FunctionComponent<EntitySelectProps> = ({

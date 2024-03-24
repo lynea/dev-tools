@@ -1,6 +1,6 @@
 'use client'
 
-import { createEntityGroup } from '@/app/actions'
+import { updateEntityGroup } from '@/app/actions'
 import { Button } from '@/components/ui/button'
 import {
     Form,
@@ -11,23 +11,28 @@ import {
     FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { entityGroupschema } from '@/lib/schema/entityGroup.schema'
+import {
+    entityGroupUpdateSchema,
+    entityGroupschema,
+} from '@/lib/schema/entityGroup.schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ReloadIcon } from '@radix-ui/react-icons'
-import { useEffect } from 'react'
+import { FunctionComponent, useEffect } from 'react'
 
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import * as z from 'zod'
 
-export const EntityGroupForm = () => {
+export const EntityGroupUpdateForm: FunctionComponent<
+    z.infer<typeof entityGroupUpdateSchema>
+> = ({ level, name, slug, id }) => {
     const form = useForm<z.infer<typeof entityGroupschema>>({
         resolver: zodResolver(entityGroupschema),
         mode: 'onChange',
         defaultValues: {
-            name: '',
-            slug: '',
-            level: 1,
+            name,
+            slug,
+            level,
         },
     })
 
@@ -43,9 +48,8 @@ export const EntityGroupForm = () => {
 
     const onSubmit = async (data: z.infer<typeof entityGroupschema>) => {
         try {
-            await createEntityGroup(data).then(() => {
-                form.reset()
-                toast('Entity group created successfully')
+            await updateEntityGroup({ ...data, id }).then(() => {
+                toast('Entity group updated successfully')
             })
         } catch (error) {
             console.error('error creating entity group', error)
@@ -57,7 +61,7 @@ export const EntityGroupForm = () => {
 
     return (
         <section className="mt-5 flex w-3/6 flex-col ">
-            <h1 className="text-2xl font-bold ">Create entity group</h1>
+            <h1 className="text-2xl font-bold ">Update entity group</h1>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
                     <FormField
@@ -107,7 +111,7 @@ export const EntityGroupForm = () => {
                         {form.formState.isLoading ? (
                             <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
                         ) : null}
-                        {form.formState.isLoading ? 'Creating...' : 'Create'}
+                        {form.formState.isLoading ? 'Updating...' : 'Update'}
                     </Button>
                 </form>
             </Form>

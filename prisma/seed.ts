@@ -3,21 +3,26 @@ import { Chapter, PrismaClient, Role } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
+const orgId = 'org_2dbQqAhTejrXKJKzeTrgSNj17Fj'
+
 const chapters = [
     {
         title: 'Chapter One',
         slug: 'chapter-one',
         order: 1,
+        organizationId: orgId,
     },
     {
         title: 'Chapter Two',
         slug: 'chapter-two',
         order: 2,
+        organizationId: orgId,
     },
     {
         title: 'Chapter Three',
         slug: 'chapter-three',
         order: 3,
+        organizationId: orgId,
     },
 ]
 
@@ -33,6 +38,7 @@ const createChapterAndSteps = async (entityId: string) => {
                 slug: 'step-one',
                 chapterId: createdChapter.id,
                 description: 'This is the first step.',
+                organizationId: orgId,
                 order: 1,
             },
             {
@@ -41,6 +47,7 @@ const createChapterAndSteps = async (entityId: string) => {
                 chapterId: createdChapter.id,
                 description: 'This is the second step.',
                 order: 2,
+                organizationId: orgId,
             },
             {
                 title: 'Step Three',
@@ -48,6 +55,7 @@ const createChapterAndSteps = async (entityId: string) => {
                 chapterId: createdChapter.id,
                 description: 'This is the third step.',
                 order: 3,
+                organizationId: orgId,
             },
         ]
 
@@ -90,80 +98,84 @@ const createChapterAndSteps = async (entityId: string) => {
 
 async function main() {
     // // Seed Users
-    // const alice = await db.user.create({
-    //     data: {
-    //         id: 'user_2OVpomuqiqieyOJkzr9knpEjPa3',
-    //     },
-    // })
-    // const bob = await prisma.user.create({
-    //     data: {},
-    // })
-    // // Seed Organizations
-    // const org1 = await prisma.organization.create({
-    //     data: {
-    //         name: 'The sharing group',
-    //         slug: 'the-sharing-group',
-    //         createdByUserId: alice.id,
-    //         id: 'org_2bme3utaOlKWytwIOGqSLkP85Uy',
-    //     },
-    // })
-    // // Seed UserOrganization
-    // await prisma.userOrganization.createMany({
+    const alice = await db.user.create({
+        data: {
+            id: 'user_2dbQngw8XjnWj462ESpfihdfFld',
+        },
+    })
+    const bob = await prisma.user.create({
+        data: {
+            id: 'user_2dbQngw8XjnWj462ESpfisdhdfFld',
+        },
+    })
+    // Seed Organizations
+    const org1 = await prisma.organization.create({
+        data: {
+            name: 'The sharing group',
+            slug: 'the-sharing-group',
+            createdByUserId: alice.id,
+            id: 'org_2dbQqAhTejrXKJKzeTrgSNj17Fj',
+        },
+    })
+    // Seed UserOrganization
+    await prisma.userOrganization.createMany({
+        data: [
+            { userId: alice.id, organizationId: org1.id, role: Role.admin },
+            { userId: bob.id, organizationId: org1.id, role: Role.user },
+        ],
+    })
+    // Seed EntityGroup
+    const entityGroup1 = await prisma.entityGroup.create({
+        data: {
+            name: 'companies',
+            slug: 'companies',
+            organizationId: org1.id,
+            level: 1,
+        },
+    })
+    const entityGroup2 = await prisma.entityGroup.create({
+        data: {
+            name: 'department',
+            slug: 'department',
+            organizationId: org1.id,
+            level: 2,
+        },
+    })
+    // Seed Entity
+    const entity1 = await prisma.entity.create({
+        data: {
+            name: 'mijndomein',
+            slug: 'mijndomein',
+            entityGroupId: entityGroup1.id,
+            organizationId: org1.id,
+        },
+    })
+    const entity2 = await prisma.entity.create({
+        data: {
+            name: 'development',
+            slug: 'development',
+            entityGroupId: entityGroup2.id,
+            organizationId: org1.id,
+        },
+    })
+    // Seed Chapter and Steps
+    await createChapterAndSteps(entity1.id)
+    await createChapterAndSteps(entity2.id)
+    // Seed UserTodo
+    // await prisma.userTodo.createMany({
     //     data: [
-    //         { userId: alice.id, organizationId: org1.id, role: Role.admin },
-    //         { userId: bob.id, organizationId: org1.id, role: Role.user },
+    //         { userId: alice.id, todoId: todos.id, isCompleted: false },
+    //         { userId: bob.id, todoId: todo1.id, isCompleted: true },
     //     ],
     // })
-    // // Seed EntityGroup
-    // const entityGroup1 = await prisma.entityGroup.create({
-    //     data: {
-    //         name: 'companies',
-    //         slug: 'companies',
-    //         organizationId: org1.id,
-    //         level: 1,
-    //     },
-    // })
-    // const entityGroup2 = await prisma.entityGroup.create({
-    //     data: {
-    //         name: 'department',
-    //         slug: 'department',
-    //         organizationId: org1.id,
-    //         level: 2,
-    //     },
-    // })
-    // // Seed Entity
-    // const entity1 = await prisma.entity.create({
-    //     data: {
-    //         name: 'mijndomein',
-    //         slug: 'mijndomein',
-    //         entityGroupId: entityGroup1.id,
-    //     },
-    // })
-    // const entity2 = await prisma.entity.create({
-    //     data: {
-    //         name: 'development',
-    //         slug: 'development',
-    //         entityGroupId: entityGroup2.id,
-    //     },
-    // })
-    // // Seed Chapter and Steps
-    // await createChapterAndSteps(entity1.id)
-    // await createChapterAndSteps(entity2.id)
-    // // Seed UserTodo
-    // // await prisma.userTodo.createMany({
-    // //     data: [
-    // //         { userId: alice.id, todoId: todo1.id, isCompleted: false },
-    // //         { userId: bob.id, todoId: todo1.id, isCompleted: true },
-    // //     ],
-    // // })
-    // //seed userentity
-    // await prisma.userEntity.createMany({
-    //     data: [
-    //         { userId: alice.id, entityId: entity1.id },
-    //         { userId: bob.id, entityId: entity1.id },
-    //     ],
-    // })
-    // console.log('Database has been seeded!')
+    //seed userentity
+    await prisma.userEntity.createMany({
+        data: [
+            { userId: alice.id, entityId: entity1.id },
+            { userId: bob.id, entityId: entity1.id },
+        ],
+    })
+    console.log('Database has been seeded!')
 }
 
 main()

@@ -1,6 +1,6 @@
 'use client'
 
-import { createEntityGroup } from '@/app/actions'
+import { updateEntity } from '@/app/actions'
 import { Button } from '@/components/ui/button'
 import {
     Form,
@@ -11,23 +11,42 @@ import {
     FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { entityGroupschema } from '@/lib/schema/entityGroup.schema'
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select'
+import {
+    entitySchema,
+    entityUpdateSchema,
+} from '@/lib/schema/entityGroup.schema'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { EntityGroup } from '@prisma/client'
 import { ReloadIcon } from '@radix-ui/react-icons'
-import { useEffect } from 'react'
+import { FunctionComponent, useEffect } from 'react'
 
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import * as z from 'zod'
 
-export const EntityGroupForm = () => {
-    const form = useForm<z.infer<typeof entityGroupschema>>({
-        resolver: zodResolver(entityGroupschema),
+type EntityUpdateFormProps = {
+    entityData: z.infer<typeof entityUpdateSchema>
+    groups: EntityGroup[]
+}
+
+export const EntityUpdateForm: FunctionComponent<EntityUpdateFormProps> = ({
+    entityData,
+    groups,
+}) => {
+    const form = useForm<z.infer<typeof entitySchema>>({
+        resolver: zodResolver(entitySchema),
         mode: 'onChange',
         defaultValues: {
-            name: '',
-            slug: '',
-            level: 1,
+            name: entityData?.name,
+            slug: entityData?.slug,
+            entityGroupId: entityData?.entityGroupId,
         },
     })
 
@@ -41,23 +60,22 @@ export const EntityGroupForm = () => {
         )
     }, [nameInput, form.setValue])
 
-    const onSubmit = async (data: z.infer<typeof entityGroupschema>) => {
+    const onSubmit = async (data: z.infer<typeof entitySchema>) => {
         try {
-            await createEntityGroup(data).then(() => {
-                form.reset()
-                toast('Entity group created successfully')
+            await updateEntity({ ...data, id: entityData.id }).then(() => {
+                toast('Entity updated successfully')
             })
         } catch (error) {
-            console.error('error creating entity group', error)
+            console.error('error updating entity ', error)
             toast(
-                'Something went wrong while creating the entity group. Please try again.'
+                'Something went wrong while updating the entity . Please try again.'
             )
         }
     }
 
     return (
         <section className="mt-5 flex w-3/6 flex-col ">
-            <h1 className="text-2xl font-bold ">Create entity group</h1>
+            <h1 className="text-2xl font-bold ">Update entity</h1>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
                     <FormField
@@ -67,7 +85,10 @@ export const EntityGroupForm = () => {
                             <FormItem className="mt-5">
                                 <FormLabel htmlFor="title">Name</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="companies" {...field} />
+                                    <Input
+                                        placeholder="my company"
+                                        {...field}
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -82,7 +103,7 @@ export const EntityGroupForm = () => {
                                 <FormControl>
                                     <Input
                                         disabled
-                                        placeholder="companies"
+                                        placeholder="my-company"
                                         {...field}
                                     />
                                 </FormControl>
@@ -92,22 +113,41 @@ export const EntityGroupForm = () => {
                     />
                     <FormField
                         control={form.control}
-                        name="level"
+                        name="entityGroupId"
                         render={({ field }) => (
                             <FormItem className="mt-5">
-                                <FormLabel htmlFor="level">Level</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="0" {...field} />
-                                </FormControl>
+                                <FormLabel>Parent</FormLabel>
+                                <Select
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                >
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select parent for the entity" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        {groups?.map((entityGroup) => (
+                                            <SelectItem
+                                                key={entityGroup.id}
+                                                value={entityGroup.id}
+                                            >
+                                                {entityGroup.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
+
                     <Button className="mt-5" disabled={!form.formState.isValid}>
                         {form.formState.isLoading ? (
                             <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
                         ) : null}
-                        {form.formState.isLoading ? 'Creating...' : 'Create'}
+                        {form.formState.isLoading ? 'Updating...' : 'Update'}
                     </Button>
                 </form>
             </Form>

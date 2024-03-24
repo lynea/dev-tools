@@ -1,6 +1,6 @@
 'use client'
 
-import { createTodo } from '@/app/actions'
+import { createTodo, updateTodo } from '@/app/actions'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -19,44 +19,49 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select'
-import { todoSchema } from '@/lib/schema/entityGroup.schema'
+import { todoSchema, todoUpdateSchema } from '@/lib/schema/entityGroup.schema'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Step, Todo } from '@prisma/client'
+import { Step } from '@prisma/client'
 import { ReloadIcon } from '@radix-ui/react-icons'
 
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import * as z from 'zod'
 
-export const TodoForm = ({ steps }: { steps: Step[] }) => {
+export const TodoEditForm = ({
+    steps,
+    currentTodoInfo,
+}: {
+    steps: Step[]
+    currentTodoInfo: z.infer<typeof todoUpdateSchema>
+}) => {
     const form = useForm<z.infer<typeof todoSchema>>({
         resolver: zodResolver(todoSchema),
 
         mode: 'onChange',
         defaultValues: {
-            description: '',
-            stepId: '',
-            title: '',
+            description: currentTodoInfo?.description,
+            stepId: currentTodoInfo.stepId,
+            title: currentTodoInfo.title,
         },
     })
 
     const onSubmit = async (data: z.infer<typeof todoSchema>) => {
         try {
-            await createTodo(data).then(() => {
-                form.reset()
-                toast('Todo created successfully')
+            await updateTodo({ ...data, id: currentTodoInfo.id }).then(() => {
+                toast('Todo updated successfully')
             })
         } catch (error) {
-            console.error('error creating step', error)
+            console.error('error updating step', error)
             toast(
-                'Something went wrong while creating the todo. Please try again.'
+                'Something went wrong while updating the todo. Please try again.'
             )
         }
     }
 
     return (
         <section className="mt-5 flex w-3/6 flex-col ">
-            <h1 className="text-2xl font-bold ">Create todo</h1>
+            <h1 className="text-2xl font-bold ">Update todo</h1>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
                     <FormField

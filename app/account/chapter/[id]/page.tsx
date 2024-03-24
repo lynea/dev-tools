@@ -1,9 +1,31 @@
-export default async function Page() {
+import { Suspense } from 'react'
+
+import { Skeleton } from '@/components/ui/skeleton'
+import { ChapterEdit } from './ChapterEdit'
+
+import { Separator } from '@/components/ui/separator'
+import { ChapterTable } from '@/components/ChapterTable/ChapterTable'
+
+export default async function Page({
+    params: { id },
+}: {
+    params: { id: string }
+}) {
     return (
         <>
-            <section className="mt-5 flex w-full flex-col text-foreground ">
-                not implemented yet
-            </section>
+            <Suspense
+                fallback={
+                    <Skeleton className="mt-6 h-80 w-[30rem] rounded-xl" />
+                }
+            >
+                <ChapterEdit id={id} />
+            </Suspense>
+            <Separator className="my-16" />
+            <Suspense
+                fallback={<Skeleton className="mt-6 h-20 w-full rounded-xl" />}
+            >
+                <ChapterTable limit={5} />
+            </Suspense>
         </>
     )
 }

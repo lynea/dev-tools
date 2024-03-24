@@ -1,6 +1,6 @@
 'use client'
 
-import { createEntityGroup } from '@/app/actions'
+import { createChapter, updateChapter } from '@/app/actions'
 import { Button } from '@/components/ui/button'
 import {
     Form,
@@ -11,8 +11,19 @@ import {
     FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { entityGroupschema } from '@/lib/schema/entityGroup.schema'
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select'
+import {
+    chapterSchema,
+    chapterUpdateSchema,
+} from '@/lib/schema/entityGroup.schema'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Entity } from '@prisma/client'
 import { ReloadIcon } from '@radix-ui/react-icons'
 import { useEffect } from 'react'
 
@@ -20,18 +31,24 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import * as z from 'zod'
 
-export const EntityGroupForm = () => {
-    const form = useForm<z.infer<typeof entityGroupschema>>({
-        resolver: zodResolver(entityGroupschema),
+export const ChapterUpdateForm = ({
+    entityGroups,
+    chapterData,
+}: {
+    entityGroups: Entity[]
+    chapterData: z.infer<typeof chapterUpdateSchema>
+}) => {
+    const form = useForm<z.infer<typeof chapterSchema>>({
+        resolver: zodResolver(chapterSchema),
         mode: 'onChange',
         defaultValues: {
-            name: '',
-            slug: '',
-            level: 1,
+            title: chapterData.title,
+            slug: chapterData.slug,
+            entityId: chapterData.entityId,
         },
     })
 
-    const nameInput = form.watch('name')
+    const nameInput = form.watch('title')
 
     useEffect(() => {
         // Whenever title changes, update slug with its value
@@ -41,33 +58,35 @@ export const EntityGroupForm = () => {
         )
     }, [nameInput, form.setValue])
 
-    const onSubmit = async (data: z.infer<typeof entityGroupschema>) => {
+    const onSubmit = async (data: z.infer<typeof chapterSchema>) => {
         try {
-            await createEntityGroup(data).then(() => {
-                form.reset()
-                toast('Entity group created successfully')
+            await updateChapter({ ...data, id: chapterData.id }).then(() => {
+                toast('Chapter updated successfully')
             })
         } catch (error) {
-            console.error('error creating entity group', error)
+            console.error('error updating chapter', error)
             toast(
-                'Something went wrong while creating the entity group. Please try again.'
+                'Something went wrong while updating the chapter. Please try again.'
             )
         }
     }
 
     return (
         <section className="mt-5 flex w-3/6 flex-col ">
-            <h1 className="text-2xl font-bold ">Create entity group</h1>
+            <h1 className="text-2xl font-bold ">Update Chapter</h1>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
                     <FormField
                         control={form.control}
-                        name="name"
+                        name="title"
                         render={({ field }) => (
                             <FormItem className="mt-5">
                                 <FormLabel htmlFor="title">Name</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="companies" {...field} />
+                                    <Input
+                                        placeholder="getting started"
+                                        {...field}
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -81,8 +100,7 @@ export const EntityGroupForm = () => {
                                 <FormLabel htmlFor="slug">Slug</FormLabel>
                                 <FormControl>
                                     <Input
-                                        disabled
-                                        placeholder="companies"
+                                        placeholder="getting-started"
                                         {...field}
                                     />
                                 </FormControl>
@@ -92,13 +110,31 @@ export const EntityGroupForm = () => {
                     />
                     <FormField
                         control={form.control}
-                        name="level"
+                        name="entityId"
                         render={({ field }) => (
                             <FormItem className="mt-5">
-                                <FormLabel htmlFor="level">Level</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="0" {...field} />
-                                </FormControl>
+                                <FormLabel>Parent</FormLabel>
+                                <Select
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                >
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select a parent for the chapter" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        {entityGroups.map((entityGroup) => (
+                                            <SelectItem
+                                                key={entityGroup.id}
+                                                value={entityGroup.id}
+                                            >
+                                                {entityGroup.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+
                                 <FormMessage />
                             </FormItem>
                         )}

@@ -7,15 +7,23 @@ import { auth } from '@clerk/nextjs'
 import { z } from 'zod'
 import {
     chapterSchema,
+    chapterUpdateSchema,
+    entityGroupUpdateSchema,
     entityGroupschema,
     entitySchema,
+    entityUpdateSchema,
     stepSchema,
+    stepUpdateSchema,
     todoSchema,
+    todoUpdateSchema,
 } from '@/lib/schema/entityGroup.schema'
 
 //we can create them when page loads e.g. filter out the ones that are not in the db yet
 
-export async function updateTodo(todo: Todo, completed: boolean | undefined) {
+export async function updateTodoStatus(
+    todo: Todo,
+    completed: boolean | undefined
+) {
     console.log('got a todo with status: ', completed)
 
     const { userId } = auth()
@@ -141,6 +149,41 @@ export async function createEntityGroup(
     console.log('created entity group:', created)
 }
 
+export async function updateEntityGroup(
+    data: z.infer<typeof entityGroupUpdateSchema>
+) {
+    const { userId, orgId } = auth()
+
+    if (!userId) {
+        throw new Error('You must be signed in to modify a todo')
+    }
+
+    if (!orgId)
+        throw new Error('could not find organization id in the user object')
+
+    const validatedFields = entityGroupUpdateSchema.safeParse(data)
+
+    // Return early if the form data is invalid
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+        }
+    }
+
+    const created = await db.entityGroup.update({
+        where: {
+            id: validatedFields.data.id,
+        },
+        data: {
+            organizationId: orgId,
+            ...validatedFields.data,
+            level: Number(validatedFields.data.level),
+        },
+    })
+
+    console.log('created entity group:', created)
+}
+
 //TODO - check if the user has rights to add entities to this group
 export async function createEntity(data: z.infer<typeof entitySchema>) {
     const { userId, orgId } = auth()
@@ -167,6 +210,39 @@ export async function createEntity(data: z.infer<typeof entitySchema>) {
             slug: validatedFields.data.slug,
             entityGroupId: validatedFields.data.entityGroupId,
             organizationId: orgId,
+        },
+    })
+
+    console.log('created entity:', created)
+}
+
+export async function updateEntity(data: z.infer<typeof entityUpdateSchema>) {
+    const { userId, orgId } = auth()
+
+    if (!userId) {
+        throw new Error('You must be signed in to modify a todo')
+    }
+
+    if (!orgId)
+        throw new Error('could not find organization id in the user object')
+
+    const validatedFields = entityUpdateSchema.safeParse(data)
+
+    // Return early if the form data is invalid
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+        }
+    }
+
+    const created = await db.entity.update({
+        where: {
+            id: validatedFields.data.id,
+        },
+        data: {
+            name: validatedFields.data.name,
+            slug: validatedFields.data.slug,
+            entityGroupId: validatedFields.data.entityGroupId,
         },
     })
 
@@ -205,6 +281,41 @@ export async function createChapter(data: z.infer<typeof chapterSchema>) {
 
     console.log('created chapter:', created)
 }
+export async function updateChapter(data: z.infer<typeof chapterUpdateSchema>) {
+    const { userId, orgId } = auth()
+
+    if (!userId) {
+        throw new Error('You must be signed in to modify a chapter')
+    }
+
+    if (!orgId)
+        throw new Error('could not find organization id in the user object')
+
+    const validatedFields = chapterUpdateSchema.safeParse(data)
+
+    // Return early if the form data is invalid
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+        }
+    }
+
+    const updated = await db.chapter.update({
+        data: {
+            slug: validatedFields.data.slug,
+            title: validatedFields.data.title,
+            entityId: validatedFields.data.entityId,
+            organizationId: orgId,
+        },
+        where: {
+            id: validatedFields.data.id,
+        },
+    })
+
+    revalidatePath('/account/chapter/create', 'page')
+
+    console.log('updated chapter:', updated)
+}
 
 export async function createStep(data: z.infer<typeof stepSchema>) {
     const { userId, orgId } = auth()
@@ -239,6 +350,42 @@ export async function createStep(data: z.infer<typeof stepSchema>) {
 
     console.log('created step:', created)
 }
+export async function updateStep(data: z.infer<typeof stepUpdateSchema>) {
+    const { userId, orgId } = auth()
+
+    if (!userId) {
+        throw new Error('You must be signed in to modify a todo')
+    }
+
+    if (!orgId)
+        throw new Error('could not find organization id in the user object')
+
+    const validatedFields = stepUpdateSchema.safeParse(data)
+
+    // Return early if the form data is invalid
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+        }
+    }
+
+    const created = await db.step.update({
+        data: {
+            description: validatedFields.data.description,
+            slug: validatedFields.data.slug,
+            title: validatedFields.data.title,
+            chapterId: validatedFields.data.chapterId,
+            order: validatedFields.data.order,
+            videoUrl: validatedFields.data.videoUrl,
+            organizationId: orgId,
+        },
+        where: {
+            id: validatedFields.data.id,
+        },
+    })
+
+    console.log('updated step:', created)
+}
 
 export async function createTodo(data: z.infer<typeof todoSchema>) {
     const { userId, orgId } = auth()
@@ -269,6 +416,39 @@ export async function createTodo(data: z.infer<typeof todoSchema>) {
     })
 
     console.log('created todo:', created)
+}
+export async function updateTodo(data: z.infer<typeof todoUpdateSchema>) {
+    const { userId, orgId } = auth()
+
+    if (!userId) {
+        throw new Error('You must be signed in to modify a todo')
+    }
+
+    if (!orgId)
+        throw new Error('could not find organization id in the user object')
+
+    const validatedFields = todoUpdateSchema.safeParse(data)
+
+    // Return early if the form data is invalid
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+        }
+    }
+
+    const updated = await db.todo.update({
+        data: {
+            description: validatedFields.data.description,
+            title: validatedFields.data.title,
+            stepId: validatedFields.data.stepId,
+            organizationId: orgId,
+        },
+        where: {
+            id: validatedFields.data.id,
+        },
+    })
+
+    console.log('updated todo:', updated)
 }
 
 export async function setUserCompleted() {
