@@ -50,18 +50,18 @@ export const EntityGroupOverview: FunctionComponent<
                 </h2>
 
                 {groupInfo.entities.map((entity) => (
-                    <Card className="mb-6 w-[30rem] px-4 pb-4 ">
+                    <Card className="mb-6 w-[30rem] px-4 pb-4 " key={entity.id}>
                         <CardHeader className="pl-0 font-bold">
                             {entity.name}
                         </CardHeader>
 
                         {entity.chapters.map((chapter) => (
-                            <Card className="mb-3 p-3">
+                            <Card className="mb-3 p-3" key={chapter.id}>
                                 <CardHeader className="py-3 pl-0 font-bold">
                                     {chapter.title}
                                 </CardHeader>
                                 {chapter.steps.map((step) => (
-                                    <Card className="mb-3 p-3">
+                                    <Card className="mb-3 p-3" key={step.id}>
                                         {step.title}
                                     </Card>
                                 ))}
