@@ -21,7 +21,6 @@ export const AvarageCard: FunctionComponent = async () => {
 
     const completionTimes: number[] = []
     allUsers.forEach((user) => {
-        console.log('calculating avarage time', user.startedAt, user.finishedAt)
         if (user.startedAt && user.finishedAt) {
             const start = dayjs(user.startedAt)
             const end = dayjs(user.finishedAt)

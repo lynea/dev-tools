@@ -23,19 +23,21 @@ export default async function Page() {
         <>
             <section className="mt-5 flex w-full flex-col text-foreground ">
                 <div className="flex flex-nowrap gap-6">
-                    {allDataForOrg.map((group) => (
-                        <Suspense
-                            key={group.id}
-                            fallback={
-                                <Skeleton className="h-full w-[30rem] rounded-xl" />
-                            }
-                        >
-                            <EntityGroupOverview
+                    {allDataForOrg
+                        .sort((a, b) => a.level - b.level)
+                        .map((group) => (
+                            <Suspense
                                 key={group.id}
-                                groupId={group.id}
-                            />
-                        </Suspense>
-                    ))}
+                                fallback={
+                                    <Skeleton className="h-full w-[30rem] rounded-xl" />
+                                }
+                            >
+                                <EntityGroupOverview
+                                    key={group.id}
+                                    groupId={group.id}
+                                />
+                            </Suspense>
+                        ))}
                 </div>
             </section>
         </>

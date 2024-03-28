@@ -5,25 +5,46 @@ import { EntryTable } from '../LastCreatedTable/LastCreated'
 
 type TodoTableProps = {
     limit: number
+    query?: string
 }
 
 export const TodoTable: FunctionComponent<TodoTableProps> = async ({
     limit,
+    query,
 }) => {
     const { orgId } = auth()
 
     const getLastTodos = async () => {
-        return await db.todo.findMany({
+        const steps = await db.todo.findMany({
             where: {
                 organizationId: orgId,
+                title: {
+                    contains: query ?? '',
+                },
+            },
+            include: {
+                step: true,
             },
             take: limit,
         })
+
+        const withStep = steps.map((todo) => {
+            return {
+                id: todo.id,
+                title: todo.title,
+                description: todo.description,
+                step: todo.step.title,
+            }
+        })
+
+        return withStep
     }
+
+    const todos = await getLastTodos()
 
     return (
         <EntryTable
-            getEntities={getLastTodos}
+            entries={todos}
             entryName="todos"
             editPath="/account/todo/"
         />

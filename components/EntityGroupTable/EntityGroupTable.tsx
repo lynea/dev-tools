@@ -5,11 +5,12 @@ import { EntryTable } from '../LastCreatedTable/LastCreated'
 
 type EntityGroupTableProps = {
     limit: number
+    query?: string
 }
 
 export const EntityGroupTable: FunctionComponent<
     EntityGroupTableProps
-> = async ({ limit }) => {
+> = async ({ limit, query }) => {
     const { orgId } = auth()
 
     if (!orgId) throw new Error('No organization found')
@@ -18,6 +19,9 @@ export const EntityGroupTable: FunctionComponent<
         return await db.entityGroup.findMany({
             where: {
                 organizationId: orgId,
+                name: {
+                    contains: query ?? '',
+                },
             },
             orderBy: {
                 level: 'asc',
@@ -26,9 +30,11 @@ export const EntityGroupTable: FunctionComponent<
         })
     }
 
+    const lastEntityGroups = await getLastEntityGroups()
+
     return (
         <EntryTable
-            getEntities={getLastEntityGroups}
+            entries={lastEntityGroups}
             entryName="entity groups"
             editPath="/account/entity-group/"
         />

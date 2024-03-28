@@ -25,7 +25,7 @@ export default async function Page({
             <Suspense
                 fallback={<Skeleton className="mt-6 h-20 w-full rounded-xl" />}
             >
-                <TodoTable limit={5} />
+                <TodoTable limit={100} />
             </Suspense>
         </>
     )
