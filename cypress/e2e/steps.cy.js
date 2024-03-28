@@ -101,7 +101,7 @@ describe('navigate steps', () => {
 
         cy.get('button').contains('Next').click()
         cy.wait(1000)
-
+        //
         cy.get('button[role="checkbox"]')
             .each(($btn) => {
                 cy.wrap($btn).click()
