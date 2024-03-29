@@ -5,7 +5,9 @@
     "scripts": {
         "test": "vitest --run",
         "precypress": "npx prisma migrate reset --force",
+        "precy:run": "npx prisma migrate reset --force",
         "cypress": "cypress open",
+        "cy:run": "cypress run",
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
