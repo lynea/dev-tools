@@ -5,7 +5,6 @@ import { FunctionComponent } from 'react'
 import { Button } from '../ui/button'
 import {
     Table,
-    TableCaption,
     TableHeader,
     TableRow,
     TableHead,
@@ -15,19 +14,17 @@ import {
 import { Card } from '../ui/card'
 
 type EntryTableProps = {
-    getEntities: () => Promise<any[]>
+    entries: any[]
     entryName: string
     editPath: string
 }
 
 export const EntryTable: FunctionComponent<EntryTableProps> = async ({
-    getEntities,
+    entries,
     entryName,
     editPath,
 }) => {
     let properties: any[] = []
-
-    const entries = await getEntities()
 
     if (entries.length) {
         properties = Object?.keys(entries[0]).filter(
@@ -42,11 +39,8 @@ export const EntryTable: FunctionComponent<EntryTableProps> = async ({
         <>
             {properties.length ? (
                 <section>
-                    <Card className="pb-2">
+                    <Card className="p-2">
                         <Table>
-                            <TableCaption>
-                                A list of your last created {entryName}
-                            </TableCaption>
                             <TableHeader>
                                 <TableRow>
                                     {properties.map((property, index) => {

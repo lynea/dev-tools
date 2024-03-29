@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "test": "vitest",
-        "precypress": "npx prisma migrate reset",
+        "precypress": "npx prisma migrate reset --force",
         "cypress": "cypress open",
         "dev": "next dev",
         "build": "next build",
@@ -75,6 +75,7 @@
         "tailwindcss-animate": "^1.0.7",
         "typescript": "^5.3.3",
         "uploadthing": "^6.5.2",
+        "use-debounce": "^10.0.0",
         "videojs-youtube": "^3.0.1",
         "zod": "^3.22.4"
     },
@@ -91,7 +92,7 @@
         "@typescript-eslint/eslint-plugin": "^7.1.0",
         "@typescript-eslint/parser": "^7.1.0",
         "autoprefixer": "^10.4.17",
-        "cypress": "^12.14.0",
+        "cypress": "^13.7.1",
         "eslint-config-prettier": "^9.1.0",
         "graphql-codegen-typescript-common": "0.18.2",
         "husky": "^8.0.3",

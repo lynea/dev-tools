@@ -8,61 +8,108 @@ describe('navigate steps', () => {
     })
 
     //it moves to the first step, ideally we seed the db with some steps but for now we hardcode the ids
-    it.skip('it can acces the onboarding dashboard when signed in', () => {
+    it('it can navigate trough the onboarding flow', () => {
         // open dashboard page
         cy.visit('http://localhost:3000/onboarding', {
             failOnStatusCode: false,
         })
 
-        cy.wait(5000)
+        cy.wait(2000)
 
         cy.get('button').contains('Just click here').click()
 
-        cy.wait(5000)
+        cy.wait(1000)
 
-        cy.get('h3').contains('Better. Smarter. Simpler')
+        cy.get('button').contains('mijndomein').click()
 
-        cy.get('button').contains('Previous').should('not.exist')
+        cy.wait(1000)
+
+        cy.get('button').contains('i am ready').click()
+
+        cy.get('button').contains('back').should('be.disabled')
+
+        cy.get('h3').contains('Step One chapter-one')
+
+        cy.get('h3').contains('Todo')
 
         cy.get('button').contains('Next').click()
 
-        cy.wait(5000)
+        cy.wait(1000)
 
         //assert that all elements we expect are on this page
-        cy.get('h3').contains('Part of The sharing group')
-        cy.get('h3').contains('Todo')
+        cy.get('h3').contains('Step Two chapter-one')
+        // cy.get('button').contains('back').should('not.be.disabled')
+        cy.get('button').contains('Next').click()
+        cy.wait(1000)
 
-        cy.get('button').contains('Previous')
+        cy.get('h3').contains('Step three chapter-one')
 
         cy.get('button').contains('Next').click()
+        cy.wait(1000)
 
-        cy.wait(5000)
+        cy.get('h3').contains('Step One chapter-two')
 
-        //assert that all elements we expect are on this page
-        cy.get('h3').contains('Turbo snails')
+        cy.get('button').contains('Next').click()
+        cy.wait(1000)
+        cy.get('h3').contains('Step Two chapter-two')
 
-        cy.get('button').contains('Next')
-        cy.get('button').contains('Previous').click()
+        cy.get('button').contains('Next').click()
+        cy.wait(1000)
+        cy.get('h3').contains('Step three chapter-two')
 
-        cy.wait(5000)
+        cy.get('button').contains('Next').click()
+        cy.wait(1000)
 
-        //navigate back and check if its the page we expect
-        cy.get('h3').contains('Part of The sharing group')
-        cy.get('h3').contains('Todo')
+        cy.get('h3').contains('Step One chapter-three')
+        cy.get('button').contains('Next').click()
+        cy.wait(1000)
 
-        cy.get('button').contains('Previous')
+        cy.get('h3').contains('Step Two chapter-three')
+        cy.get('button').contains('Next').click()
+        cy.wait(1000)
 
-        //complete a todo on this page
-        cy.get('[data-testid="body-todos"]')
-            .find('input[type="checkbox"]')
-            .click()
+        cy.get('h3').contains('Step three chapter-three')
+        cy.get('button').contains('Next').click()
+        cy.wait(1000)
 
-        //TODO: clear the db of todos before running this test
+        cy.get('h3').contains('The department')
+        cy.get('button').contains('development').click()
+        cy.get('button').contains('i am ready').click()
+        cy.get('button').contains('Next').click()
+        cy.wait(1000)
 
-        //   .wait(5000);
+        cy.get('button').contains('Next').click()
+        cy.wait(1000)
 
-        // cy.get('[data-testid="body-todos"]')
-        //   .find('input[type="checkbox"]')
-        //   .should("be.checked");
+        cy.get('button').contains('Next').click()
+        cy.wait(1000)
+
+        cy.get('button').contains('Next').click()
+        cy.wait(1000)
+
+        cy.get('button').contains('Next').click()
+        cy.wait(1000)
+
+        cy.get('button').contains('Next').click()
+        cy.wait(1000)
+
+        cy.get('button').contains('Next').click()
+        cy.wait(1000)
+
+        cy.get('button').contains('Next').click()
+        cy.wait(1000)
+
+        cy.get('button').contains('Next').click()
+        cy.wait(1000)
+
+        cy.get('button[role="checkbox"]')
+            .each(($btn) => {
+                cy.wrap($btn).click()
+            })
+
+            .wait(1000)
+
+        cy.get('h3').contains('Damn, you made it! welcome to the team')
+        cy.get('button').contains('Finish').click()
     })
 })
