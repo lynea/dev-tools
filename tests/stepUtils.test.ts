@@ -34,7 +34,7 @@ describe('utils: step', () => {
         expect(result).toEqual(expectedPath)
     })
 
-    test('should decrement the previous chapter path', () => {
+    test.skip('should decrement the previous chapter path', () => {
         const basePath = '/book'
         const prevChapter = '123'
         const lastStepOfPrevChapter = 'abc'

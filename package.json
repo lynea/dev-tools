@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "test": "vitest",
+        "test": "vitest --run",
         "precypress": "npx prisma migrate reset --force",
         "cypress": "cypress open",
         "dev": "next dev",
@@ -11,7 +11,8 @@
         "start": "next start",
         "lint": "next lint",
         "codegen": "gql-gen --config codegen.yml",
-        "postinstall": "prisma generate"
+        "postinstall": "prisma generate",
+        "prepare": "husky install"
     },
     "prisma": {
         "seed": "ts-node -P tsconfig-seed.json -r tsconfig-paths/register --transpileOnly prisma/seed.ts"
@@ -95,7 +96,7 @@
         "cypress": "^13.7.1",
         "eslint-config-prettier": "^9.1.0",
         "graphql-codegen-typescript-common": "0.18.2",
-        "husky": "^8.0.3",
+        "husky": "^8.0.0",
         "postcss": "^8.4.21",
         "prettier": "^3.2.4",
         "prettier-plugin-tailwindcss": "^0.4.1",
