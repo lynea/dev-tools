@@ -34,8 +34,6 @@ export interface TeamPageParams {
 }
 
 export interface CompletedPageParams {
-    groupId: string
-    entityId: string
-    chapterId: string
-    stepId: string
+    groupSlug: string
+    entitySlug: string
 }

@@ -28,7 +28,7 @@ model Organization {
   steps             Step[]
   todos             Todo[]
   createdByUserId   String
-  createdBy         User               @relation(fields: [createdByUserId], references: [id])
+  createdBy         User               @relation(fields: [createdByUserId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   EntityGroup       EntityGroup[]
 }
 
@@ -36,8 +36,8 @@ model UserOrganization {
   userId         String @unique
   organizationId String
   role           Role
-  user           User         @relation(fields: [userId], references: [id])
-  organization   Organization @relation(fields: [organizationId], references: [id])
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@id([userId, organizationId])
 }
@@ -47,7 +47,7 @@ model EntityGroup {
   slug          String  @unique
   name           String
   organizationId String
-  organization   Organization @relation(fields: [organizationId], references: [id])
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade) 
   entities       Entity[]
   level          Int @default(100)
 }
@@ -57,18 +57,18 @@ model Entity {
   slug            String  @unique
   name           String
   entityGroupId  String
-  entityGroup    EntityGroup   @relation(fields: [entityGroupId], references: [id])
+  entityGroup    EntityGroup   @relation(fields: [entityGroupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userEntities   UserEntity[]
   chapters       Chapter[]
-  Organization   Organization? @relation(fields: [organizationId], references: [id])
+  Organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   organizationId String?
 }
 
 model UserEntity {
   userId   String
   entityId String
-  user     User   @relation(fields: [userId], references: [id])
-  entity   Entity @relation(fields: [entityId], references: [id])
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  entity   Entity @relation(fields: [entityId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@id([userId, entityId])
 }
@@ -78,10 +78,10 @@ model Chapter {
   slug        String  
   title    String
   entityId String
-  entity   Entity? @relation(fields: [entityId], references: [id])
+  entity   Entity? @relation(fields: [entityId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   steps    Step[]
   order          Int @default(100)
-  Organization   Organization? @relation(fields: [organizationId], references: [id])
+  Organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   organizationId String?
   createdAt      DateTime         @default(now())
   updatedAt      DateTime?         @updatedAt
@@ -94,10 +94,10 @@ model Step {
   title       String
   description String @db.Text
   chapterId   String
-  chapter     Chapter @relation(fields: [chapterId], references: [id])
+  chapter     Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade, onUpdate: Cascade) 
   todos       Todo[]
   order          Int @default(100)
-  Organization   Organization? @relation(fields: [organizationId], references: [id])
+  Organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   organizationId String?
   videoUrl       String? 
 }
@@ -107,9 +107,9 @@ model Todo {
   title       String
   description String
   stepId      String
-  step        Step      @relation(fields: [stepId], references: [id])
+  step        Step      @relation(fields: [stepId], references: [id] , onDelete: Cascade, onUpdate: Cascade)
   userTodos   UserTodo[]
-  Organization   Organization? @relation(fields: [organizationId], references: [id])
+  Organization   Organization? @relation(fields: [organizationId], references: [id] , onDelete: Cascade, onUpdate: Cascade)
   organizationId String?
 }
 
@@ -119,8 +119,8 @@ model UserTodo {
   todoId      String
   isCompleted Boolean   @default(false)
   completedAt DateTime?
-  user        User      @relation(fields: [userId], references: [id])
-  todo        Todo      @relation(fields: [todoId], references: [id])
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade )
+  todo        Todo      @relation(fields: [todoId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@id([userId, todoId])
 }

@@ -1,0 +1,12 @@
+- create page to create entities 
+- create page to modify entities 
+- create page to view entities 
+
+- create page to create entities 
+- create page to modify entities 
+- create page to view entities 
+
+- create page to view chapters 
+- create page to edit chapters 
+- create page to view chapters 
+

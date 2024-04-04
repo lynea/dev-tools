@@ -11,8 +11,6 @@ export default async function Page() {
 
     const { orgId, orgRole, userId } = auth()
 
-    console.log(user?.id, orgId, orgRole)
-
     if (!user) throw new Error('no user found')
     if (!orgId) throw new Error('no orgId found create one ')
 
