@@ -12,17 +12,20 @@ import {
     TableCell,
 } from '../ui/table'
 import { Card } from '../ui/card'
+import { DeleteEntry } from '../DeleteEntry/DeleteEntry'
 
 type EntryTableProps = {
     entries: any[]
     entryName: string
     editPath: string
+    deleteAction: any
 }
 
 export const EntryTable: FunctionComponent<EntryTableProps> = async ({
     entries,
     entryName,
     editPath,
+    deleteAction,
 }) => {
     let properties: any[] = []
 
@@ -68,7 +71,7 @@ export const EntryTable: FunctionComponent<EntryTableProps> = async ({
                                                     </TableCell>
                                                 )
                                             })}
-                                            <TableCell>
+                                            <TableCell className="flex gap-4">
                                                 <Link
                                                     href={`${editPath}/${entry.id}`}
                                                 >
@@ -82,6 +85,11 @@ export const EntryTable: FunctionComponent<EntryTableProps> = async ({
                                                         />
                                                     </Button>
                                                 </Link>
+
+                                                <DeleteEntry
+                                                    entryId={entry.id}
+                                                    deleteAction={deleteAction}
+                                                />
                                             </TableCell>
                                         </TableRow>
                                     )

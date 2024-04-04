@@ -2,6 +2,7 @@ import { db } from '@/lib/db'
 import { auth } from '@clerk/nextjs'
 import { FunctionComponent } from 'react'
 import { EntryTable } from '../LastCreatedTable/LastCreated'
+import { deleteChapter } from '@/app/actions'
 
 type ChapterTableProps = {
     limit: number
@@ -50,6 +51,7 @@ export const ChapterTable: FunctionComponent<ChapterTableProps> = async ({
 
     return (
         <EntryTable
+            deleteAction={deleteChapter}
             entries={chapters}
             entryName="chapters"
             editPath="/account/chapter/"

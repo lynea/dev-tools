@@ -22,7 +22,6 @@ export const config = {
          */
         '/((?!.+\\.[\\w]+$|_next).*)',
         '/',
-        '/dashboard',
         '/(api|trpc)(.*)',
     ],
 }

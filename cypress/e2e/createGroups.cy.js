@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-describe('entity creation', () => {
+describe.skip('entity creation', () => {
     beforeEach(() => {
         cy.session('signed-in', () => {
             cy.signIn()

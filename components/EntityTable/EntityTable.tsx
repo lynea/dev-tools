@@ -2,6 +2,7 @@ import { db } from '@/lib/db'
 import { auth } from '@clerk/nextjs'
 import { FunctionComponent } from 'react'
 import { EntryTable } from '../LastCreatedTable/LastCreated'
+import { deleteEntity } from '@/app/actions'
 
 type EntityTableProps = {
     limit: number
@@ -50,6 +51,7 @@ export const EntityTable: FunctionComponent<EntityTableProps> = async ({
     return (
         <>
             <EntryTable
+                deleteAction={deleteEntity}
                 entries={entities}
                 entryName="entities"
                 editPath="/account/entity/"

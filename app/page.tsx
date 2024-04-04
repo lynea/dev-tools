@@ -5,8 +5,8 @@ import Link from 'next/link'
 
 export default function Home() {
     return (
-        <main>
-            <Title> Mijndomein devtools </Title>
+        <section className="flex h-full w-full flex-col items-center justify-center">
+            <Title size="xl"> Mijndomein devtools </Title>
 
             <div className="mt-4">
                 <Link href="/onboarding">
@@ -16,6 +16,6 @@ export default function Home() {
                     </SqaureButton>
                 </Link>
             </div>
-        </main>
+        </section>
     )
 }

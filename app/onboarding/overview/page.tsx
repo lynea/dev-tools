@@ -25,7 +25,7 @@ export default async function Page() {
     return (
         <>
             <section className="mt-5 flex w-full flex-col ">
-                <Title>Looking for a recap?</Title>
+                <Title size="xl">Looking for a recap?</Title>
 
                 {groupWithEntities.entities.map((entity) => (
                     <>
@@ -36,7 +36,7 @@ export default async function Page() {
                             {groupWithEntities.entities.map((entity, index) => (
                                 <Link
                                     key={entity?.name! + index}
-                                    href={`/onboarding/overview/${groupWithEntities.id}/${entity.id}`}
+                                    href={`/onboarding/overview/${groupWithEntities.slug}/${entity.slug}`}
                                 >
                                     <Button className="  flex max-w-md items-center justify-center bg-foreground px-16 py-10 text-background hover:bg-gradient-to-t hover:from-gradientEnd hover:to-gradientStart ">
                                         <h5 className="text-2xl font-bold tracking-tight ">

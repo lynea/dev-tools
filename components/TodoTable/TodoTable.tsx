@@ -2,6 +2,7 @@ import { db } from '@/lib/db'
 import { auth } from '@clerk/nextjs'
 import { FunctionComponent } from 'react'
 import { EntryTable } from '../LastCreatedTable/LastCreated'
+import { deleteTodo } from '@/app/actions'
 
 type TodoTableProps = {
     limit: number
@@ -44,6 +45,7 @@ export const TodoTable: FunctionComponent<TodoTableProps> = async ({
 
     return (
         <EntryTable
+            deleteAction={deleteTodo}
             entries={todos}
             entryName="todos"
             editPath="/account/todo/"

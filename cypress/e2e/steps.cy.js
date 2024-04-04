@@ -26,7 +26,9 @@ describe('navigate steps', () => {
 
         cy.get('button').contains('i am ready').click()
 
-        cy.get('button').contains('back').should('be.disabled')
+        cy.wait(1000)
+
+        cy.get('button').contains('Back').should('be.disabled')
 
         cy.get('h3').contains('Step One chapter-one')
 
@@ -38,7 +40,7 @@ describe('navigate steps', () => {
 
         //assert that all elements we expect are on this page
         cy.get('h3').contains('Step Two chapter-one')
-        // cy.get('button').contains('back').should('not.be.disabled')
+        cy.get('button').contains('Back').should('not.be.disabled')
         cy.get('button').contains('Next').click()
         cy.wait(1000)
 
@@ -101,7 +103,7 @@ describe('navigate steps', () => {
 
         cy.get('button').contains('Next').click()
         cy.wait(1000)
-
+        //
         cy.get('button[role="checkbox"]')
             .each(($btn) => {
                 cy.wrap($btn).click()

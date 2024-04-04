@@ -2,6 +2,7 @@ import { db } from '@/lib/db'
 import { auth } from '@clerk/nextjs'
 import { FunctionComponent } from 'react'
 import { EntryTable } from '../LastCreatedTable/LastCreated'
+import { deleteStep } from '@/app/actions'
 
 type StepTableProps = {
     limit: number
@@ -47,6 +48,7 @@ export const StepTable: FunctionComponent<StepTableProps> = async ({
 
     return (
         <EntryTable
+            deleteAction={deleteStep}
             entries={lastSteps}
             entryName="steps"
             editPath="/account/step/"

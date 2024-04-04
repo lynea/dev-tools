@@ -26,6 +26,7 @@ export const Search: FunctionComponent<SearchProps> = ({ placeholder }) => {
 
     return (
         <Input
+            className="w-1/5"
             type="email"
             placeholder={placeholder}
             onChange={(e) => handleSearch(e.target.value)}

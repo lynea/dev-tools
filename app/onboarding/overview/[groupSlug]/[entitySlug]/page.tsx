@@ -57,7 +57,7 @@ export default async function Page({
 
     const currentEntityInfo = await db.entity.findFirst({
         where: {
-            id: params.entityId,
+            slug: params.entitySlug,
         },
         include: {
             chapters: {
@@ -76,7 +76,7 @@ export default async function Page({
     })
 
     const indexOfCurrentGroup = allGroups.findIndex(
-        (group) => group.id === params.groupId
+        (group) => group.slug === params.groupSlug
     )
 
     const nextGroup = allGroups[indexOfCurrentGroup + 1]
@@ -96,7 +96,7 @@ export default async function Page({
             </Link>
 
             <section className="mt-5 flex w-full flex-col ">
-                <Title>{currentEntityInfo.name}</Title>
+                <Title size="xl">{currentEntityInfo.name}</Title>
 
                 <h2 className="mb-4 mt-4 text-4xl font-bold text-foreground">
                     chapters
@@ -123,9 +123,11 @@ export default async function Page({
                                     {' '}
                                     <ul>
                                         {chapter.steps.map((step) => (
-                                            <li key={step.id}>
-                                                {' '}
-                                                <Link href={'/step'}>
+                                            <li key={step.id} className="mt-3">
+                                                {'- '}
+                                                <Link
+                                                    href={`/onboarding/${params.groupSlug}/${params.entitySlug}/${chapter.id}/${step.id}`}
+                                                >
                                                     {step.title}
                                                 </Link>{' '}
                                             </li>
@@ -147,7 +149,7 @@ export default async function Page({
                         className=" mb-10 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3"
                     >
                         <Link
-                            href={`/onboarding/overview/${nextGroup.id}/${entity?.id}`}
+                            href={`/onboarding/overview/${nextGroup.slug}/${entity?.slug}`}
                         >
                             <Button
                                 key={entity?.name! + index}

@@ -11,7 +11,6 @@ import {
     CardContent,
     Card,
 } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
     faBars,
@@ -22,11 +21,8 @@ import {
     faFileCirclePlus,
     faFolder,
     faHome,
-    faPen,
-    faPerson,
-    faSearch,
 } from '@fortawesome/free-solid-svg-icons'
-import { OrganizationSwitcher, UserButton } from '@clerk/nextjs'
+import { OrganizationSwitcher, UserButton, auth } from '@clerk/nextjs'
 import {
     Accordion,
     AccordionContent,
@@ -34,17 +30,22 @@ import {
     AccordionTrigger,
 } from '@/components/ui/accordion'
 import { ThemeToggle } from '@/components/ThemeToggle/ThemeToggle'
+import { redirect } from 'next/navigation'
 
 export default function DashboardLayout({
     children,
 }: {
     children: React.ReactNode
 }) {
+    const { orgRole } = auth()
+
+    if (orgRole !== 'org:admin') return redirect('/account')
+
     return (
-        <div className="dark:bg-slate-950 grid min-h-screen w-full   lg:grid-cols-[280px_1fr]">
-            <div className="dark:bg-slate-950 hidden border-r bg-gray-100 lg:block">
+        <div className="grid min-h-screen w-full dark:bg-slate-950   lg:grid-cols-[280px_1fr]">
+            <div className="hidden border-r bg-gray-100 dark:bg-slate-950 lg:block">
                 <div className="flex h-full max-h-screen flex-col gap-2">
-                    <div className="flex h-[60px] items-center border-b px-6">
+                    <div className="flex h-[60px] items-center border-b px-3">
                         <OrganizationSwitcher
                             afterCreateOrganizationUrl={'/account'}
                         />
@@ -262,33 +263,23 @@ export default function DashboardLayout({
                             </Accordion>
                             <Link
                                 className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
-                                href="/account/users"
-                            >
-                                <FontAwesomeIcon
-                                    icon={faPerson}
-                                    className="h-3 w-3"
-                                />
-                                Users
-                            </Link>
-                            <Link
-                                className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
-                                href="/account/settings"
-                            >
-                                <FontAwesomeIcon
-                                    icon={faCog}
-                                    className="h-3 w-3"
-                                />
-                                Settings
-                            </Link>
-                            <Link
-                                className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
                                 href="/account/preview"
                             >
                                 <FontAwesomeIcon
                                     icon={faEye}
                                     className="h-3 w-3"
                                 />
-                                Overview
+                                Oboarding preview
+                            </Link>
+                            <Link
+                                className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                                href="/account/organization/profile"
+                            >
+                                <FontAwesomeIcon
+                                    icon={faCog}
+                                    className="h-3 w-3"
+                                />
+                                Manage Organization
                             </Link>
                         </nav>
                     </div>
@@ -297,8 +288,7 @@ export default function DashboardLayout({
                             <CardHeader className="pb-4">
                                 <CardTitle>Upgrade to Pro</CardTitle>
                                 <CardDescription>
-                                    Unlock all features and get unlimited access
-                                    to our support team
+                                    You are currently on a free Beta plan
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
@@ -311,59 +301,27 @@ export default function DashboardLayout({
                 </div>
             </div>
             <div className="flex flex-col">
-                <header className="dark:bg-slate-950 flex h-14 items-center gap-4 border-b bg-gray-100 px-6 lg:h-[60px]">
+                <header className="flex h-14 items-center gap-4 border-b bg-gray-100 px-6 dark:bg-slate-950 lg:h-[60px]">
                     <Link className="lg:hidden" href="#">
                         <FontAwesomeIcon icon={faBars} className="h-3 w-3" />
 
                         <span className="sr-only">Home</span>
                     </Link>
                     <div className="w-full flex-1">
-                        <form>
+                        {/* <form>
                             <div className="relative">
                                 <FontAwesomeIcon
                                     icon={faSearch}
                                     className="absolute left-3 top-3 h-3 w-3"
                                 />
                                 <Input
-                                    className="dark:bg-gray-950 w-full appearance-none bg-white pl-8 shadow-none md:w-2/3 lg:w-1/3"
+                                    className="w-full appearance-none bg-white pl-8 shadow-none dark:bg-gray-950 md:w-2/3 lg:w-1/3"
                                     placeholder="Search users..."
                                     type="search"
                                 />
                             </div>
-                        </form>
+                        </form> */}
                     </div>
-                    {/* <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button
-                                className="h-8 w-8 rounded-full border border-gray-200 dark:border-gray-800"
-                                size="icon"
-                                variant="ghost"
-                            >
-                                <img
-                                    alt="Avatar"
-                                    className="rounded-full"
-                                    height="32"
-                                    src="/placeholder.svg"
-                                    style={{
-                                        aspectRatio: '32/32',
-                                        objectFit: 'cover',
-                                    }}
-                                    width="32"
-                                />
-                                <span className="sr-only">
-                                    Toggle user menu
-                                </span>
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>Settings</DropdownMenuItem>
-                            <DropdownMenuItem>Support</DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>Logout</DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu> */}
                     <ThemeToggle />
                     <UserButton />
                 </header>

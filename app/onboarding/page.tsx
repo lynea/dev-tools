@@ -11,8 +11,6 @@ export default async function Page() {
 
     const { orgId, orgRole, userId } = auth()
 
-    console.log(user?.id, orgId, orgRole)
-
     if (!user) throw new Error('no user found')
     if (!orgId) throw new Error('no orgId found create one ')
 
@@ -86,7 +84,7 @@ export default async function Page() {
         <section className="flex w-full flex-col items-center justify-center ">
             <Toast />
             <Title size="xl"> My onboarding </Title>
-            <h2 className="mt-6 mb-2 text-4xl font-bold text-foreground">
+            <h2 className="mb-2 mt-6 text-4xl font-bold text-foreground">
                 {' '}
                 Welcome {user?.firstName}!{' '}
             </h2>

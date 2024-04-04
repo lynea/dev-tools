@@ -41,7 +41,7 @@ export const AvarageCard: FunctionComponent = async () => {
         <Card>
             <CardContent className="item flex h-full flex-col items-center justify-center">
                 <CardTitle className="my-2 text-sm font-semibold tracking-wide">
-                    Avarage completion time
+                    Avarage completion time in minutes
                 </CardTitle>
                 <p className="text-9xl"> {avarage} </p>
             </CardContent>

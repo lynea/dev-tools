@@ -50,7 +50,10 @@ export default async function Page({
             <section className="mt-14 flex w-full flex-col items-center">
                 {renderTodos?.length === 0 ? (
                     <>
-                        <Title> Damn, you made it! welcome to the team </Title>
+                        <Title size="xl">
+                            {' '}
+                            Damn, you made it! welcome to the team{' '}
+                        </Title>
                         <div className="mt-28 flex h-96 w-96 flex-col justify-center">
                             <CelebrationAnimation />
                             <CompleteButton> Finish </CompleteButton>

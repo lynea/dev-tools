@@ -216,6 +216,133 @@ export async function createEntity(data: z.infer<typeof entitySchema>) {
     console.log('created entity:', created)
 }
 
+export async function deleteEntity(id: string) {
+    console.log('deleting entity:', id)
+    const { userId, orgId } = auth()
+
+    if (!userId) {
+        throw new Error('You must be signed in to delete a entity')
+    }
+
+    if (!orgId)
+        throw new Error('could not find organization id in the user object')
+
+    try {
+        const deleted = await db.entity.delete({
+            where: {
+                id,
+            },
+        })
+
+        console.log('deleted entity:', deleted)
+    } catch (error) {
+        console.error('could not delete entity:', error)
+    }
+    revalidatePath('/account/entity', 'page')
+}
+
+export async function deleteEntityGroup(id: string) {
+    console.log('deleting entity group:', id)
+    const { userId, orgId } = auth()
+
+    if (!userId) {
+        throw new Error('You must be signed in to delete a entity group')
+    }
+
+    if (!orgId)
+        throw new Error('could not find organization id in the user object')
+
+    try {
+        const deleted = await db.entityGroup.delete({
+            where: {
+                id,
+            },
+        })
+
+        console.log('deleted entity group:', deleted)
+    } catch (error) {
+        console.error('could not delete entity group:', error)
+    }
+    revalidatePath('/account/entity-group', 'page')
+}
+
+export async function deleteChapter(id: string) {
+    console.log('deleting chapter:', id)
+    const { userId, orgId } = auth()
+
+    if (!userId) {
+        throw new Error('You must be signed in to delete a chapter')
+    }
+
+    if (!orgId)
+        throw new Error('could not find organization id in the user object')
+
+    try {
+        const deleted = await db.chapter.delete({
+            where: {
+                id,
+            },
+        })
+
+        console.log('deleted chapter:', deleted)
+    } catch (error) {
+        console.error('could not delete chapter:', error)
+    }
+
+    revalidatePath('/account/chapter', 'page')
+}
+
+export async function deleteStep(id: string) {
+    console.log('deleting step:', id)
+    const { userId, orgId } = auth()
+
+    if (!userId) {
+        throw new Error('You must be signed in to delete a step')
+    }
+
+    if (!orgId)
+        throw new Error('could not find organization id in the user object')
+
+    try {
+        const deleted = await db.step.delete({
+            where: {
+                id,
+            },
+        })
+
+        console.log('deleted step:', deleted)
+    } catch (error) {
+        console.error('could not delete step:', error)
+    }
+    revalidatePath('/account/step', 'page')
+}
+
+export async function deleteTodo(id: string) {
+    console.log('deleting todo:', id)
+    const { userId, orgId } = auth()
+
+    if (!userId) {
+        throw new Error('You must be signed in to delete a todo')
+    }
+
+    if (!orgId)
+        throw new Error('could not find organization id in the user object')
+
+    try {
+        const deleted = await db.todo.delete({
+            where: {
+                id,
+            },
+        })
+
+        console.log('deleted todo:', deleted)
+    } catch (error) {
+        console.error('could not delete todo:', error)
+    }
+
+    revalidatePath('/account/todo', 'page')
+}
+
 export async function updateEntity(data: z.infer<typeof entityUpdateSchema>) {
     const { userId, orgId } = auth()
 
@@ -281,6 +408,7 @@ export async function createChapter(data: z.infer<typeof chapterSchema>) {
 
     console.log('created chapter:', created)
 }
+
 export async function updateChapter(data: z.infer<typeof chapterUpdateSchema>) {
     const { userId, orgId } = auth()
 
