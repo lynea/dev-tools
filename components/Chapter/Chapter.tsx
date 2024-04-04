@@ -115,7 +115,7 @@ export const Chapter = async ({
     const isLastStepInChapter = indexOfCurrentStep! + 1 === totalSteps
     const isfirstStepInChapter = indexOfCurrentStep === 0
 
-    const canDecrementStep = !isFirstChapter && !isfirstStepInChapter
+    const canDecrementStep = !(isFirstChapter && isfirstStepInChapter)
 
     //should accept a item array
     // and the path to route to when no more items are left
@@ -204,7 +204,7 @@ export const Chapter = async ({
                     //  currentStepInfo?.codeBlock
                     currentStepInfo?.description ? (
                         <Box>
-                            <Title>{currentStepInfo?.title}</Title>
+                            <Title size="xl">{currentStepInfo?.title}</Title>
 
                             <div
                                 dangerouslySetInnerHTML={{
@@ -250,7 +250,7 @@ export const Chapter = async ({
                                 }
                                 disabled={!canDecrementStep}
                             >
-                                back
+                                Back
                             </Button>
                         </Link>
 
